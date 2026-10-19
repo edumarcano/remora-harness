@@ -44,6 +44,12 @@ class ContentCheckTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("docs/guide.md:3: missing file target: absent.md", output)
 
+    def test_authored_standards_are_checked(self):
+        self.write("standards/engineering.md", "[missing](absent.md)\n")
+        code, output = self.run_check()
+        self.assertEqual(code, 1)
+        self.assertIn("standards/engineering.md:1: missing file target", output)
+
     def test_fenced_examples_are_not_checked(self):
         self.write("README.md", "````markdown\n[example](absent.md)\n```\n"
                    "[still example](absent.md)\n````\n"
