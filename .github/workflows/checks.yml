@@ -1,0 +1,24 @@
+name: Content checks
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  content:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - run: python tools/check_content.py
+      - run: python -m unittest discover -s tests

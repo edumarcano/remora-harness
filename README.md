@@ -2,13 +2,15 @@
 
 Remora is a portable, agent-native engineering harness for AI-assisted software development.
 
-It provides reusable instructions, skills, and workflows that help coding agents establish consistent development practices, adapt to different projects, and maintain software quality as projects evolve.
+It is intended to provide reusable instructions, skills, and workflows that help coding agents establish consistent development practices, adapt to different projects, and maintain software quality as projects evolve.
 
 Remora is designed to work alongside existing coding environments rather than replace their execution capabilities. Its initial targets are Codex, Cursor, and Antigravity.
 
 ## Status
 
-Remora is in early development. Its initial scope and technical direction are defined in the [product and technical specification](docs/product-spec.md).
+Remora is in early development. The current baseline contains skill contracts, F01/F02 bootstrap fixture preparation and rubrics, and a bounded content checker with tests. Installable skills and bootstrap tooling are not implemented, and native-host compatibility remains unverified.
+
+The [product and technical specification](docs/product-spec.md) defines intended behavior. The [evaluation guide](evals/README.md) explains fixture preparation, calibration, and development checks; the [dated baseline record](evals/records/2026-10-19-baseline.md) records design inputs and testing candidates. This baseline advances Milestone 1 without declaring it complete.
 
 ## Design principles
 
