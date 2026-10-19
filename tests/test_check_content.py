@@ -102,9 +102,11 @@ class ContentCheckTests(unittest.TestCase):
         self.write("README.md", "# Valid root document\n")
         self.write("docs/guide.md", "[broken](absent.md)\n")
         scandir = os.scandir
+        # main() resolves the root, including Windows short-path aliases.
+        unreadable = (self.root / "docs").resolve()
 
         def restricted(path):
-            if Path(path) == self.root / "docs":
+            if Path(path) == unreadable:
                 raise PermissionError("guidance directory unavailable")
             return scandir(path)
 
@@ -112,6 +114,10 @@ class ContentCheckTests(unittest.TestCase):
             code, output = self.run_check()
         self.assertEqual(code, 2)
         self.assertIn("guidance directory unavailable", output)
+
+        code, output = self.run_check()
+        self.assertEqual(code, 1)
+        self.assertIn("docs/guide.md:1: missing file target: absent.md", output)
 
     def test_directory_and_unsupported_destinations_fail(self):
         (self.root / "docs").mkdir()

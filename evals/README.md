@@ -1,14 +1,15 @@
-# Evaluation baseline
+# Bootstrap evaluation
 
 This guide owns preparation, task prompts, rubrics, and recording instructions for
 the first bootstrap cases. The [product specification](../docs/product-spec.md)
 owns intended behavior and release gates. The [baseline record](records/2026-10-19-baseline.md)
 contains dated design inputs and calibration observations.
 
-F01/F02 are prepared development fixtures. Remora has no installable bootstrap
-skill or pinned distribution yet, so native trials cannot run at this baseline.
+Native trials require a pinned local distribution with a bootstrap entrypoint.
+Fixture preparation and rubric calibration can run before that distribution exists.
 Calibration below checks whether the rubric distinguishes constructed examples;
-it does not measure an agent or Remora. Other fixtures remain specified, not built.
+it does not measure an agent or Remora. The specification defines the wider fixture
+catalog; this guide covers F01/F02.
 
 ## Prepare disposable inputs
 
@@ -51,9 +52,9 @@ rubric, calibration examples, or evaluation records. Keep scorer material in the
 Remora checkout outside that workspace. Record unavoidable personal/global host
 guidance and any uncertainty about hidden context.
 
-## Future native bootstrap task
+## Native bootstrap task
 
-Once Milestone 2 supplies a pinned local distribution, record its immutable source
+For the pinned local distribution supplied to a trial, record its immutable source
 revision and location. Supply the fixture root, requested host, and distribution
 as trial inputs, then use this same prompt for both cases:
 
@@ -133,7 +134,7 @@ Exclude credentials, personal absolute paths, private project content, and full
 transcripts. Record interventions and unexpected changes. Report unavailable
 usage/cost values as unavailable. These fixtures are development evidence once
 used to tune workflows, not untouched holdouts. Later paired comparisons follow
-Section 16.4 of the specification; this baseline supplies no comparison results.
+Section 16.4 of the specification. Rubric calibration is not comparison evidence.
 
 ## Development checks
 
@@ -146,7 +147,7 @@ git diff --check
 git diff --check <actual-base>...HEAD
 ```
 
-For the first PR the known base is `b729e47`. Include both working and committed
+Use the actual PR base for the range check. Include both working and committed
 changes in review, plus new untracked files. Git whitespace checks do not inspect
 untracked files until they enter a diff.
 
