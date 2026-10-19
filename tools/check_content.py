@@ -20,7 +20,7 @@ def documents(root: Path) -> list[Path]:
     def scan_error(error):
         raise error
 
-    for directory in ("docs", "evals"):
+    for directory in ("docs", "evals", "standards"):
         start = root / directory
         if not start.exists():
             continue

@@ -138,6 +138,30 @@ Section 16.4 of the specification. Rubric calibration is not comparison evidence
 
 ## Development checks
 
+### Deterministic installation scenarios
+
+`tests/test_install.py` creates disposable committed source checkouts and target
+repositories. It reuses F01's empty/unborn starting condition and F02's exact
+specification bytes, and adds existing project-owned guidance and overlapping
+skills as preservation controls. No target application tooling is executed.
+
+The suite covers preview without writes, exact first-install inventory, manifest
+fields and pinned-source hashes, repeated installation without byte or modification
+time changes, paths containing spaces, and CRLF working files versus LF Git objects.
+F12-style checks cover unmanaged collisions (including identical bytes), modified
+or missing managed files, malformed metadata, unsafe paths, unsupported selections
+and revisions, partial writes, and destination changes during creation. Link and
+Windows junction cases run where available; unavailable cases are explicit skips.
+
+These are deterministic helper tests, not native bootstrap trials, semantic
+F01/F02 rubric passes, or cross-host compatibility evidence. Existing F01/F02
+prompts and scoring remain for the later bootstrap workflow. Run the existing
+Windows/Linux CI matrix before claiming results on both platforms. The initial
+distribution for these checks is a trusted source checkout; release packaging and
+update/recovery workflows remain subsequent work.
+
+### Commands and content-check scope
+
 Run from the repository root with Python 3.11+:
 
 ```text
@@ -151,7 +175,7 @@ Use the actual PR base for the range check. Include both working and committed
 changes in review, plus new untracked files. Git whitespace checks do not inspect
 untracked files until they enter a diff.
 
-The content checker reads root-level `*.md`, `docs/**/*.md`, and `evals/**/*.md`,
+The content checker reads root-level `*.md`, `docs/**/*.md`, `standards/**/*.md`, and `evals/**/*.md`,
 excluding `evals/fixtures/**`; nested directory symlinks are not traversed. It checks literal inline Markdown links/images with
 simple bracket labels and destinations without nested parentheses, outside
 backtick or tilde fences. Use forward-slash relative file paths; angle brackets

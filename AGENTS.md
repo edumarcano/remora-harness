@@ -26,12 +26,21 @@ The project is initially targeting Codex, Cursor, and Antigravity.
 - Keep documentation coherent and current. Prefer updating canonical explanations over appending incremental patches.
 - Report validation actually performed, its results, and any remaining uncertainty.
 
+## Development environments
+
+- Windows is the primary local development environment.
+- Prioritize running and validating changes on Windows using available local tooling.
+- Preserve cross-platform compatibility for Remora's portable skills and deterministic helpers.
+- Use GitHub Actions to verify Linux compatibility; a local Linux environment is not required for development.
+- Distinguish local verification from hosted CI results. Investigate failures on either platform rather than weakening or removing checks simply to obtain a passing result.
+- Do not introduce platform-specific infrastructure without a demonstrated need.
+
 ## Development checks
 
 Run from the repository root with Python 3.11+:
 
 - `python tools/check_content.py` checks the documented subset of local Markdown file links. It excludes fixture payloads and does not validate anchors, external URLs, or semantic claims. See `evals/README.md` for its exact scope.
-- `python -m unittest discover -s tests` verifies the content checker using isolated temporary files.
+- `python -m unittest discover -s tests` verifies the content checker and installation helper using isolated temporary files and repositories.
 - `git diff --check` checks working changes; also run `git diff --check <base>...HEAD` with the actual PR base to cover committed changes.
 
 These checks do not establish native skill discovery or workflow compatibility.
