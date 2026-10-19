@@ -26,6 +26,16 @@ The project is initially targeting Codex, Cursor, and Antigravity.
 - Keep documentation coherent and current. Prefer updating canonical explanations over appending incremental patches.
 - Report validation actually performed, its results, and any remaining uncertainty.
 
+## Development checks
+
+Run from the repository root with Python 3.11+:
+
+- `python tools/check_content.py` checks the documented subset of local Markdown file links. It excludes fixture payloads and does not validate anchors, external URLs, or semantic claims. See `evals/README.md` for its exact scope.
+- `python -m unittest discover -s tests` verifies the content checker using isolated temporary files.
+- `git diff --check` checks working changes; also run `git diff --check <base>...HEAD` with the actual PR base to cover committed changes.
+
+These checks do not establish native skill discovery or workflow compatibility.
+
 ## Project evolution
 
 Remora's own reusable standards and skills will be established during development. Do not assume that planned skills or tooling already exist.
