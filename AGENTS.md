@@ -26,6 +26,15 @@ The project is initially targeting Codex, Cursor, and Antigravity.
 - Keep documentation coherent and current. Prefer updating canonical explanations over appending incremental patches.
 - Report validation actually performed, its results, and any remaining uncertainty.
 
+## Development environments
+
+- Windows is the primary local development environment.
+- Prioritize running and validating changes on Windows using available local tooling.
+- Preserve cross-platform compatibility for Remora's portable skills and deterministic helpers.
+- Use GitHub Actions to verify Linux compatibility; a local Linux environment is not required for development.
+- Distinguish local verification from hosted CI results. Investigate failures on either platform rather than weakening or removing checks simply to obtain a passing result.
+- Do not introduce platform-specific infrastructure without a demonstrated need.
+
 ## Development checks
 
 Run from the repository root with Python 3.11+:
