@@ -13,7 +13,8 @@ import sys
 
 SOURCE_ROOT = Path(__file__).resolve().parents[1]
 PAYLOAD = {"standards/engineering.md": ".remora/standards/engineering.md"}
-INPUTS = ("helpers/install.py", *PAYLOAD)
+INPUTS = ("helpers/install.py", *PAYLOAD,
+          "skills/remora-bootstrap/SKILL.md", "templates/AGENTS.md")
 MANIFEST = ".remora/installation.json"
 ENVIRONMENTS = ("codex", "cursor", "antigravity")
 FIELDS = {"schema_version", "remora_version", "source_revision", "selected_profiles",
