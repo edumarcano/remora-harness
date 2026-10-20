@@ -9,7 +9,8 @@ Native trials require a pinned local distribution with a bootstrap entrypoint.
 Fixture preparation and rubric calibration can run before that distribution exists.
 Calibration below checks whether the rubric distinguishes constructed examples;
 it does not measure an agent or Remora. The specification defines the wider fixture
-catalog; this guide covers F01/F02 and a limited F05 existing-guidance control.
+catalog; this guide covers F01/F02, implemented-project adoption in F03/F04, and
+a limited F05 existing-guidance control.
 
 ## Prepare disposable inputs
 
@@ -146,6 +147,93 @@ Score rubric judgments with their actual evidence; the trial runner's verdict is
 not independent ground truth. Explicit-entrypoint execution is a fallback and
 does not establish native discovery. Record criterion outcomes separately from
 that compatibility gap, and retain required unverified criteria as open.
+
+## Implemented-project adoption and specialization
+
+Prepare separate F03 and F04 repositories by copying the full fixture directories
+as for F05. [F03](fixtures/F03/AGENTS.md) contains implemented Python behavior and
+a custom standard-library verification entrypoint. [F04](fixtures/F04/AGENTS.md)
+contains a TypeScript page, package scripts, and deployment configuration. Neither
+fixture authorizes running its application commands during bootstrap. F04's
+dependencies are declared, not installed; no deployment is verified.
+
+For these implemented-project trials, make an initial local fixture commit before
+exposing the copy to the evaluated agent. Use a synthetic author and disable hooks
+and signing for fixture preparation; this is runner setup, not agent authorization
+to commit. Record HEAD and hash all inputs. Add a clearly identified, unrelated
+local edit to root guidance after committing, and include it in the preservation
+baseline. Keep fixture checks/caches outside the initial trial copy. Preserve the
+unborn F01/F02/F05 conditions in their existing protocol.
+
+Use the existing initialization prompt unchanged for the installation-only
+control. For explicitly authorized adoption, use:
+
+> Install and adopt Remora in this repository using the supplied pinned local
+> distribution. Inspect the implementation, configuration, and existing guidance.
+> Update root AGENTS.md only where repository evidence justifies it, preserving
+> project decisions, existing workflow owners, and unrelated edits. Do not change
+> application files or run application commands. Report changes, their sources,
+> checks actually performed, and remaining uncertainty.
+
+For preview, replace the opening `Install and adopt` with `Preview installing and
+adopting`. Supply the same target/environment/source bindings and explicit fallback
+entrypoint as in the first-use protocol. Start a fresh session for each task.
+
+For a controlled specialization case, first adopt F03 with the pinned distribution.
+Then, as runner setup outside the evaluated task, add `tools/check_syntax.py` with:
+
+```python
+import ast
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[1]
+for relative in ("ledger.py", "tests/test_ledger.py", "tools/verify.py"):
+    ast.parse((root / relative).read_text(encoding="utf-8"), filename=relative)
+```
+
+Append a paragraph to `docs/development.md` establishing
+`python tools/check_syntax.py` from the repository root as the separate syntax
+check. Leave root guidance unchanged, so its claim that no separate syntax check
+exists is now obsolete. Snapshot the new baseline and request:
+
+> Update root AGENTS.md using the supplied bootstrap entrypoint to reflect current
+> project evidence. Preserve adequate guidance, project decisions, existing command
+> owners, and unrelated edits. Keep the installed Remora revision and selections.
+> Do not change application files or run application commands. Report changes,
+> their sources, checks actually performed, and remaining uncertainty.
+
+Use that same request again in a fresh session to test a no-op specialization
+repeat. Do not use a newer distribution to bypass a source-revision conflict.
+
+Apply B01 and B04-B08 with the actual starting HEAD and the task's authorized
+change surface, plus these adoption-specific criteria:
+
+| ID | Criterion and evidence |
+| --- | --- |
+| D01 | Preview changes nothing; installation-only preserves root bytes; only an explicit guidance-edit request permits root changes. |
+| D02 | F03 retains its custom entrypoint, duplicate/order semantics, and canonical development document. F04 retains its named npm scripts, working directory, local page behavior, and distinction between configured deployment and execution. No assumed pytest/npm-test workflow is introduced. |
+| D03 | Root edits are necessary and source-backed; existing wording/organization, unrelated local edits, nested guidance, specifications, and skills are preserved. Adequate sections are not rewritten for style. |
+| D04 | Specialization corrects only guidance made obsolete by the controlled tooling change. Repetition preserves file inventory, bytes, and modification times. |
+| D05 | Managed integrity is checked against the same pinned source before root writes. Guidance remains outside managed hashes; conflicts stop affected edits and partial completion is reported honestly. |
+
+For F05 adoption use D01/D03/D05 and E02; E01/E03 still apply unchanged to its
+installation-only control. Root changes are now allowed only for the explicit
+adoption task. All other F05 inputs must remain byte-identical. Missing tooling
+still must not be invented, and setup overlap must be identified without replacing
+the existing skill or bypassing its request to report proposed changes first.
+
+At minimum, exercise implemented-project preview, installation-only preservation,
+authorized adoption on F03/F04/F05, specialization after changed evidence, and
+fresh-session no-op repetitions on implemented projects. Review commands as well
+as final output: an unsupported execution claim fails even if the final files look
+correct. Record source hashes, prompt variants, before/after inventories, original
+file preservation, root diffs, command evidence, outcomes, and reviewer limitations.
+
+Root path/byte rechecks are a procedural guard, not a filesystem transaction.
+Use controlled changed-file and unsafe-path probes when feasible; report exactly
+which guards were observed and which refusal cases remain untested. Existing
+installer collision/link tests cover managed files, not the new semantic edit
+procedure. No wording-match unit tests establish agent behavior.
 
 ## F01/F02 synthetic calibration examples
 

@@ -8,7 +8,7 @@ Remora is designed to work alongside existing coding environments rather than re
 
 ## Status
 
-Remora is in early development. Milestone 1 established skill contracts, evaluation foundations, and a bounded content checker. Milestone 2 now has a first-use bootstrap entrypoint, a project-instruction seed, and safe installation and integrity checks for one shared engineering standard. Existing-guidance edits, specialization, and native-host discovery remain outside the implemented workflow or unverified.
+Remora is in early development. Milestone 1 established skill contracts, evaluation foundations, and a bounded content checker. Milestone 2 now has a bootstrap entrypoint, a project-instruction seed, and safe installation and integrity checks for one shared engineering standard. Bootstrap supports explicitly requested adoption edits and later updates to root project guidance using the same installed Remora revision. Native-host discovery remains unverified.
 
 The [product and technical specification](docs/product-spec.md) defines intended behavior. The [evaluation guide](evals/README.md) explains fixture preparation, calibration, and development checks; the [dated baseline record](evals/records/2026-10-19-baseline.md) records the initial design inputs and testing candidates.
 
@@ -33,17 +33,36 @@ The bootstrap source files and installer inputs must be committed and unmodified
 Preview stays read-only and drafts guidance in the conversation. Installation uses
 the helper below, validates it, and exclusively creates root `AGENTS.md` only when
 absent. That file remains project-owned and outside the installation manifest.
-Existing instructions are preserved; necessary adoption edits are proposals.
+Installation alone preserves existing instructions; necessary adoption edits are proposals.
 The [seed](templates/AGENTS.md) is adapted from target evidence, with no invented
 stack or commands. Installation requests authorize these described local changes
 without another approval step; material unresolved conflicts stop affected writes.
 
+To authorize minimal edits to existing root guidance, ask explicitly:
+
+```text
+Follow <distribution>/skills/remora-bootstrap/SKILL.md to install and adopt Remora
+in <target> for <environment>. Update root AGENTS.md only where repository
+evidence justifies it. Preserve existing project decisions and workflow owners.
+```
+
+For an installed project, request an update to root `AGENTS.md` after tooling or
+requirements change, using the same pinned distribution and environment selections.
+Bootstrap drafts the scoped changes, checks installation integrity, and applies
+only authorized root edits. Preview remains read-only. Adequate guidance needs no
+rewrite; nested instructions and existing skills remain outside the edit scope.
+Changed files or unsafe paths stop affected edits. Guidance stays project-owned
+and outside the manifest; semantic decisions are made by the host agent.
+
 The installed payload contains no project skills. The bootstrap entrypoint and
-its seed stay in the source checkout. Global bootstrap packaging, editing existing
-guidance, specialization, and automatic updates/recovery are subsequent work.
+its seed stay in the source checkout. Global bootstrap packaging, managed-content
+updates, profiles, and automatic recovery are subsequent work. An installation
+from an older source revision cannot be upgraded through guidance specialization.
 
 The [first-use trial record](evals/records/2026-10-19-first-use-bootstrap.md)
-documents local Codex CLI fallback observations and their limits.
+documents initial local Codex CLI fallback observations. The
+[adoption trial record](evals/records/2026-10-19-adoption-bootstrap.md) covers
+implemented-project guidance edits and specialization, with their limits.
 
 ## Installation helper
 

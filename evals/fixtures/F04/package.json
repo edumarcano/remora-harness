@@ -1,0 +1,13 @@
+{
+  "name": "beacon-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verify:types": "tsc --noEmit",
+    "bundle": "vite build"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "vite": "~7.1.12"
+  }
+}
