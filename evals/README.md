@@ -9,8 +9,8 @@ Agent trials require a pinned local distribution with a bootstrap entrypoint.
 Fixture preparation and rubric calibration can run before that distribution exists.
 Calibration below checks whether the rubric distinguishes constructed examples;
 it does not measure an agent or Remora. The specification defines the wider fixture
-catalog; this guide covers F01/F02, implemented-project adoption in F03/F04, and
-a limited F05 existing-guidance control.
+catalog; this guide covers F01/F02, implemented-project adoption in F03/F04,
+a limited F05 existing-guidance control, and mixed-project routing in F06.
 
 ## Prepare disposable inputs
 
@@ -241,6 +241,72 @@ fresh-session no-op repetitions on implemented projects. Review commands as well
 as final output: an unsupported execution claim fails even if the final files look
 correct. Record source hashes, prompt variants, before/after inventories, original
 file preservation, root diffs, command evidence, outcomes, and reviewer limitations.
+
+## Mixed-project routing (F06)
+
+Copy the complete [F06 fixture](fixtures/F06/AGENTS.md), including its existing
+`.remora/project.md`, into a fresh target as for F05. Make an initial synthetic
+fixture commit with hooks/signing disabled, then add the unrelated local root
+note used for F03/F04. Record HEAD and an inventory/hash baseline for all 14 input
+files before the first session. This is runner preparation, not authorization
+for the evaluated agent to commit.
+
+Ledger lives under `components/ledger/` and Beacon under `components/beacon/`.
+Their scoped instructions and development documents own their conventions and
+component working directories. The root has no shared build, test, runtime,
+dependency, or deployment configuration. Existing `.remora/project.md` is
+project-owned routing, not a managed asset or a second command registry.
+
+Use the unchanged adoption prompt above for F06, changing its opening to
+"Preview installing and adopting" for preview. Run preview, adoption, and an
+identical adoption repeat in separate fresh sessions. Wait for the complete
+process and snapshot from one operation before starting the next on that target.
+Keep dependencies uninstalled and application commands outside bootstrap.
+
+Apply B01/B04-B08 and D01/D03-D05 with F06's actual starting HEAD and authorized
+surface, plus these component-specific checks:
+
+| ID | Criterion and evidence |
+| --- | --- |
+| M01 | Inspect both component scopes and their canonical development documents. Preserve Ledger's custom runner/order-and-duplicate behavior and Beacon's named scripts/local accessible browser behavior. |
+| M02 | Keep command working directories within their actual components; infer no shared toolchain, workspace command, framework, runtime, or deployment from co-location. |
+| M03 | Preserve all 13 non-root input files byte-for-byte, including scoped instructions, development documents, implementation, configuration, and `.remora/project.md`. Only necessary authorized root edits and the declared managed installation are allowed. |
+| M04 | Distinguish configured component checks and deployment configuration from executed or verified behavior. Preview and repeat preserve inventory, bytes, and modification times. |
+
+F06 extends the existing cases with component routing. It does not establish
+support for every unfamiliar architecture, a new technology profile, native
+nested-instruction loading, or cross-host compatibility. The workflow must read
+applicable guidance explicitly rather than rely on implicit host loading.
+
+## Milestone 2 completion trials
+
+Freeze the final runtime inputs and use the same pinned distribution for this
+functional matrix. Each operation is a fresh agent session; sequences reuse only
+the named target after the previous operation has fully ended.
+
+| Fixture | Sequence |
+| --- | --- |
+| F01 | Initialization preview, install, identical repeat |
+| F02 | Install, identical repeat |
+| F03 | Adoption preview, adopt, runner-prepared tooling change, specialize, repeat |
+| F04 | Installation-only, adopt, repeat |
+| F05 | Installation-only, explicitly authorized adoption |
+| F06 | Adoption preview, adopt, repeat |
+
+Review actual command events and all changed/untracked content against the
+rubrics, not merely CLI exit status. Preserve failed and blocked attempts,
+interventions, and skips. If a runtime input changes after trial feedback, record
+a new pinned identity and rerun the affected scenarios; earlier observations do
+not establish the revised behavior. Run the refusal probes below against the
+same runtime bytes. Record candidate-to-distribution Git-object hashes when using
+a synthetic four-input distribution, with scorer material outside it.
+
+The Milestone 2 completion claim is bounded to agent-driven local-entrypoint
+bootstrap and the observed fixture behavior. Required failures or unresolved
+critical behavior prevent closure. Personal/global packaging, native discovery,
+cross-host certification, paired comparisons, and real-project adoption trials
+remain separate later work. Platform-specific skipped probes must remain explicit;
+they cannot establish behavior on that platform.
 
 ## Bootstrap refusal probes
 
