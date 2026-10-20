@@ -1,10 +1,9 @@
 # Milestone 2 bootstrap functional trials — October 20, 2026
 
-The 17-session functional cohort passed applicable rubric review. Milestone 2
-remains open: the unmodified source-pause control, source-movement probe, and
-six remaining refusal cases were not run because automatic approval review
-blocked new CLI launches at the workspace spend cap. This record does not
-claim completion of those safety gates.
+The 17-session V9 functional cohort passed applicable review, and the
+previously blocked safety scenarios completed as recorded in the refusal record.
+Together these changes complete the bounded Milestone 2 bootstrap implementation
+and local fixture verification, using the documented explicit-entrypoint handoff.
 
 This record covers local-entrypoint bootstrap of empty, specification-only,
 implemented, custom-guidance, and mixed-component fixtures. It does not establish
@@ -16,18 +15,18 @@ Earlier dated records remain observations of their earlier revisions.
 ## Tested inputs and conditions
 
 The final candidate's runtime inputs came from repository commit
-`73afc9d2254ea1fda86dd26498937c42c7015a6b`. A clean, four-input synthetic
-distribution was committed as `9854384cb7d22a3bd6400023a286e0c02ee09a3e`.
+`c7a06a6fecb8e2700a6e475e6e56ba68c8456df8`. A clean, four-input synthetic
+distribution was committed as `cc60e9cd5ad5da6b4f839d8aa0bb06c29b8b6400`.
 The parent compared the candidate and distribution Git-object bytes for every
 input below. The synthetic commit is the installation manifest's source pin;
 it is not a published release or a claim that these two Git commits are identical.
-Later documentation-only commits do not change these runtime bytes.
+The documentation handoff fix is commit `9578c95`; it documents the first-read activation preamble and does not change the frozen V9 runtime inputs.
 
 | Input | Git-object SHA-256 |
 | --- | --- |
 | `helpers/install.py` | `4a28be48760277d44df3180b4045d78edcc643e64dade6772b10fe4e33b155fb` |
 | `standards/engineering.md` | `6aeb1c828771150a0626713d93f77f50e76bed65e5165bd9f5cf21963253846d` |
-| `skills/remora-bootstrap/SKILL.md` | `d8dcc43e361996e3097483b6b0a5b2991b9daaa643f733c0f8f4aaecb5b72566` |
+| `skills/remora-bootstrap/SKILL.md` | `fd1febaa4da354ddb6903689ffbbe9cc9c490a8376b9b1faf43c96dbb470f8bd` |
 | `templates/AGENTS.md` | `7bb1dc2e05cabeda460f0e6b3ac726f4e61f4a1808f5e31931c4babd058c97f1` |
 
 The host was Windows `10.0.26300.0`, Codex CLI `0.163.0-alpha.10.2`, with
@@ -36,77 +35,64 @@ operation used a fresh CLI session, configured with `gpt-6-luna` and reasoning
 effort `high`, through the existing Codex account:
 
 ```text
-codex exec -m gpt-6-luna -c model_reasoning_effort="high" --sandbox workspace-write --json -C <target> -
+codex exec --json --color never --sandbox workspace-write --model gpt-6-luna -c model_reasoning_effort="high" -C <target> -
 ```
 
-The outer execution needed authorized account/session access; the evaluated
-session retained its `workspace-write` sandbox. The source was read-only input,
+The outer execution used authorized native-account access for SQLite/session startup; the evaluated session retained its `workspace-write` sandbox. The source was read-only input,
 and task authorization limited writes to the named disposable target.
 Scorer material and event logs stayed outside the distribution and target.
 Fresh sessions still had personal/global guidance and memory available. Some
 agents consulted prior Remora history; these were not blind or context-free
 holdouts. No separate inference runtime or LLM API integration was introduced.
 
-F01, F02, and F05 began without HEAD. The prepared commits were:
-
-- F03: `0eaba700e0622fe550ddaaa1a7912d9ab2fb9ebd`.
-- F04: `9ae673c96b966c18b002e5fe6d5666c244e9a701`.
-- F06: `8c42228b6eb8953ab0ee37ff306b1e55d094eec3`.
-
-F03/F04/F06 received an unrelated root note after committing the pristine
-fixture; that dirty state was included in the preservation baseline. F06's
-pristine root was 433 bytes, SHA-256
-`341786091e5c5df40d1969adf701ac1d6834f3aeeb646aba0b5ab95a6cf3327a`;
-its dirty root was 504 bytes before adoption. F03's separate syntax checker and
-development-document paragraph were introduced by the runner only between
-adoption and specialization, following the [evaluation protocol](../README.md).
-Those setup changes were not evaluated-agent implementation work.
+F01, F02, and F05 began without HEAD; F03 began at `c3c707580f397020361fe6fec8697aa098de1743`, F04 at `8994a627f3604357bb50f697a17899528ba264cd`, and F06 at `c057a98ceda8fc390e940b2b6d82eabdd4db277f`. F03, F04, and F06 had an unrelated root note appended after committing each pristine fixture; that dirty state was included in preservation checks. F03's syntax checker and development-document paragraph were introduced by runner setup between adoption and specialization, not by an actor session. The distribution and evaluated source stayed pinned to the same V9 bytes throughout.
 
 ## Prompts and evidence review
 
-The [evaluation guide](../README.md) owns the unchanged initialization,
-adoption, and specialization task bodies. Preview used the documented opening
-substitution; repetition used the original task in a fresh session. Every prompt
-also carried these bindings, with absolute local paths substituted during execution:
+The [evaluation guide](../README.md) owns the unchanged initialization, adoption, and specialization task bodies; preview used its documented opening substitution and repeats reused their original task in fresh sessions. Every fresh actor prompt began with this activation preamble before the unchanged body and bindings:
 
 ```text
-Target: <target>
-Requested environment: codex.
-Trusted distribution: <distribution>; pinned source commit: 9854384cb7d22a3bd6400023a286e0c02ee09a3e.
-Follow <distribution>/skills/remora-bootstrap/SKILL.md explicitly as the local-entrypoint fallback.
-Keep all target writes inside the named target. The distribution is read-only input.
-Do not commit or perform external operations.
+First read <distribution>/skills/remora-bootstrap/SKILL.md by itself, before any target inspection.
+Do not batch that read with target operations. After reading it, follow its procedure for the task below.
 ```
 
+All 17 first commands read only the pinned `SKILL.md`. Parent and independent
+review passed the initial junction and malformed-metadata handoff gates before
+the functional cohort. The task bodies and binding format were retained, with
+new disposable targets and the V9 source pin. F02 was prepared from canonical
+Git-object LF bytes (982 bytes), rather than the prior V8 checkout's CRLF bytes
+(1,005 bytes); this is a recorded setup difference, not an actor conversion. Its
+requirements were unchanged, and both final operations preserved its exact new
+baseline. Other fixtures retained mixed LF/CRLF preservation controls.
+
 Review compared complete command events, final claims, root diffs, and before/after
-inventories containing file bytes, SHA-256 values, sizes, and modification times.
-The parent independently checked snapshot invariants and reviewed the changes;
-workers' verdicts and CLI exit codes alone were not acceptance evidence.
-Private raw transcripts, personal paths, and memory contents are not published.
+inventories with SHA-256, sizes, and modification times. The parent independently
+checked all 17 snapshot invariants and reviewed the changes. Private raw
+transcripts and personal paths are not published.
 The portable prompts, input hashes, scoped outcomes, and counterexamples are
 recorded here so the limits remain inspectable.
 
 ## Final functional cohort
 
-| Session | Seconds | Changed paths |
+| Session | Seconds | Changed files |
 | --- | ---: | --- |
-| v8-f01-install | 83.19 | `.remora/installation.json`, `.remora/standards/engineering.md`, `AGENTS.md` |
-| v8-f01-preview | 67.88 | None; inventory, bytes, and mtimes unchanged |
-| v8-f01-repeat | 43.2 | None; inventory, bytes, and mtimes unchanged |
-| v8-f02-install | 88.37 | `.remora/installation.json`, `.remora/standards/engineering.md`, `AGENTS.md` |
-| v8-f02-repeat | 50.16 | None; inventory, bytes, and mtimes unchanged |
-| v8-f03-adopt | 71.55 | `.remora/installation.json`, `.remora/standards/engineering.md`, `AGENTS.md` |
-| v8-f03-preview | 85.6 | None; inventory, bytes, and mtimes unchanged |
-| v8-f03-specialize-repeat | 104.17 | None; inventory, bytes, and mtimes unchanged |
-| v8-f03-specialize | 86.8 | `AGENTS.md` |
-| f04-adopt-v8 | 107.12 | `AGENTS.md` |
-| f04-install-v8 | 91.87 | `.remora/installation.json`, `.remora/standards/engineering.md` |
-| f04-repeat-v8 | 75.22 | None; inventory, bytes, and mtimes unchanged |
-| f05-adopt-v8 | 73.46 | `AGENTS.md` |
-| f05-install-v8 | 60.82 | `.remora/installation.json`, `.remora/standards/engineering.md` |
-| f06-adopt-v8 | 78.4 | `.remora/installation.json`, `.remora/standards/engineering.md`, `AGENTS.md` |
-| f06-preview-v8 | 57.53 | None; inventory, bytes, and mtimes unchanged |
-| f06-repeat-v8 | 72.94 | None; inventory, bytes, and mtimes unchanged |
+| f01-preview | 53.89 | None; inventory, bytes, and mtimes unchanged |
+| f01-install | 62.71 | `.remora/installation.json`, `.remora/standards/engineering.md`, `AGENTS.md` |
+| f01-repeat | 77.90 | None; inventory, bytes, and mtimes unchanged |
+| f02-install | 83.37 | `.remora/installation.json`, `.remora/standards/engineering.md`, `AGENTS.md` |
+| f02-repeat | 76.25 | None; inventory, bytes, and mtimes unchanged |
+| f03-preview | 69.66 | None; inventory, bytes, and mtimes unchanged |
+| f03-adopt | 152.27 | `.remora/installation.json`, `.remora/standards/engineering.md`, `AGENTS.md` |
+| f03-specialize | 67.43 | `AGENTS.md` |
+| f03-specialize-repeat | 86.25 | None; inventory, bytes, and mtimes unchanged |
+| f04-install-handoff-account-access | 81.39 | `.remora/installation.json`, `.remora/standards/engineering.md` |
+| f04-adopt-handoff-account-access | 87.18 | `AGENTS.md` |
+| f04-repeat-handoff-account-access | 74.80 | None; inventory, bytes, and mtimes unchanged |
+| f05-install-handoff-account-access | 92.35 | `.remora/installation.json`, `.remora/standards/engineering.md` |
+| f05-adopt-handoff-account-access | 94.94 | `AGENTS.md` |
+| f06-preview-handoff-account-access | 71.23 | None; inventory, bytes, and mtimes unchanged |
+| f06-adopt-handoff-account-access | 131.05 | `.remora/installation.json`, `.remora/standards/engineering.md`, `AGENTS.md` |
+| f06-repeat-handoff-account-access | 67.93 | None; inventory, bytes, and mtimes unchanged |
 
 All 17 operations completed with CLI exit 0 and a completed turn. Their source
 distribution snapshots and target HEADs were unchanged. The three previews and
@@ -117,13 +103,13 @@ and M01-M04 criteria; criteria apply only to their documented fixture and mode.
 - F01 left product requirements, implementation layout, stack, and application
   commands undecided. Initialization created only the standard, manifest, and
   concise project-owned root guidance. No application checks were invented.
-- F02 preserved the original 1,005-byte specification, distinguished approved
+- F02 preserved the original 982-byte LF specification, distinguished approved
   offline requirements from the SQLite proposal, and left implementation and
   tooling undecided. No application files or setup were added.
 - F03 adoption added only the missing standard-routing line and managed files.
   After the runner's tooling change, specialization replaced the stale sentence
   `Verification runs only the unit suite; no separate syntax check is configured.`
-  with `That document owns the configured verification checks.` All other root
+  with the exact sentence “Verification entrypoints are documented in `docs/development.md`.” All other root
   bytes, including the unrelated note, remained unchanged. The existing custom
   runner, order/duplicate semantics, and canonical command owner were preserved.
   Its fresh specialization repeat made no changes.
@@ -142,23 +128,29 @@ and M01-M04 criteria; criteria apply only to their documented fixture and mode.
   runtime, dependency manager, build, test, or deployment workflow was inferred.
   Its fresh repeat preserved the entire snapshot.
 
-Command corrections remain part of the evidence. F01 preview/install and F03
-preview/adoption had agent-authored shell or inline-Python quoting errors that
-were corrected before affected writes. F01 installation also corrected an
-initial file lookup in the wrong location. The final checks and claims were
-reviewed against the later successful commands. F02's absent-guidance `rg` result
-and its repeat's failed `git log` reflected the intended absent file/unborn HEAD,
-not a missing required distribution resource. F05 adoption corrected one failed
-patch anchor before writing. These attempts did not produce unauthorized writes
-or unsupported final success claims; they are not presented as flawless execution.
+Command corrections remain part of the evidence. F01 preview's `rg --files`
+returned 1 for its empty target. F01 repeat first tried a nonexistent installed
+standard path inside the distribution; the later installer check succeeded.
+F02 repeat, F03 adoption, and F03 repeat corrected inline-Python guard syntax
+errors before target inspection. F03 preview corrected an undefined `root`
+variable in its guard before inventory; a later baseline-read command returned
+1. F03 specialization's combined inventory had an expected no-match result.
+The affected operations completed their subsequent checks; previews and repeats
+remained no-ops.
 
-Default whitespace checks reported CRLF-related findings on preserved dirty
-guidance. The F03/F04/F06 adoption sessions also ran a read-only CRLF-aware
-check successfully. Some repeats reported the ordinary warning and left the
-existing bytes intact. A reported `git diff --check` invocation alone does not
-cover untracked files; review separately included the newly created content.
-No evaluated operation ran application commands, installed dependencies, changed
-application files, committed, or performed external operations.
+F04 and F06 initially used text-based Git-object comparisons that reported
+mismatches; byte-preserving comparisons succeeded before target inspection.
+F05 corrected a guard syntax error before inspection. These are command-level
+corrections within completed actors, not clean first-attempt execution. Earlier
+outer-sandbox CLI startups failed on account/session access before actors ran;
+authorized account access retained the same inner `workspace-write` sandbox.
+
+Whitespace commands also reported preserved CRLF-note findings. Successful
+read-only checks in some sessions do not erase those findings or imply every
+invocation passed. The original note bytes remained unchanged. Review separately
+included untracked content because an ordinary Git diff omits it. No evaluated
+operation ran application commands, installed dependencies, changed application
+files, committed, or performed external operations.
 
 The table below records prepared-input digests, not a claim that every root file
 remained unchanged during authorized adoption. F05 installation-only preserved
@@ -167,9 +159,14 @@ preserved all 14 digests; adoption preserved the 13 non-root inputs. Later repea
 preserved the post-adoption baselines. F02's specification digest was preserved
 through both operations.
 
-| Prepared input | SHA-256 of prepared bytes |
+| Prepared input | SHA-256 |
 | --- | --- |
-| F02 `SPEC.md` | `1f87fdb330725823bed63384627473a6c17785ce91aae0e8760fd2d51ffbd16b` |
+| F02 `SPEC.md` (982 bytes) | `81fe4719bc029451f08a3f9378372d6196e7641b7d4931a44c5674d44d66b3df` |
+| F03 `AGENTS.md` | `eed10ad0b3403b2bb8b582f831101bdc895c24c32a2607047cd8cb9510257b59` |
+| F03 `ledger.py` | `06b76fffe5140150479fab2b8efbf1137048c94e48bda0bc8c6a4b845f075754` |
+| F03 `docs/development.md` | `0acea60182a4a2759c798c8cec1e2ae39528bcaa6b3aaa1f0be4aaae2b142ca3` |
+| F03 `tests/test_ledger.py` | `b6243a5c8b800645aee812299be6725de88c86eac36ac9a9fe56061f3a386cba` |
+| F03 `tools/verify.py` | `0722c072c777784e327d07467e080e884184c9d8d89302731abb033e61ed1cd9` |
 | F05 `.agents/skills/quarry-setup/SKILL.md` | `c36492fec32d0632c0815191e8260479769f46c9f6eb68573bc6d0398c2cb146` |
 | F05 `AGENTS.md` | `d38696b56012bcaa4f3792f5be177dcfcb358a5b26fe90d464efaeec49f7f314` |
 | F05 `docs/project.md` | `4f15270719c14a5638ac8156764d82b592a478724a5d4914562dd13fc44787a0` |
@@ -189,13 +186,12 @@ through both operations.
 | F06 `components/ledger/tests/test_ledger.py` | `1e9b75d78de19c1b14b8a1989285f3f1f3d5952bf829d3604873332eebc13a5b` |
 | F06 `components/ledger/tools/verify.py` | `c7668f2ca817730f8949f4ffa4e69595551cc757e03bf0eabdb1e83afe1b5655` |
 
-
 ## Verification and limits
 
 Local deterministic validation ran the content checker, skill metadata validator,
 and all 37 unit tests: 35 passed and two symlink cases were explicitly skipped
 because local Windows symlink creation was unavailable. The unit suite took
-48.506 seconds. The Windows junction test ran. Working and committed whitespace
+49.470 seconds. The Windows junction test ran. Working and committed whitespace
 checks used the actual main base `14752c8886160b3101ac1e3fb9ae153781454239`;
 the stacked PR range uses its safety-branch base.
 The existing CI matrix runs content checks and unit tests on Windows and Linux
@@ -206,6 +202,13 @@ JavaScript syntax parse of its TypeScript source, and JSON/TOML parsing. Its
 configured TypeScript check could not run because `tsc` was unavailable; no
 dependency installation, typecheck success, build, browser, or deployment was
 claimed. These were fixture-authoring checks outside bootstrap targets.
+
+The prior V8 functional cohort remains in private captures. A resumed V8
+ancestor-junction actor enumerated through a junction before its guard; early V9
+actors batched skill reading with target inspection. The revised runtime and
+documented read-first activation contract were followed by these fresh cohorts.
+The refusal record retains the failed and invalid attempts, checkpoint controls,
+and source-mutation provenance.
 
 Earlier versions failed preview authorization, preservation, command handling,
 or no-op expectations. Those failures led to changed runtime inputs and fresh
