@@ -22,22 +22,27 @@ inspection:
 | Initialize/install | Requests initialization, installation, or establishing project guidance, including “preview then apply,” without specifically asking to edit existing root instructions | Installer-managed files; create root `AGENTS.md` only if absent. Preserve existing root guidance byte-for-byte; proposed guidance remains conversational. |
 | Adopt/specialize | Specifically requests editing existing root instructions, such as adopting Remora into or specializing/updating an existing root `AGENTS.md` | Necessary authorized root edits; managed installation only when also requested. |
 
-Preview as the requested outcome remains read-only even when it names
-initialization, installation, or adoption. An explicit “preview then apply” request
-selects the applicable write mode; preview itself authorizes no write. Retain the
-selected mode across pauses and continuations. Preview success or a draft does not
-authorize additional writes. Before every write, confirm the destination and
-action are allowed by the retained mode. Proceed within a clear request without
-another approval step; ask before writing only if the mode is materially ambiguous.
+Classify authorization once from the whole request, before inspection; that mode
+governs every target write under that request. Later instructions in the same
+request may narrow the mode but cannot upgrade it. If the requested outcome is a
+preview and the same request later directs an edit, remain in Preview, show the
+proposed change, and ask whether to apply it; do not split installer preview from
+root edits or silently change modes. An explicit “preview then apply” sequence
+authorizes the stated apply scope from the start, without another approval step;
+the preview itself still writes nothing. Neutral continuations retain the mode.
+A new explicit apply request may select a write mode; before writing, recheck the
+retained source commit and root baseline. Before every write, confirm its
+destination and action are allowed by the selected mode. A successful preview or
+a draft does not expand authorization.
 
 Identify the named target root, requested environment families (`codex`, `cursor`,
 `antigravity`), and whether the user specifically requested edits to existing root
 instructions. A general request to establish project guidance or add standard
 routing does not authorize editing existing root instructions.
-Preview stays read-only even when it describes adoption edits. Infer an
-environment from explicit host context where available; ask only when it remains
-materially ambiguous. Locate this distribution from this entrypoint, not from the
-target's working directory. Never fetch a moving branch or install prerequisites.
+Infer an environment from explicit host context where available; ask only when it
+remains materially ambiguous. Locate this distribution from this entrypoint, not
+from the target's working directory. Never fetch a moving branch or install
+prerequisites.
 Record and retain the full distribution source commit before inspection. If the
 user supplied an exact pin, require a match before proceeding. Stop affected
 writes if the source moves or the pin mismatches.
