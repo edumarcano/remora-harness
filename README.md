@@ -29,6 +29,10 @@ Preserve existing guidance and do not implement the application.
 This is explicit local-entrypoint fallback, not native skill discovery. Supply the
 whole pinned checkout; copying the skill file alone omits required resources.
 The bootstrap source files and installer inputs must be committed and unmodified.
+Bootstrap compares a supplied exact commit with the distribution and retains that
+identity through installation. It checks root guidance paths before reading them;
+unsafe destinations stop target writes. A source or root destination that changes
+after inspection stops affected writes and is reported without silent recovery.
 
 Preview stays read-only and drafts guidance in the conversation. Installation uses
 the helper below, validates it, and exclusively creates root `AGENTS.md` only when
