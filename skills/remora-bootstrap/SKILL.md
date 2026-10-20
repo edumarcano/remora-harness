@@ -19,8 +19,8 @@ inspection:
 | Mode | Request wording | Allowed target changes |
 | --- | --- | --- |
 | Preview | Requests preview as the outcome, such as “preview initializing” or “preview installing” | No target writes for the task; drafts and findings only. |
-| Initialize/install | Requests initialization or installation, including “preview then apply” | Installer-managed files; create root `AGENTS.md` only if absent. Preserve existing root guidance byte-for-byte. |
-| Adopt/specialize | Explicitly requests adoption, specialization, or edits to existing root guidance | Necessary authorized root edits; managed installation only when also requested. |
+| Initialize/install | Requests initialization, installation, or establishing project guidance, including “preview then apply,” without specifically asking to edit existing root instructions | Installer-managed files; create root `AGENTS.md` only if absent. Preserve existing root guidance byte-for-byte; proposed guidance remains conversational. |
+| Adopt/specialize | Specifically requests editing existing root instructions, such as adopting Remora into or specializing/updating an existing root `AGENTS.md` | Necessary authorized root edits; managed installation only when also requested. |
 
 Preview as the requested outcome remains read-only even when it names
 initialization, installation, or adoption. An explicit “preview then apply” request
@@ -31,9 +31,9 @@ action are allowed by the retained mode. Proceed within a clear request without
 another approval step; ask before writing only if the mode is materially ambiguous.
 
 Identify the named target root, requested environment families (`codex`, `cursor`,
-`antigravity`), and whether the user requested preview, installation, or edits to
-existing root guidance. Installation alone preserves existing instructions;
-adoption or specialization edits require an explicit request to update them.
+`antigravity`), and whether the user specifically requested edits to existing root
+instructions. A general request to establish project guidance or add standard
+routing does not authorize editing existing root instructions.
 Preview stays read-only even when it describes adoption edits. Infer an
 environment from explicit host context where available; ask only when it remains
 materially ambiguous. Locate this distribution from this entrypoint, not from the
@@ -91,10 +91,12 @@ copy over existing instructions.
   edits. Draft only necessary changes, with sources, and preserve its organization
   and adequate wording. Installation alone leaves these changes as proposals.
   Do not create a competing instruction file to bypass this boundary.
-- On specialization, compare new project evidence with current guidance. Update
-  only what that evidence justifies, such as replacing an obsolete statement that
-  no tooling exists with routing to actual verification entrypoints. Keep existing
-  command owners authoritative rather than creating a second command registry.
+- For an existing root file, identify the specific project constraint, stale claim,
+  or broken pointer that current guidance does not already cover before proposing
+  an edit. A valid pointer to the canonical verification entrypoint is sufficient;
+  do not inline its commands for convenience or create a second command list.
+  Uncommitted status alone does not make guidance obsolete. Change only what the
+  evidence requires, and keep existing command owners authoritative.
 
 Keep detailed provenance in the handoff. Project guidance should contain concise
 orientation, essential boundaries, actual verification entrypoints when known,
