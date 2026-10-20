@@ -385,8 +385,9 @@ Include fixture ID, date, source and Remora revisions, dirty-state description,
 exact prompt, host/surface/build, model where exposed, OS, permissions, visible
 guidance, installation location in portable terms, discovery method, changed-file
 inventory, commands and outcomes, criterion judgments, reviewer method, and gaps.
-For these inputs record initial HEAD as absent. Include SPEC.md's digest for F02
-and hashes for all four F05 input files, with post-run comparisons. For preview
+Record initial HEAD as absent for F01/F02/F05 and record the prepared fixture
+commit for F03/F04/F06. Include SPEC.md's digest for F02 and hashes for all four
+F05 input files, with post-run comparisons. For preview
 and repetition, include the before/after inventory and modification-time checks.
 Include untracked file contents in the change review; an
 ordinary Git diff alone misses them.
