@@ -83,7 +83,20 @@ as trial inputs, then use this same prompt for both cases:
 
 Use the same task for F05. Supply the explicit entrypoint
 `<distribution>/skills/remora-bootstrap/SKILL.md` as the fallback selection when
-native selection is unavailable. The trusted source checkout must include the
+native selection is unavailable. Prepend this operational handoff to every
+explicit-entrypoint task, including previews, refusal probes, and checkpoint starts:
+
+```text
+First read <distribution>/skills/remora-bootstrap/SKILL.md by itself, before any target inspection.
+Do not batch that read with target operations. After reading it, follow its procedure for the task below.
+```
+
+This is part of the documented fallback invocation, not a scenario-specific hint.
+An instruction inside an unread skill cannot prevent an agent from batching its
+first skill read with target inspection. Keep each trial's task body and source,
+target, environment, and pin bindings unchanged; do not carry scorer expectations
+or prior answers into the session. Checkpoint continuations remain unchanged.
+The trusted source checkout must include the
 committed installer, standard, skill, and seed; these are checked installation
 inputs. Run trials only after committing these inputs, or from a disposable
 pinned development copy. Record which source identity was used. Keep the scorer
