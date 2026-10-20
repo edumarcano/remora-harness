@@ -50,6 +50,17 @@ class ContentCheckTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("standards/engineering.md:1: missing file target", output)
 
+    def test_skill_resources_and_templates_are_checked_without_scanning_fixtures(self):
+        self.write("templates/AGENTS.md", "# Seed\n")
+        self.write("skills/remora-bootstrap/SKILL.md", "[seed](../../templates/AGENTS.md)\n")
+        self.write("evals/fixtures/F05/.agents/skills/local/SKILL.md", "[input](missing.md)\n")
+        self.assertEqual(self.run_check()[0], 0)
+        self.write("templates/AGENTS.md", "[bad](absent.md)\n")
+        self.assertEqual(self.run_check()[0], 1)
+        self.write("templates/AGENTS.md", "# Seed\n")
+        self.write("skills/remora-bootstrap/SKILL.md", "[bad](../../absent.md)\n")
+        self.assertEqual(self.run_check()[0], 1)
+
     def test_fenced_examples_are_not_checked(self):
         self.write("README.md", "````markdown\n[example](absent.md)\n```\n"
                    "[still example](absent.md)\n````\n"

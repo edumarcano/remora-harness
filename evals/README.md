@@ -9,7 +9,7 @@ Native trials require a pinned local distribution with a bootstrap entrypoint.
 Fixture preparation and rubric calibration can run before that distribution exists.
 Calibration below checks whether the rubric distinguishes constructed examples;
 it does not measure an agent or Remora. The specification defines the wider fixture
-catalog; this guide covers F01/F02.
+catalog; this guide covers F01/F02 and a limited F05 existing-guidance control.
 
 ## Prepare disposable inputs
 
@@ -47,6 +47,21 @@ checks must fail because no commit exists; record that as the expected starting
 condition, not a product failure. Confirm the copied specification is byte-identical
 to the source. Never create a tracked empty-directory placeholder for F01.
 
+For the existing-guidance control, create a fresh F05 target and copy the whole
+[F05 input](fixtures/F05/AGENTS.md), including hidden directories:
+
+```text
+git init "<trial-parent>/F05"
+python -c "import shutil; shutil.copytree('evals/fixtures/F05', r'<trial-parent>/F05', dirs_exist_ok=True)"
+```
+
+Inventory and hash every input file, including `.agents/skills/` and nested
+instructions, before running the task. The input has existing project guidance,
+approved intentions, and an overlapping setup skill, but no application code or
+tooling. It is a preservation/adoption control, not full mature-project coverage.
+The expected input files are root `AGENTS.md`, `docs/project.md`, `notes/AGENTS.md`,
+and `.agents/skills/quarry-setup/SKILL.md`. Its initial HEAD is also absent.
+
 Open only the selected target as the host workspace. Do not attach this guide,
 rubric, calibration examples, or evaluation records. Keep scorer material in the
 Remora checkout outside that workspace. Record unavoidable personal/global host
@@ -64,6 +79,14 @@ as trial inputs, then use this same prompt for both cases:
 > content. Preserve existing material and keep proposals distinct from decisions
 > and implemented behavior. Do not implement the application. Report changes,
 > checks actually performed, and remaining uncertainty.
+
+Use the same task for F05. Supply the explicit entrypoint
+`<distribution>/skills/remora-bootstrap/SKILL.md` as the fallback selection when
+native selection is unavailable. The trusted source checkout must include the
+committed installer, standard, skill, and seed; these are checked installation
+inputs. Run trials only after committing these inputs, or from a disposable
+pinned development copy. Record which source identity was used. Keep the scorer
+guide and records out of the agent's target workspace.
 
 Use explicit native skill selection when available. Following the pinned local
 bootstrap entrypoint by reading it is fallback execution, not native discovery.
@@ -98,7 +121,33 @@ meaning and consequences, not exact wording or instruction length. A truthful
 statement that no application tests are available is acceptable. Preserve
 legitimate minimal guidance and clearly labeled suggestions as clean controls.
 
-### Synthetic calibration examples
+## Preview, repetition, and existing guidance
+
+Run a preview in a fresh fixture/session with the same task changed only from
+"Initialize" to "Preview initializing". Expect a conversational draft/proposal
+and no target changes, including untracked files. If a prerequisite is unavailable,
+record a limited assessment rather than automated integrity success.
+
+After a completed installation, use a fresh session with the same pinned source,
+requested environments, and original task. Compare bytes, inventory, and file
+modification times before and after. An adequate installed project needs no
+guidance rewrite or duplicate routing. Retain the original result if repetition
+fails; do not silently repair the fixture and call the original trial successful.
+
+For F05, use B01 and B04-B08 above plus these scoped checks:
+
+| ID | Criterion and evidence |
+| --- | --- |
+| E01 | All four original files remain byte-identical, including root/nested instructions and the overlapping skill. Root guidance is not replaced with the generic seed. |
+| E02 | Proposed adoption edits cite existing owners and identify setup overlap without deleting or forking the existing workflow. An already adequate section needs no stylistic rewrite. |
+| E03 | Authorized changes are only the managed standard and manifest. Existing guidance stays project-owned; missing application tooling is not invented or executed. |
+
+Score rubric judgments with their actual evidence; the trial runner's verdict is
+not independent ground truth. Explicit-entrypoint execution is a fallback and
+does not establish native discovery. Record criterion outcomes separately from
+that compatibility gap, and retain required unverified criteria as open.
+
+## F01/F02 synthetic calibration examples
 
 These excerpts are constructed scorer inputs, not transcripts or complete trial
 outputs. Score only the listed dimensions; their brevity cannot establish B01,
@@ -126,8 +175,10 @@ Include fixture ID, date, source and Remora revisions, dirty-state description,
 exact prompt, host/surface/build, model where exposed, OS, permissions, visible
 guidance, installation location in portable terms, discovery method, changed-file
 inventory, commands and outcomes, criterion judgments, reviewer method, and gaps.
-For F01/F02 record initial HEAD as absent. Include SPEC.md's digest for F02 and a
-post-run comparison. Include untracked file contents in the change review; an
+For these inputs record initial HEAD as absent. Include SPEC.md's digest for F02
+and hashes for all four F05 input files, with post-run comparisons. For preview
+and repetition, include the before/after inventory and modification-time checks.
+Include untracked file contents in the change review; an
 ordinary Git diff alone misses them.
 
 Exclude credentials, personal absolute paths, private project content, and full
@@ -154,8 +205,8 @@ and revisions, partial writes, and destination changes during creation. Link and
 Windows junction cases run where available; unavailable cases are explicit skips.
 
 These are deterministic helper tests, not native bootstrap trials, semantic
-F01/F02 rubric passes, or cross-host compatibility evidence. Existing F01/F02
-prompts and scoring remain for the later bootstrap workflow. Run the existing
+F01/F02 rubric passes, or cross-host compatibility evidence. F01/F02 prompts and
+scoring above assess the agent bootstrap workflow separately. Run the existing
 Windows/Linux CI matrix before claiming results on both platforms. The initial
 distribution for these checks is a trusted source checkout; release packaging and
 update/recovery workflows remain subsequent work.
@@ -175,7 +226,8 @@ Use the actual PR base for the range check. Include both working and committed
 changes in review, plus new untracked files. Git whitespace checks do not inspect
 untracked files until they enter a diff.
 
-The content checker reads root-level `*.md`, `docs/**/*.md`, `standards/**/*.md`, and `evals/**/*.md`,
+The content checker reads root-level `*.md`, `docs/**/*.md`, `standards/**/*.md`,
+`skills/**/*.md`, `templates/**/*.md`, and `evals/**/*.md`,
 excluding `evals/fixtures/**`; nested directory symlinks are not traversed. It checks literal inline Markdown links/images with
 simple bracket labels and destinations without nested parentheses, outside
 backtick or tilde fences. Use forward-slash relative file paths; angle brackets

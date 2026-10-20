@@ -230,6 +230,18 @@ class InstallationTests(unittest.TestCase):
         self.assertEqual((self.target / DESTINATION).read_bytes(), committed)
         self.assertNotIn(b"\r\n", committed)
 
+    def test_bootstrap_resources_must_be_present_in_the_source_commit(self):
+        for name in ("skills/remora-bootstrap/SKILL.md", "templates/AGENTS.md"):
+            with self.subTest(name=name):
+                self.git(self.source, "rm", "--cached", "--", name)
+                self.commit()
+                code, output = self.run_install("--apply")
+                self.assertEqual(code, 1)
+                self.assertIn(name, output)
+                self.assertFalse((self.target / ".remora").exists())
+                self.git(self.source, "add", "--", name)
+                self.commit()
+
     def test_index_flags_cannot_hide_modified_source_bytes(self):
         name = "standards/engineering.md"
         path = self.source / name

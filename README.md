@@ -8,15 +8,49 @@ Remora is designed to work alongside existing coding environments rather than re
 
 ## Status
 
-Remora is in early development. Milestone 1 established skill contracts, F01/F02 bootstrap fixture preparation and rubrics, and a bounded content checker with tests. The installation foundation for Milestone 2 provides preview, explicit installation, and integrity checks for one shared engineering standard. The bootstrap skill, project-guidance drafting, and native-host compatibility remain unimplemented or unverified.
+Remora is in early development. Milestone 1 established skill contracts, evaluation foundations, and a bounded content checker. Milestone 2 now has a first-use bootstrap entrypoint, a project-instruction seed, and safe installation and integrity checks for one shared engineering standard. Existing-guidance edits, specialization, and native-host discovery remain outside the implemented workflow or unverified.
 
 The [product and technical specification](docs/product-spec.md) defines intended behavior. The [evaluation guide](evals/README.md) explains fixture preparation, calibration, and development checks; the [dated baseline record](evals/records/2026-10-19-baseline.md) records the initial design inputs and testing candidates.
 
-## Local installation foundation
+## First-use bootstrap
+
+Open your target project in the coding host and supply a trusted local Remora
+checkout pinned to the intended commit. Ask the agent to read and follow
+[the bootstrap entrypoint](skills/remora-bootstrap/SKILL.md), with the target path,
+requested environments, and either preview or installation as the outcome. For
+example, replacing the bracketed inputs:
+
+```text
+Follow <distribution>/skills/remora-bootstrap/SKILL.md to initialize <target>
+with Remora for <environment>. Inspect the project and specification first.
+Preserve existing guidance and do not implement the application.
+```
+
+This is explicit local-entrypoint fallback, not native skill discovery. Supply the
+whole pinned checkout; copying the skill file alone omits required resources.
+The bootstrap source files and installer inputs must be committed and unmodified.
+
+Preview stays read-only and drafts guidance in the conversation. Installation uses
+the helper below, validates it, and exclusively creates root `AGENTS.md` only when
+absent. That file remains project-owned and outside the installation manifest.
+Existing instructions are preserved; necessary adoption edits are proposals.
+The [seed](templates/AGENTS.md) is adapted from target evidence, with no invented
+stack or commands. Installation requests authorize these described local changes
+without another approval step; material unresolved conflicts stop affected writes.
+
+The installed payload contains no project skills. The bootstrap entrypoint and
+its seed stay in the source checkout. Global bootstrap packaging, editing existing
+guidance, specialization, and automatic updates/recovery are subsequent work.
+
+The [first-use trial record](evals/records/2026-10-19-first-use-bootstrap.md)
+documents local Codex CLI fallback observations and their limits.
+
+## Installation helper
 
 Use Python 3.11+ and Git with a trusted local checkout pinned to the commit you
-intend to install. The installer and standard must be committed and have no local
-modifications. No download or dependency installation occurs. From that checkout:
+intend to install. The installer, standard, bootstrap skill, and seed must be
+committed and have no local modifications. No download or dependency installation
+occurs. From that checkout:
 
 ```text
 python helpers/install.py --target "<existing-project>" --environment codex
