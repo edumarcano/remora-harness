@@ -145,11 +145,15 @@ copy over existing instructions.
   inline its commands. A request to update does not require producing a diff.
   Uncommitted status alone does not make guidance obsolete.
 
-Keep detailed provenance in the handoff. Project guidance should contain concise
-orientation, essential boundaries, actual verification entrypoints when known,
-and explicit reading of installed `.remora/standards/engineering.md` and applicable
-scoped guidance. Omit unused sections, unresolved placeholders, passing-check
-history, workstation paths, and references to skills that are not installed.
+Keep detailed provenance in the handoff. When creating absent root guidance,
+include concise orientation, essential boundaries, actual verification entrypoints
+when known, and explicit reading of installed
+`.remora/standards/engineering.md` and applicable scoped guidance. Omit unused
+sections, unresolved placeholders, passing-check history, workstation paths, and
+references to skills that are not installed. For existing root guidance, retain
+accurate orientation; add descriptive facts only when their omission would cause
+material operating error or leave an essential constraint missing, apart from
+correcting demonstrated obsolete claims or broken pointers.
 
 Preview ends here without changing target files or saving a report unless asked.
 
