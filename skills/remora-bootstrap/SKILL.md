@@ -124,6 +124,16 @@ writes; continue useful inspection and report the conflict. Missing Python, Git,
 or readable resources permits limited read-only assessment, with automated
 integrity checks explicitly unavailable. Do not substitute manual copying.
 
+Report installer diagnostics accurately. An occupied unmanaged destination is a
+collision even when byte-identical; occupancy does not establish content drift.
+When comparing payload bytes or hashes, obtain expected bytes from the retained
+commit's Git object using binary-safe capture, as in the helper verification
+above: for the standard, capture git show <retained-source-commit>:standards/engineering.md
+as bytes. Checkout LF/CRLF differences can change a working file's hash; hashing the
+source checkout alone cannot establish that installed or unmanaged payload bytes
+differ from the pinned asset. Do not reconstruct expected bytes through text
+output redirection.
+
 After successful source validation, read the [engineering standard](../../standards/engineering.md)
 and [instruction seed](../../templates/AGENTS.md). Draft the smallest appropriate
 root guidance in the conversation. The seed is an adaptation aid, not a file to
