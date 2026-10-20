@@ -136,12 +136,14 @@ copy over existing instructions.
   edits. Draft only necessary changes, with sources, and preserve its organization
   and adequate wording. Installation alone leaves these changes as proposals.
   Do not create a competing instruction file to bypass this boundary.
-- For an existing root file, identify the specific project constraint, stale claim,
-  or broken pointer that current guidance does not already cover before proposing
-  an edit. A valid pointer to the canonical verification entrypoint is sufficient;
-  do not inline its commands for convenience or create a second command list.
-  Uncommitted status alone does not make guidance obsolete. Change only what the
-  evidence requires, and keep existing command owners authoritative.
+- For an existing root file, make only changes needed to correct demonstrated
+  obsolete guidance, restore an essential missing constraint, or repair a broken
+  pointer. New details must fill one of those gaps; being true or source-backed is
+  not enough. If current guidance is accurate and routes to canonical docs or
+  implementation owners, keep those details with their owners rather than
+  expanding the root file. A valid verification pointer is sufficient; do not
+  inline its commands. A request to update does not require producing a diff.
+  Uncommitted status alone does not make guidance obsolete.
 
 Keep detailed provenance in the handoff. Project guidance should contain concise
 orientation, essential boundaries, actual verification entrypoints when known,
