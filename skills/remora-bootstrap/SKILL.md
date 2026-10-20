@@ -47,13 +47,16 @@ Record and retain the full distribution source commit before inspection. If the
 user supplied an exact pin, require a match before proceeding. Stop affected
 writes if the source moves or the pin mismatches.
 
-Before loading the path checker, verify that the distribution still has the
+Before any target inspection—including inventory, Git status, or reading root
+instructions or project content—verify that the distribution still has the
 retained full source commit and that `helpers/install.py` matches that commit's
 Git object, allowing checkout LF/CRLF differences. Read the trusted helper as
-source; do not execute target code. Use its existing `inspect_path()` for the
-target and root guidance paths, then use `lstat()` to require a directory target
-and, when present, a regular root `AGENTS.md`. An absent root file is valid. If
-any check fails or cannot run, do not read root guidance or write to the target.
+source; do not execute target code. In a separate command, use its existing
+`inspect_path()` for the target and root guidance paths, then use `lstat()` to
+require a directory target and, when present, a regular root `AGENTS.md`. An
+absent root file is valid. Do not combine the path check with target inspection.
+If any check fails or cannot run, do not inspect the target, read root guidance,
+or write to the target.
 
 For example, pass explicit distribution, target, and retained-commit arguments;
 `runpy.run_path()` loads the already-verified trusted helper without running its
