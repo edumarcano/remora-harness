@@ -4,6 +4,9 @@ This guide owns preparation, task prompts, rubrics, and recording instructions f
 the first bootstrap cases. The [product specification](../docs/product-spec.md)
 owns intended behavior and release gates. The [baseline record](records/2026-10-19-baseline.md)
 contains dated design inputs and calibration observations.
+The [functional cohort record](records/2026-10-20-bootstrap-completion.md) and
+[refusal record](records/2026-10-20-bootstrap-refusals.md) distinguish completed
+observations from the remaining Milestone 2 gates.
 
 Agent trials require a pinned local distribution with a bootstrap entrypoint.
 Fixture preparation and rubric calibration can run before that distribution exists.
