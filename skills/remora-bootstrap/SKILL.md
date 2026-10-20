@@ -128,9 +128,10 @@ specifications, existing skills, and host configuration are outside the edit sco
    to resolve automatically.
 2. Initialize/install or Adopt/specialize mode may create absent root guidance.
    Immediately before creating it, recheck the lexical path and ancestors for links/reparse points and confirm it is still
-   absent. Create the draft exclusively, such as Python `open(path, "x",
-   encoding="utf-8", newline="\n")`. If the file appeared or the path changed,
-   preserve it and report partial completion; do not adopt it silently or retry.
+   absent. Prepare UTF-8 draft bytes with LF line endings before opening the file.
+   Create it exclusively, such as Python `open(path, "xb")`; write the prepared
+   bytes and verify them. If the file appeared or the path changed, preserve it and
+   report partial completion; do not adopt it silently or retry.
    The installer does not write project prose or manage/hash this file.
 3. Only Adopt/specialize mode may edit existing root guidance. Immediately
    before a focused, context-sensitive patch recheck path safety and compare exact
