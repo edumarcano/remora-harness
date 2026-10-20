@@ -42,12 +42,52 @@ Record and retain the full distribution source commit before inspection. If the
 user supplied an exact pin, require a match before proceeding. Stop affected
 writes if the source moves or the pin mismatches.
 
-Inspect the named target's lexical path and ancestors before reading root
-`AGENTS.md`. Reject links, reparse points, and non-directory ancestors; for the
-root file, reject links, reparse points, and non-regular files. An absent root
-`AGENTS.md` is valid. If a known root or ancestor is unsafe, do not read through
-it or write to the target. Record the root guidance baseline as absent or retain
-its exact bytes.
+Before loading the path checker, verify that the distribution still has the
+retained full source commit and that `helpers/install.py` matches that commit's
+Git object, allowing checkout LF/CRLF differences. Read the trusted helper as
+source; do not execute target code. Use its existing `inspect_path()` for the
+target and root guidance paths, then use `lstat()` to require a directory target
+and, when present, a regular root `AGENTS.md`. An absent root file is valid. If
+any check fails or cannot run, do not read root guidance or write to the target.
+
+For example, pass explicit distribution, target, and retained-commit arguments;
+`runpy.run_path()` loads the already-verified trusted helper without running its
+CLI entrypoint. Repeat the path checks immediately before any root write.
+
+```text
+python -I -B -c "
+import runpy, stat, subprocess, sys
+from pathlib import Path
+dist, target = map(Path, sys.argv[1:3])
+revision = sys.argv[3]
+current = subprocess.run(
+    ['git', '-C', str(dist), 'rev-parse', 'HEAD'], check=True,
+    capture_output=True, text=True).stdout.strip()
+committed = subprocess.run(
+    ['git', '-C', str(dist), 'show', f'{revision}:helpers/install.py'],
+    check=True, capture_output=True).stdout
+helper = dist / 'helpers/install.py'
+actual = helper.read_bytes().replace(b'\r\n', b'\n')
+if current != revision or actual != committed.replace(b'\r\n', b'\n'):
+    raise SystemExit('trusted helper/source changed')
+inspect_path = runpy.run_path(str(helper))['inspect_path']
+root = target.absolute()
+inspect_path(root)
+if not stat.S_ISDIR(root.lstat().st_mode):
+    raise SystemExit('target is not a directory')
+guidance = root / 'AGENTS.md'
+try:
+    mode = guidance.lstat().st_mode
+except FileNotFoundError:
+    pass
+else:
+    inspect_path(guidance)
+    if not stat.S_ISREG(mode):
+        raise SystemExit('root AGENTS.md is not a regular file')
+" "<distribution>" "<target>" "<retained-source-commit>"
+```
+
+After a successful check, retain root guidance as absent or save its exact bytes.
 
 Inspect the target's Git status and file inventory, including untracked files.
 An absent HEAD on an unborn branch is valid; do not assume a branch name or base
@@ -129,16 +169,18 @@ specifications, existing skills, and host configuration are outside the edit sco
    Different revisions/selections, drift, and unmanaged collisions are not updates
    to resolve automatically.
 2. Initialize/install or Adopt/specialize mode may create absent root guidance.
-   Immediately before creating it, recheck the lexical path and ancestors for links/reparse points and confirm it is still
-   absent. Prepare UTF-8 draft bytes with LF line endings before opening the file.
+   Immediately before creating it, repeat the path checks above and confirm it is
+   still absent. Prepare UTF-8 draft bytes with LF line endings before opening
+   the file.
    Create it exclusively, such as Python `open(path, "xb")`; write the prepared
    bytes and verify them. If the file appeared or the path changed, preserve it and
    report partial completion; do not adopt it silently or retry.
    The installer does not write project prose or manage/hash this file.
 3. Only Adopt/specialize mode may edit existing root guidance. Immediately
-   before a focused, context-sensitive patch recheck path safety and compare exact
-   bytes with the retained baseline. If unsafe or changed, preserve the file and
-   report partial completion; do not regenerate from the seed or retry blindly.
+   before a focused, context-sensitive patch repeat the path checks above and
+   compare exact bytes with the retained baseline. If unsafe or changed, preserve
+   the file and report partial completion; do not regenerate from the seed or
+   retry blindly.
    Preserve encoding and line endings outside necessary edits. If no change is
    needed, do not write. Installation alone preserves root guidance bytes.
 4. After a pause or continuation, recheck the retained source commit and exact
