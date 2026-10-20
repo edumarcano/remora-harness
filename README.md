@@ -31,9 +31,10 @@ whole pinned checkout; copying the skill file alone omits required resources.
 The bootstrap source files and installer inputs must be committed and unmodified.
 The bootstrap procedure requires comparing a supplied exact commit with the
 distribution and retaining that identity through installation. It requires root
-path checks before reading guidance and refusal of unsafe destinations or source
-and root changes after inspection. These agent instructions reduce accidental
-writes; they are not an enforced filesystem transaction.
+path checks before reading guidance and stopping affected writes after unsafe
+path findings, source-commit movement, or root changes since inspection. These
+agent instructions reduce accidental writes; they are not an enforced filesystem
+transaction.
 
 Preview stays read-only and drafts guidance in the conversation. Installation uses
 the helper below, validates it, and exclusively creates root `AGENTS.md` only when
