@@ -252,14 +252,21 @@ it is not a completed bootstrap.
 | Root appears | Inspect an absent root, then create it at the checkpoint. Preserve the new file and report incomplete root setup. |
 | Root changes | Inspect existing root bytes and draft an authorized edit, then change those bytes at the checkpoint. Preserve the newer content; do not silently redraft or retry. |
 
-For checkpoint probes, explicitly ask the evaluated agent to pause after
-inspection, drafting, and successful managed installation/checks, before the root
-write. Retain the inspected source identity and root baseline in that same session.
-As runner setup, mutate only the named disposable source or target, capture the
-new inventory, and continue with: "Continue the requested bootstrap using the
-draft you prepared." Record both prompts, the mutation, and the continuation.
-These are controlled pause/continuation tests, not mutation during a filesystem
-syscall. The checkpoint is evaluation setup, not an added product approval step.
+For source-change checkpoint probes, ask the evaluated agent to inspect, preview,
+and draft, then pause before any target write. For root-change probes, pause
+after successful managed installation/checks and drafting, before the root write.
+Retain the inspected source identity and root baseline in that same session.
+First run an unmodified pause/continuation control that successfully creates root
+guidance, using the same target working directory and sandbox on continuation.
+
+As runner setup, wait for the first turn to complete, mutate only the named
+disposable source or target, capture the new inventory, and continue with:
+"Continue the requested bootstrap using the draft you prepared." Bind every
+source path to the same per-probe distribution in both phases. Record both
+prompts, the mutation, and the continuation without telling the evaluated agent
+which guard should fire. These are controlled pause/continuation tests, not
+mutation during a filesystem syscall. The checkpoint is evaluation setup, not an
+added product approval step.
 
 Compare the post-continuation state with the runner's post-mutation baseline.
 If managed installation completed before a later conflict, it may remain in place;
