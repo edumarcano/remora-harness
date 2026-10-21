@@ -1,4 +1,4 @@
-"""Preview, install, or check the minimal Remora payload from a trusted checkout."""
+"""Preview, install, or check the declared Remora payload from a trusted checkout."""
 
 import argparse
 import hashlib
@@ -15,8 +15,13 @@ SOURCE_ROOT = Path(__file__).resolve().parents[1]
 PAYLOAD = {
     "standards/engineering.md": ".remora/standards/engineering.md",
     "standards/documentation.md": ".remora/standards/documentation.md",
+    "standards/testing.md": ".remora/standards/testing.md",
     "skills/remora-audit-documentation/SKILL.md":
         ".agents/skills/remora-audit-documentation/SKILL.md",
+    **{f"skills/{name}/SKILL.md": f".agents/skills/{name}/SKILL.md"
+       for name in ("remora-plan-change", "remora-implement-plan",
+                    "remora-fix-regression", "remora-review-change",
+                    "remora-audit-tests", "remora-audit-harness")},
 }
 INPUTS = ("helpers/install.py", *PAYLOAD,
           "skills/remora-bootstrap/SKILL.md", "templates/AGENTS.md")
@@ -32,6 +37,47 @@ class Conflict(Exception):
 
 def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def validate_bundle(committed: dict[str, bytes]):
+    """Check our two-scalar metadata and literal required-resource subset only.
+
+    This is not a YAML/Markdown parser. Backtick-delimited target-root standard
+    and skill file paths in installed skills declare required bundle resources.
+    Conditional reading does not make a resource optional to ship.
+    """
+    destinations = set(PAYLOAD.values())
+    for name, data in committed.items():
+        if not name.startswith("skills/") or not name.endswith("/SKILL.md"):
+            continue
+        text = data.decode("utf-8").replace("\r\n", "\n")
+        lines = text.splitlines()
+        if not lines or lines[0] != "---" or "---" not in lines[1:]:
+            raise Conflict(f"Missing skill frontmatter: {name}")
+        end = lines.index("---", 1)
+        fields = {}
+        for line in lines[1:end]:
+            field = re.fullmatch(r"(name|description): ([^\n]+)", line)
+            if not field or field[1] in fields or not field[2].strip():
+                raise Conflict(f"Unsupported skill metadata: {name}")
+            fields[field[1]] = field[2]
+        description = fields.get("description", "")
+        if (not re.match(r"[A-Za-z]", description)
+                or re.search(r":(?:\s|$)|\s#", description)
+                or description.strip().lower() in {"true", "false", "null", "yes", "no", "on", "off"}):
+            raise Conflict(f"Unsupported plain-scalar description: {name}")
+        if (set(fields) != {"name", "description"}
+                or fields["name"] != Path(name).parent.name
+                or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", fields["name"])
+                or len(fields["name"]) > 64):
+            raise Conflict(f"Invalid skill identity or description: {name}")
+        if name not in PAYLOAD:
+            continue  # Bootstrap uses source-relative links, checked by maintainer tooling.
+        references = re.findall(
+            r"`((?:\.remora/standards/|\.agents/skills/)[^`\n]+)`", text)
+        for reference in references:
+            if reference not in destinations:
+                raise Conflict(f"Missing declared bundle resource: {name}: {reference}")
 
 
 def inspect_path(path: Path):
@@ -78,6 +124,7 @@ def source_payload(root: Path) -> tuple[str, dict[str, bytes]]:
            "--", *INPUTS) or git("diff", "--cached", "--no-ext-diff", "--no-textconv",
                                 "--name-only", revision, "--", *INPUTS):
         raise Conflict("Installation inputs have local modifications; use a pinned clean source")
+    validate_bundle(committed)
     return revision, {destination: committed[source]
                       for source, destination in PAYLOAD.items()}
 
