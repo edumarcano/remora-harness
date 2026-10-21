@@ -1,6 +1,6 @@
 # Bootstrap refusal and preservation evidence: October 20, 2026
 
-This record covers a bounded set of local Codex CLI trials for the Remora bootstrap skill. It is developmental evidence reviewed against the recorded fixture snapshots and complete CLI event streams; it is not independent human adjudication, native-skill-discovery evidence, or native-host compatibility certification. The initially blocked scenarios were subsequently exercised after workspace usage was restored; the V9 follow-up below records the corrections and final outcomes.
+This record covers a bounded set of local Codex CLI trials for the Remora bootstrap skill. It is developmental evidence reviewed against the recorded fixture snapshots and complete CLI event streams; it is not independent human adjudication, native-skill-discovery evidence, or native-host compatibility certification. The initially blocked scenarios were subsequently exercised after workspace usage was restored; the V9 and V10 follow-ups below record corrections, failures, and outcomes.
 
 ## Frozen inputs and method
 
@@ -252,6 +252,144 @@ PR. These are bounded local fallback observations with the documented activation
 contract. Native discovery, Cursor/Antigravity, paired trials, and real projects
 remain later evidence. The procedures do not offer a filesystem transaction or
 protection against hostile concurrent mutation.
+
+## Regression review on the V9 revision
+
+Final review identified that the earlier V8 refusals alone did not establish
+the final V9 procedure after its path-ordering and activation changes. Nine
+fresh one-turn refusals and all three root checkpoints were therefore rerun
+using V9 runtime bytes and the documented read-first handoff. The source
+defects below are deliberate fixture variants; the required pin remains
+`cc60e9cd5ad5da6b4f839d8aa0bb06c29b8b6400`. Earlier V8 observations remain
+historical evidence, rather than substitutes for these regression results.
+The last collision case exposed the narration failure below; it is not a
+clean diagnostic pass. The subsequent V10 section records its correction.
+
+| Case | Seconds | Final V9 observation |
+| --- | ---: | --- |
+| Source pin | 21.533 | A clean private source commit with identical runtime blobs differed from the required pin; stopped before target inspection. |
+| Modified helper | 18.020 | Working helper differed from the committed object after line-ending normalization; stopped before target inspection. |
+| Missing entrypoint | 27.396 | Named working-tree entrypoint was absent; no substitution, target inspection, or integrity-success claim. |
+| Missing distribution | 24.253 | Named distribution was absent. Source-location searches did not substitute another checkout or inspect the target. |
+| Missing seed | 50.094 | Required source seed was absent; stopped without managed installation or root creation. |
+| Environment selection | 97.529 | Existing V9 codex installation conflicted with requested codex/cursor selection; preserved it without migration. |
+| Installed revision | 88.836 | Valid older V8 installation conflicted with V9 source; preserved the existing manifest and payload. |
+| Missing managed payload | 107.660 | V9 manifest remained but standard was absent; refused automatic repair and root creation. |
+| Unmanaged identical payload | 66.086 | **Narration failure.** Unmanaged standard exactly matched pinned Git-object bytes; the helper refused adoption and the actor preserved it, but incorrectly said it differed from the pinned standard after hashing the CRLF source checkout. |
+
+Every one-turn process exited 0 with a completed refusal. Target inventories,
+file hashes, sizes, and modification times were unchanged. Review included
+the command streams and final claims, not only exit status.
+
+| Root checkpoint | Start + continuation seconds | Observed result |
+| --- | ---: | --- |
+| root-create-control-final | 88.572 + 57.607 | Start created and checked only the two managed files, then paused. Continuation rechecked the pin/path/absence and exclusively created only root guidance (443 bytes). |
+| root-appears-final | 71.751 + 22.370 | An already valid managed installation was checked before the pause. Runner created the neutral 49-byte root; continuation detected it and preserved it without retry. |
+| root-changed-final | 59.917 + 28.749 | Complete evolved F03 retained an obsolete syntax-check claim and a justified focused draft. Runner appended a neutral note; continuation detected the changed baseline and preserved the entire 712-byte file. |
+
+The unmodified control demonstrates a legitimate pending root write can
+complete. Both mutation checkpoints followed completed first turns and
+parent review before runner changes. Neutral continuation used the same
+thread, cwd, and exact continuation sentence recorded above. The root
+appeared/changed cases preserved their complete post-mutation baselines;
+the agent did not silently adopt, redraft, overwrite, or roll back them.
+
+Runner setup corrected a rejected `--check --environment codex` invocation
+by using supported check-mode arguments; this happened before actors ran.
+The identical-file setup initially contained CRLF checkout bytes and was
+corrected before launch to the exact 1,096-byte Git-object payload, SHA-256
+`6aeb1c828771150a0626713d93f77f50e76bed65e5165bd9f5cf21963253846d`.
+These are disclosed preparation corrections, not actor repairs.
+
+The environment-conflict actor additionally ran a separately labeled
+codex-only read-only preview to diagnose its existing installation after
+the requested codex/cursor preview failed. A reviewer initially questioned
+that extra diagnostic; comparison with the skill's explicit allowance to
+continue useful inspection resolved the concern. It did not apply a new
+selection, write guidance, or claim the requested bootstrap succeeded.
+The narrow refusal criterion passed; the original requested selection
+remained blocked. This review discussion is retained, not hidden by a retry.
+
+A further workspace-cap interruption paused coordination after the first
+root turns completed. After usage was restored, their saved sessions and
+unchanged targets were continued; first turns were not replayed or reset.
+
+Artifacts for these final regressions are under
+`bootstrap-refusals-20261020-v9-final-regression` and
+`bootstrap-root-20261020-v9-final-regression`, including fixture provenance,
+portable prompts, mutation captures, streamed command events, and snapshots.
+The existing platform and native-host limitations still apply.
+
+## V10 pinned-payload narration correction
+
+The V9 identical-file case preserved the target and honored the unmanaged-file
+collision, but its final claim that the file differed from the pinned standard
+was false. It compared the CRLF checkout file with Git-object LF payload bytes.
+That run remains a narration failure; a later pass does not erase it.
+
+Candidate `8bb99ae884512b9a901fa6acc15f0593eb403990` adds only a diagnostic
+paragraph: occupancy does not establish drift, and expected payload comparisons
+must use the retained commit's Git-object bytes through binary-safe capture.
+Helper logic, standard bytes, template, authorization modes, path guards,
+and write procedures are unchanged. The clean four-input synthetic distribution
+is `ccbf0fecf34804471943848a68f9cfc4e4ccf914`. Parent review compared all four
+Git objects with the candidate. The skill is blob
+`b383069edde7bdda5993ff51efa57de7ed8b2278`, SHA-256
+`c6fa461f14fe65adebff86781c690408bda224095be3b2cc6365541ddc7874e3`;
+the other three inputs retain their earlier recorded blobs and hashes.
+
+Regression scope follows the change: two occupied-file cases test truthful
+source-byte narration, a dirty-helper control checks the trust boundary, and
+normal F02 installation/repetition checks payload installation and no-op behavior.
+All use fresh targets and final V10 bytes, with clean CRLF source checkouts except
+the intentionally modified-helper source. Task bodies and the activation
+preamble are retained; source bindings use the new exact pin. The earlier
+17-session functional cohort and V9 refusal/root checkpoints remain evidence for
+their recorded V9 bytes. They were not rerun in full or relabeled as V10 trials.
+This is a disclosed targeted regression, not a new full-cohort or holdout result.
+
+| Final-revision attempt | Seconds | Observation |
+| --- | ---: | --- |
+| partial-identical-v10 | 68.039 | Preview refused the unmanaged occupant; binary Git-object comparison correctly established exact 1,096-byte equality despite the CRLF checkout. No apply or root write. |
+| partial-different-v10 | 23.619 | **Failed execution and narration.** An over-escaped agent-generated normalization command falsely reported a clean helper mismatch. It stopped before target inspection, so this attempt did not exercise the collision. |
+| dirty-helper-v10 | 89.590 | Correctly reported the intentional uncommitted helper marker and refused before target inspection. An initial command quoting error was disclosed and corrected. |
+| partial-different-v10-retry | 83.751 | One authorized fresh-target retry, with unchanged source/task body, reached preview. Correctly reported unmanaged occupancy and binary Git-object comparison: target 1,140 bytes, pinned standard 1,096 bytes; contents differ. |
+
+| Final-revision F02 operation | Seconds | Observation |
+| --- | ---: | --- |
+| Install | 94.19 | Added only root guidance and the two managed files. SPEC.md remained byte/mtime-identical; HEAD remained absent. |
+| Identical repeat | 62.43 | Complete install-after, repeat-before, and repeat-after inventories, bytes, sizes, hashes, and mtimes were identical. |
+
+Both processes completed with exit 0 and completed turns. The source checkout
+remained unchanged at the V10 pin. Root guidance retained approved requirements,
+SQLite as a proposal, and undecided tooling; no application files, commands,
+dependencies, or external operations were introduced. The installed standard
+matched its pinned Git-object hash. An initial install path-guard command had a
+quoting error; its corrected guard passed before target inspection. Repeat
+discovery had expected no-match results and an absent-HEAD result. Preparation
+corrected a failed local clone before actors ran, then independently verified the
+private CRLF checkout's clean status and all four committed/normalized inputs.
+
+The three intended refusal outcomes and the two F02 operations were observed
+across six actor attempts, including the failed different-content attempt above.
+The retry is not a replacement for that failure. It used a fresh target and the
+same task body/preamble and source, without a diagnostic hint; the first failed
+target was neither reset nor silently reused. Parent and separate agent review
+checked recorded commands and snapshots. The failure is an agent-generated check
+and false diagnosis, not evidence that the independently verified helper changed.
+It remains a counterexample to reliable first-attempt command execution.
+
+Local final-candidate verification ran all 37 unit tests in 46.623 seconds:
+35 passed and two Windows symlink tests were explicitly skipped. Content, skill,
+and working/committed whitespace checks passed. Hosted Python 3.11 checks are
+reported separately through CI; none of these establish native discovery.
+
+
+Raw artifacts and preparation provenance are in
+`bootstrap-payload-20261020-v10`, `bootstrap-refusals-20261020-v10-regression`,
+and `m2-functional-v10-payload`. The source-byte clarification changes neither
+installed assets nor the source-commit update policy. Native-host, symlink,
+concurrency, and evaluation-context limits recorded above still apply.
 
 ## Developmental history and evidence limits
 
