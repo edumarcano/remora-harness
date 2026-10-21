@@ -69,11 +69,12 @@ class InstallationTests(unittest.TestCase):
         path.write_bytes(data)
         return path
 
-    def snapshot(self):
-        return {path.relative_to(self.target).as_posix():
+    def snapshot(self, target=None):
+        target = target or self.target
+        return {path.relative_to(target).as_posix():
                 (path.read_bytes(), path.stat().st_mtime_ns)
-                for path in self.target.rglob("*") if path.is_file() and
-                ".git" not in path.relative_to(self.target).parts}
+                for path in target.rglob("*") if path.is_file() and
+                ".git" not in path.relative_to(target).parts}
 
     def manifest(self):
         return json.loads((self.target / installer.MANIFEST).read_text(encoding="utf-8"))
@@ -359,18 +360,19 @@ class InstallationTests(unittest.TestCase):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 expected = self.git(self.source, "show", f"HEAD:{source}")
                 path.write_bytes(expected)
-                before = path.read_bytes(), path.stat().st_mtime_ns
+                before = self.snapshot(target)
                 for arguments in ((), ("--apply",)):
                     self.assertEqual(self.run_install(*arguments, target=target)[0], 1)
-                    self.assertEqual((path.read_bytes(), path.stat().st_mtime_ns), before)
+                    self.assertEqual(self.snapshot(target), before)
                     self.assertFalse((target / installer.MANIFEST).exists())
                 path.unlink()
                 self.assertEqual(self.run_install("--apply", target=target)[0], 0)
                 self.assertEqual(path.read_bytes(), expected)
                 path.write_bytes(b"local edit")
+                drifted = self.snapshot(target)
                 self.assertEqual(self.run_install("--check", target=target)[0], 1)
                 self.assertEqual(self.run_install("--apply", target=target)[0], 1)
-                self.assertEqual(path.read_bytes(), b"local edit")
+                self.assertEqual(self.snapshot(target), drifted)
                 path.unlink()
                 self.assertEqual(self.run_install("--check", target=target)[0], 1)
                 self.assertFalse(path.exists())
