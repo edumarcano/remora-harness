@@ -337,30 +337,6 @@ class InstallationTests(unittest.TestCase):
         with patch.object(installer, "SOURCE_ROOT", self.target):
             self.assertEqual(self.run_install()[0], 2)
 
-    def test_documentation_assets_collisions_and_drift_preserve_all_content(self):
-        for source, destination in (("standards/documentation.md", DOCUMENTATION),
-                                    ("skills/remora-audit-documentation/SKILL.md", SKILL)):
-            with self.subTest(destination=destination), tempfile.TemporaryDirectory() as temporary:
-                target = Path(temporary)
-                path = target / destination
-                path.parent.mkdir(parents=True)
-                data = self.git(self.source, "show", f"HEAD:{source}")
-                path.write_bytes(data)
-                for arguments in ((), ("--apply",)):
-                    self.assertEqual(self.run_install(*arguments, target=target)[0], 1)
-                    self.assertEqual(path.read_bytes(), data)
-                    self.assertFalse((target / installer.MANIFEST).exists())
-                    self.assertFalse((target / DESTINATION).exists())
-                path.unlink()
-                self.assertEqual(self.run_install("--apply", target=target)[0], 0)
-                path.write_bytes(b"project edit")
-                self.assertEqual(self.run_install("--check", target=target)[0], 1)
-                self.assertEqual(self.run_install("--apply", target=target)[0], 1)
-                self.assertEqual(path.read_bytes(), b"project edit")
-                path.unlink()
-                self.assertEqual(self.run_install("--check", target=target)[0], 1)
-                self.assertFalse(path.exists())
-
     def test_installed_skill_metadata_and_explicit_root_resources(self):
         self.assertEqual(self.run_install("--apply")[0], 0)
         text = (self.target / SKILL).read_text(encoding="utf-8")
@@ -384,14 +360,16 @@ class InstallationTests(unittest.TestCase):
                 expected = self.git(self.source, "show", f"HEAD:{source}")
                 path.write_bytes(expected)
                 before = path.read_bytes(), path.stat().st_mtime_ns
-                self.assertEqual(self.run_install("--apply", target=target)[0], 1)
-                self.assertEqual((path.read_bytes(), path.stat().st_mtime_ns), before)
-                self.assertFalse((target / installer.MANIFEST).exists())
+                for arguments in ((), ("--apply",)):
+                    self.assertEqual(self.run_install(*arguments, target=target)[0], 1)
+                    self.assertEqual((path.read_bytes(), path.stat().st_mtime_ns), before)
+                    self.assertFalse((target / installer.MANIFEST).exists())
                 path.unlink()
                 self.assertEqual(self.run_install("--apply", target=target)[0], 0)
                 self.assertEqual(path.read_bytes(), expected)
                 path.write_bytes(b"local edit")
                 self.assertEqual(self.run_install("--check", target=target)[0], 1)
+                self.assertEqual(self.run_install("--apply", target=target)[0], 1)
                 self.assertEqual(path.read_bytes(), b"local edit")
                 path.unlink()
                 self.assertEqual(self.run_install("--check", target=target)[0], 1)
@@ -408,6 +386,8 @@ class InstallationTests(unittest.TestCase):
             b"# Missing frontmatter\n",
             b"---\nname: remora-plan-change\ndescription:    \n---\n",
             b"---\nname: remora-plan-change\ndescription: [not a scalar]\n---\n",
+            b"---\nname: remora-plan-change\ndescription: true\n---\n",
+            b"---\nname: remora-plan-change\ndescription: Invalid mapping:\n---\n",
             original.replace(b".remora/standards/engineering.md", b".remora/standards/absent.md"),
             original + b"\nRead `.agents/skills/not-installed/SKILL.md`.\n",
         ]

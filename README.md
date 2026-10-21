@@ -137,8 +137,10 @@ invalid invocation or incomplete checks. Checks establish bounded installation
 integrity, not authorship, instruction loading, or workflow effectiveness.
 
 Bundle validation checks Remora's authored frontmatter subset: exactly `name`
-and `description` as nonempty single-line plain scalars, with a valid name matching
-the skill directory. In installed skills, backtick-delimited target-root files
+and `description` as nonempty single-line plain strings, with a valid name matching
+the skill directory. Descriptions start with an ASCII letter; YAML boolean/null
+values, mapping delimiters, comments, quoted values, and complex YAML are outside
+this subset. In installed skills, backtick-delimited target-root files
 under `.remora/standards/` and `.agents/skills/` declare required resources and
 must belong to the payload. This is a bounded convention, not arbitrary YAML,
 Markdown, shell-command, or semantic validation. Source-relative Markdown links

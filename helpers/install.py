@@ -63,7 +63,8 @@ def validate_bundle(committed: dict[str, bytes]):
             fields[field[1]] = field[2]
         description = fields.get("description", "")
         if (not re.match(r"[A-Za-z]", description)
-                or ": " in description or " #" in description):
+                or re.search(r":(?:\s|$)|\s#", description)
+                or description.strip().lower() in {"true", "false", "null", "yes", "no", "on", "off"}):
             raise Conflict(f"Unsupported plain-scalar description: {name}")
         if (set(fields) != {"name", "description"}
                 or fields["name"] != Path(name).parent.name
