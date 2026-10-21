@@ -8,15 +8,19 @@ Remora is designed to work alongside existing coding environments rather than re
 
 ## Status
 
-Remora is in early development. Milestone 1 established skill contracts, evaluation foundations, and a bounded content checker. Milestone 2 now has a bootstrap entrypoint, a project-instruction seed, and safe installation and integrity checks for one shared engineering standard. Bootstrap supports explicitly requested adoption edits and later updates to root project guidance using the same installed Remora revision. Native-host discovery remains unverified.
+Remora is in early development. Bootstrap installs a pinned project payload and
+supports explicitly requested adoption or later updates to root project guidance
+using the same Remora revision. The documentation workflow provides read-only
+auditing and authorized reconciliation. Installation includes engineering and
+documentation standards and the project-local documentation skill. Native-host
+discovery remains unverified.
 
-The [current functional trial record](evals/records/2026-10-20-bootstrap-completion.md)
-covers 17 V9 local Codex CLI fallback sessions across F01-F06 and targeted
-checks of the final payload-comparison clarification. With the
-completed safety scenarios in the
-[refusal record](evals/records/2026-10-20-bootstrap-refusals.md), this completes
-Milestone 2's bounded bootstrap implementation and local fixture verification.
-These observations use the documented read-first handoff; native discovery and
+Milestone 2's bounded bootstrap implementation and local verification are recorded
+in the [functional trials](evals/records/2026-10-20-bootstrap-completion.md) and
+[refusal probes](evals/records/2026-10-20-bootstrap-refusals.md).
+The [documentation workflow record](evals/records/2026-10-20-documentation.md)
+covers Milestone 3's local trials, development feedback, and remaining review
+limits. These use the documented read-first fallback; native discovery and
 Codex/Cursor/Antigravity portability verification remain Milestone 5 work.
 
 The [product and technical specification](docs/product-spec.md) defines intended behavior. The [evaluation guide](evals/README.md) explains fixture preparation, calibration, and development checks; the [dated baseline record](evals/records/2026-10-19-baseline.md) records the initial design inputs and testing candidates.
@@ -74,10 +78,11 @@ rewrite; nested instructions and existing skills remain outside the edit scope.
 Changed files or unsafe paths stop affected edits. Guidance stays project-owned
 and outside the manifest; semantic decisions are made by the host agent.
 
-The installed payload contains no project skills. The bootstrap entrypoint and
-its seed stay in the source checkout. Global bootstrap packaging, managed-content
-updates, profiles, and automatic recovery are subsequent work. An installation
-from an older source revision cannot be upgraded through guidance specialization.
+The bootstrap entrypoint and its seed stay in the source checkout; the
+documentation skill is installed project-locally. Global bootstrap packaging,
+managed-content updates, profiles, and automatic recovery are subsequent work.
+An installation from an older source revision cannot be upgraded through guidance
+specialization.
 
 The [first-use trial record](evals/records/2026-10-19-first-use-bootstrap.md)
 documents initial local Codex CLI fallback observations. The
@@ -87,7 +92,7 @@ implemented-project guidance edits and specialization, with their limits.
 ## Installation helper
 
 Use Python 3.11+ and Git with a trusted local checkout pinned to the commit you
-intend to install. The installer, standard, bootstrap skill, and seed must be
+intend to install. The installer, standards, skills, and seed must be
 committed and have no local modifications. No download or dependency installation
 occurs. From that checkout:
 
@@ -102,14 +107,17 @@ The first command previews without writing. Only `--apply` creates files. Repeat
 `antigravity`. These selections do not certify compatibility. Using an absolute
 path to the script also works from another working directory.
 
-Installation creates `.remora/standards/engineering.md` from the committed
-[engineering standard](standards/engineering.md) and `.remora/installation.json`.
+Installation creates `.remora/standards/engineering.md`,
+`.remora/standards/documentation.md`,
+`.agents/skills/remora-audit-documentation/SKILL.md`, and
+`.remora/installation.json` from the committed payload.
 The manifest records schema version 1, the `development` release label, exact
 source commit, requested environments, no selected profiles, and managed-file
 SHA-256 hashes. Installed bytes come from Git objects, independent of checkout
 line endings. Root `AGENTS.md`, project context, specifications, existing skills,
-and unrelated files remain project-owned and unchanged. No skills or automatic
-instruction routing are installed yet.
+and unrelated files remain project-owned and unchanged. Existing skill names and
+owners are preserved; no host configuration or automatic instruction routing is
+installed by the helper.
 
 An identical rerun makes no changes. Occupied unmanaged destinations, modified or
 missing managed files, malformed metadata, unsafe links, or different source and
@@ -118,12 +126,45 @@ not implemented. On interrupted writes, inspect the reported created files and
 Git state before deciding how to recover; the installer preserves partial files
 and refuses to adopt them silently. Filesystem writes are not a whole-tree
 transaction or protection against hostile concurrent filesystem changes.
+The host must permit writes to every declared destination, including existing
+`.agents/skills/` directories. A permission failure may leave a partial installation;
+use the host's normal permission controls rather than bypassing its protections.
 
 `--check` compares the installation to the same pinned source checkout, including
 the source hashes; keep that checkout available for this foundation's checks.
 Exit codes are 0 for success, 1 for conflicts or integrity failures, and 2 for
 invalid invocation or incomplete checks. Checks establish bounded installation
 integrity, not authorship, instruction loading, or workflow effectiveness.
+
+## Documentation maintenance
+
+After installation, select `remora-audit-documentation` through the host's skill
+interface where available. For explicit local-entrypoint fallback, replace the
+target path below:
+
+```text
+First read <target>/.agents/skills/remora-audit-documentation/SKILL.md by itself.
+Then follow it to audit this repository's documentation. Do not edit files or
+save a report. Report supported findings and verification gaps.
+```
+
+Name particular documents or an exact change range for a narrower task. Explicitly
+state whether local staged, unstaged, and untracked changes belong in that range.
+For authorized correction, request `Reconcile the current documentation within
+<scope> against repository evidence, preserving adequate material, unrelated
+changes, accurate history, and approved requirements.` Audit/preview stays
+read-only; a reconciliation request authorizes necessary scoped documentation
+edits. Source defects or unresolved requirement conflicts are reported rather than
+silently resolved by changing documentation. Adequate content needs no diff.
+
+The [skill](skills/remora-audit-documentation/SKILL.md) explicitly reads the
+installed [documentation standard](standards/documentation.md) and engineering
+standard from the target root. Missing resources are an incomplete installation,
+not permission to fetch replacements. No Python runtime is needed to read and
+follow the installed workflow; Python and Git are needed for installation checks.
+Results ordinarily stay in the conversation. Following an installed file proves
+fallback execution only; the [evaluation guide](evals/README.md) separates that
+evidence from later native discovery and cross-host evaluation.
 
 ## Design principles
 

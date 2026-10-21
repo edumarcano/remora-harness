@@ -188,8 +188,11 @@ specifications, existing skills, and host configuration are outside the edit sco
    python "<distribution>/helpers/install.py" --check --target "<target>"
    ```
 
-   Continue only after the applicable installer checks succeed. The current payload is one standard and an
-   installation manifest; it installs no project skills or host configuration.
+   Continue only after the applicable installer checks succeed. The payload is
+   the engineering and documentation standards, the project-local
+   `remora-audit-documentation` skill, and an installation manifest. It installs
+   no host configuration. Preserve existing skills, including overlapping
+   workflows; adding a Remora entrypoint does not authorize replacing them.
    Different revisions/selections, drift, and unmanaged collisions are not updates
    to resolve automatically.
 2. Initialize/install or Adopt/specialize mode may create absent root guidance.
