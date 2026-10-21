@@ -21,7 +21,9 @@ in the [functional trials](evals/records/2026-10-20-bootstrap-completion.md) and
 [refusal probes](evals/records/2026-10-20-bootstrap-refusals.md).
 The [documentation workflow record](evals/records/2026-10-20-documentation.md)
 covers Milestone 3's local trials, development feedback, and remaining review
-limits. These use the documented read-first fallback; native discovery and
+limits. The [development and assurance record](evals/records/2026-10-21-development.md)
+records Milestone 4's installed-entrypoint trials, controlled failure signals,
+preservation checks, and verification limits. These use the documented read-first fallback; native discovery and
 Codex/Cursor/Antigravity portability verification remain Milestone 5 work.
 
 The [product and technical specification](docs/product-spec.md) defines intended behavior. The [evaluation guide](evals/README.md) explains fixture preparation, calibration, and development checks; the [dated baseline record](evals/records/2026-10-19-baseline.md) records the initial design inputs and testing candidates.
