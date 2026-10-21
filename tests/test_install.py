@@ -5,6 +5,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -16,6 +17,9 @@ from helpers import install as installer
 
 ROOT = Path(__file__).resolve().parents[1]
 DESTINATION = ".remora/standards/engineering.md"
+DOCUMENTATION = ".remora/standards/documentation.md"
+SKILL = ".agents/skills/remora-audit-documentation/SKILL.md"
+MANAGED = {DESTINATION, DOCUMENTATION, SKILL}
 
 
 class InstallationTests(unittest.TestCase):
@@ -84,7 +88,7 @@ class InstallationTests(unittest.TestCase):
         self.assertEqual(self.run_install()[0], 0)
         self.assertEqual(set(self.target.iterdir()), {self.target / ".git"})
         self.assertEqual(self.run_install("--apply")[0], 0)
-        self.assertEqual(set(self.snapshot()), {DESTINATION, installer.MANIFEST})
+        self.assertEqual(set(self.snapshot()), MANAGED | {installer.MANIFEST})
         self.assertEqual(self.run_install("--check")[0], 0)
         manifest = self.manifest()
         self.assertEqual(manifest["source_revision"],
@@ -93,7 +97,13 @@ class InstallationTests(unittest.TestCase):
         self.assertEqual(manifest["remora_version"], "development")
         self.assertEqual(manifest["selected_profiles"], [])
         self.assertEqual(manifest["managed_files"],
-                         {DESTINATION: installer.digest((self.target / DESTINATION).read_bytes())})
+                         {name: installer.digest((self.target / name).read_bytes())
+                          for name in MANAGED})
+        for source, destination in (("standards/engineering.md", DESTINATION),
+                                    ("standards/documentation.md", DOCUMENTATION),
+                                    ("skills/remora-audit-documentation/SKILL.md", SKILL)):
+            self.assertEqual((self.target / destination).read_bytes(),
+                             self.git(self.source, "show", f"HEAD:{source}"))
 
     def test_specification_and_custom_guidance_are_preserved(self):
         specification = (ROOT / "evals/fixtures/F02/SPEC.md").read_bytes()
@@ -108,7 +118,7 @@ class InstallationTests(unittest.TestCase):
         self.assertEqual(self.run_install("--apply")[0], 0)
         after = self.snapshot()
         self.assertEqual({name: after[name] for name in before}, before)
-        self.assertEqual(set(after) - set(before), {DESTINATION, installer.MANIFEST})
+        self.assertEqual(set(after) - set(before), MANAGED | {installer.MANIFEST})
         self.assertEqual((self.target / "SPEC.md").read_bytes(), specification)
 
     def test_identical_reruns_preserve_bytes_and_modification_times(self):
@@ -140,12 +150,12 @@ class InstallationTests(unittest.TestCase):
         self.assertFalse((self.target / DESTINATION).exists())
 
     def test_non_directory_ancestor_and_directory_destinations_are_conflicts(self):
-        for name in (".remora", DESTINATION, installer.MANIFEST):
+        for name in (".remora", ".agents", ".agents/skills", *MANAGED, installer.MANIFEST):
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
                 target = Path(temporary)
                 path = target / name
                 path.parent.mkdir(parents=True, exist_ok=True)
-                if name == ".remora":
+                if name in (".remora", ".agents", ".agents/skills"):
                     path.write_bytes(b"owned")
                 else:
                     path.mkdir()
@@ -226,12 +236,13 @@ class InstallationTests(unittest.TestCase):
             path = self.source / name
             path.write_bytes(path.read_bytes().replace(b"\n", b"\r\n"))
         self.assertEqual(self.run_install("--apply")[0], 0)
-        committed = self.git(self.source, "show", "HEAD:standards/engineering.md")
-        self.assertEqual((self.target / DESTINATION).read_bytes(), committed)
-        self.assertNotIn(b"\r\n", committed)
+        for source, destination in installer.PAYLOAD.items():
+            committed = self.git(self.source, "show", f"HEAD:{source}")
+            self.assertEqual((self.target / destination).read_bytes(), committed)
+            self.assertNotIn(b"\r\n", committed)
 
     def test_bootstrap_resources_must_be_present_in_the_source_commit(self):
-        for name in ("skills/remora-bootstrap/SKILL.md", "templates/AGENTS.md"):
+        for name in (*installer.PAYLOAD, "skills/remora-bootstrap/SKILL.md", "templates/AGENTS.md"):
             with self.subTest(name=name):
                 self.git(self.source, "rm", "--cached", "--", name)
                 self.commit()
@@ -326,6 +337,73 @@ class InstallationTests(unittest.TestCase):
         with patch.object(installer, "SOURCE_ROOT", self.target):
             self.assertEqual(self.run_install()[0], 2)
 
+    def test_documentation_assets_collisions_and_drift_preserve_all_content(self):
+        for source, destination in (("standards/documentation.md", DOCUMENTATION),
+                                    ("skills/remora-audit-documentation/SKILL.md", SKILL)):
+            with self.subTest(destination=destination), tempfile.TemporaryDirectory() as temporary:
+                target = Path(temporary)
+                path = target / destination
+                path.parent.mkdir(parents=True)
+                data = self.git(self.source, "show", f"HEAD:{source}")
+                path.write_bytes(data)
+                for arguments in ((), ("--apply",)):
+                    self.assertEqual(self.run_install(*arguments, target=target)[0], 1)
+                    self.assertEqual(path.read_bytes(), data)
+                    self.assertFalse((target / installer.MANIFEST).exists())
+                    self.assertFalse((target / DESTINATION).exists())
+                path.unlink()
+                self.assertEqual(self.run_install("--apply", target=target)[0], 0)
+                path.write_bytes(b"project edit")
+                self.assertEqual(self.run_install("--check", target=target)[0], 1)
+                self.assertEqual(self.run_install("--apply", target=target)[0], 1)
+                self.assertEqual(path.read_bytes(), b"project edit")
+                path.unlink()
+                self.assertEqual(self.run_install("--check", target=target)[0], 1)
+                self.assertFalse(path.exists())
+
+    def test_installed_skill_metadata_and_explicit_root_resources(self):
+        self.assertEqual(self.run_install("--apply")[0], 0)
+        text = (self.target / SKILL).read_text(encoding="utf-8")
+        # The authored portable subset is two single-line scalar fields, not
+        # arbitrary YAML. Validate the actual shipped interface and resources.
+        fields = dict(line.split(": ", 1) for line in text.split("---", 2)[1].strip().splitlines())
+        self.assertEqual(set(fields), {"name", "description"})
+        self.assertEqual(fields["name"], Path(SKILL).parent.name)
+        self.assertTrue(fields["description"].strip())
+        resources = set(re.findall(r"`(\.remora/standards/[^`]+)`", text))
+        self.assertEqual(resources, {DESTINATION, DOCUMENTATION})
+        for name in resources:
+            self.assertTrue((self.target / name).is_file())
+
+    def test_older_single_standard_inventory_is_not_silently_upgraded(self):
+        self.assertEqual(self.run_install("--apply")[0], 0)
+        for name in (DOCUMENTATION, SKILL):
+            (self.target / name).unlink()
+        manifest = self.manifest()
+        manifest["managed_files"] = {DESTINATION: manifest["managed_files"][DESTINATION]}
+        self.change_manifest(manifest)
+        before = self.snapshot()
+        for arguments in ((), ("--apply",), ("--check",)):
+            self.assertEqual(self.run_install(*arguments)[0], 1)
+            self.assertEqual(self.snapshot(), before)
+
+    def test_interruption_between_assets_never_publishes_manifest(self):
+        create = installer.create_file
+
+        def interrupt(target, name, data, created):
+            if name == SKILL:
+                raise OSError("interrupted before skill creation")
+            return create(target, name, data, created)
+
+        with patch.object(installer, "create_file", side_effect=interrupt):
+            code, output = self.run_install("--apply")
+        self.assertEqual(code, 2)
+        self.assertIn(DOCUMENTATION, output)
+        self.assertFalse((self.target / installer.MANIFEST).exists())
+        before = self.snapshot()
+        self.assertEqual(self.run_install("--apply")[0], 1)
+        self.assertEqual(self.snapshot(), before)
+
     def test_command_line_from_another_working_directory_and_invalid_arguments(self):
         script = self.source / "helpers/install.py"
         command = [sys.executable, str(script), "--target", str(self.target)]
@@ -345,19 +423,21 @@ class InstallationTests(unittest.TestCase):
     def test_symlink_destinations_and_ancestors_are_rejected(self):
         outside = self.root / "outside"
         outside.mkdir()
-        link = self.target / ".remora"
+        alias = self.root / "alias"
         try:
-            link.symlink_to(outside, target_is_directory=True)
+            alias.symlink_to(self.target, target_is_directory=True)
         except (OSError, NotImplementedError):
             self.skipTest("symlink creation unavailable in this environment")
-        self.assertEqual(self.run_install("--apply")[0], 1)
-        self.assertEqual(list(outside.iterdir()), [])
-        link.unlink()
-        link.symlink_to(self.root / "absent", target_is_directory=True)
-        self.assertEqual(self.run_install("--apply")[0], 1)
-        link.unlink()
-        alias = self.root / "alias"
-        alias.symlink_to(self.target, target_is_directory=True)
+        for directory in (".remora", ".agents"):
+            with self.subTest(directory=directory):
+                link = self.target / directory
+                link.symlink_to(outside, target_is_directory=True)
+                self.assertEqual(self.run_install("--apply")[0], 1)
+                self.assertEqual(list(outside.iterdir()), [])
+                link.unlink()
+                link.symlink_to(self.root / "absent", target_is_directory=True)
+                self.assertEqual(self.run_install("--apply")[0], 1)
+                link.unlink()
         self.assertEqual(self.run_install("--apply", target=alias)[0], 1)
         # Lexical '..' must not hide a link from the safety inspection.
         self.assertEqual(self.run_install("--apply", target=alias / ".." / self.target.name)[0], 1)
@@ -366,17 +446,19 @@ class InstallationTests(unittest.TestCase):
     def test_windows_junction_is_rejected_without_changing_its_target(self):
         outside = self.root / "outside"
         outside.mkdir()
-        junction = self.target / ".remora"
-        result = subprocess.run(["cmd", "/c", "mklink", "/J", str(junction), str(outside)],
-                                capture_output=True, check=False)
-        if result.returncode:
-            self.skipTest("junction creation unavailable in this environment")
-        try:
-            self.assertEqual(self.run_install("--apply")[0], 1)
-            self.assertEqual(list(outside.iterdir()), [])
-        finally:
-            # Remove only the test junction, never recursively traverse its target.
-            junction.rmdir()
+        for directory in (".remora", ".agents"):
+            with self.subTest(directory=directory):
+                junction = self.target / directory
+                result = subprocess.run(["cmd", "/c", "mklink", "/J", str(junction), str(outside)],
+                                        capture_output=True, check=False)
+                if result.returncode:
+                    self.skipTest("junction creation unavailable in this environment")
+                try:
+                    self.assertEqual(self.run_install("--apply")[0], 1)
+                    self.assertEqual(list(outside.iterdir()), [])
+                finally:
+                    # Remove only the junction, never traverse its target.
+                    junction.rmdir()
 
 
 if __name__ == "__main__":

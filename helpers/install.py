@@ -12,7 +12,12 @@ import sys
 
 
 SOURCE_ROOT = Path(__file__).resolve().parents[1]
-PAYLOAD = {"standards/engineering.md": ".remora/standards/engineering.md"}
+PAYLOAD = {
+    "standards/engineering.md": ".remora/standards/engineering.md",
+    "standards/documentation.md": ".remora/standards/documentation.md",
+    "skills/remora-audit-documentation/SKILL.md":
+        ".agents/skills/remora-audit-documentation/SKILL.md",
+}
 INPUTS = ("helpers/install.py", *PAYLOAD,
           "skills/remora-bootstrap/SKILL.md", "templates/AGENTS.md")
 MANIFEST = ".remora/installation.json"

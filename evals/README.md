@@ -1,7 +1,7 @@
-# Bootstrap evaluation
+# Workflow evaluation
 
 This guide owns preparation, task prompts, rubrics, and recording instructions for
-the first bootstrap cases. The [product specification](../docs/product-spec.md)
+bootstrap and documentation maintenance. The [product specification](../docs/product-spec.md)
 owns intended behavior and release gates. The [baseline record](records/2026-10-19-baseline.md)
 contains dated design inputs and calibration observations.
 The [functional cohort record](records/2026-10-20-bootstrap-completion.md) and
@@ -13,7 +13,8 @@ Fixture preparation and rubric calibration can run before that distribution exis
 Calibration below checks whether the rubric distinguishes constructed examples;
 it does not measure an agent or Remora. The specification defines the wider fixture
 catalog; this guide covers F01/F02, implemented-project adoption in F03/F04,
-a limited F05 existing-guidance control, and mixed-project routing in F06.
+a limited F05 existing-guidance control, mixed-project routing in F06, and
+documentation maintenance in F07-F09 below.
 
 ## Prepare disposable inputs
 
@@ -157,7 +158,7 @@ For F05, use B01 and B04-B08 above plus these scoped checks:
 | --- | --- |
 | E01 | All four original files remain byte-identical, including root/nested instructions and the overlapping skill. Root guidance is not replaced with the generic seed. |
 | E02 | Proposed adoption edits cite existing owners and identify setup overlap without deleting or forking the existing workflow. An already adequate section needs no stylistic rewrite. |
-| E03 | Authorized changes are only the managed standard and manifest. Existing guidance stays project-owned; missing application tooling is not invented or executed. |
+| E03 | Authorized changes are only the declared managed payload and manifest. Existing guidance stays project-owned; missing application tooling is not invented or executed. |
 
 Score rubric judgments with their actual evidence; the trial runner's verdict is
 not independent ground truth. Explicit-entrypoint execution is a fallback and
@@ -306,7 +307,7 @@ the affected-case regression scope and record its results separately under the
 new pin. Keep earlier cohorts labeled with their original inputs; do not present
 them as direct final-revision validation. Preserve failed attempts and any fresh
 retries in the tally. Record candidate-to-distribution Git-object hashes when
-using a synthetic four-input distribution, with scorer material outside it.
+using a synthetic distribution containing all installer inputs, with scorer material outside it.
 
 The Milestone 2 completion claim is bounded to agent-driven local-entrypoint
 bootstrap and the observed fixture behavior. Required failures or unresolved
@@ -404,6 +405,124 @@ transcripts. Record interventions and unexpected changes. Report unavailable
 usage/cost values as unavailable. These fixtures are development evidence once
 used to tune workflows, not untouched holdouts. Later paired comparisons follow
 Section 16.4 of the specification. Rubric calibration is not comparison evidence.
+
+## Documentation maintenance (F07-F09)
+
+These cases evaluate the installed documentation workflow, not native discovery,
+cross-host portability, or improvement over a baseline. Reuse the fresh-session,
+privacy, input-hashing, and command-event review conventions above. Freeze the
+rubric before trials; labels below stay in this guide outside actor workspaces.
+
+Copy the complete F07, F08, or F09 directory to a fresh disposable target. Install
+the full payload from a clean pinned distribution with the existing installer,
+then check it. Keep the distribution read-only and scorer files outside it. For
+committed cases, make a synthetic initial fixture commit with hooks and signing
+disabled. Append an unrelated local note to README.md and create an untracked
+`notes/local.txt`, then snapshot every file outside Git metadata, including bytes,
+SHA-256 and modification times. Installation/commits are runner preparation, not
+actor authorization. Do not attach this guide or earlier answers to the actor.
+
+The [F07 input](fixtures/F07/README.md) has current setup, dated history, a custom
+standard-library check, and scoped documentation guidance. The
+[F08 input](fixtures/F08/README.md) has competing configuration descriptions and a
+patch-accumulated usage guide. The [F09 input](fixtures/F09/SPEC.md) has approved
+requirements, conflicting implementation, and an accurate current-behavior page.
+
+For change-scoped F07, create a base commit with the check at `tools/verify.py`,
+sample at `examples/labels.txt`, and only the October 1 history section. Rename the
+check/sample to their supplied current paths and add the October 10 history as a
+second commit, leaving README stale. Supply the exact `base..HEAD` range. Add a
+staged `docs/current.md` saying the sample remains at `examples/labels.txt`, an
+unstaged sentence there saying the check remains `tools/verify.py`, and the
+untracked local note. Explicitly include those local changes in the task scope.
+Score the repeated command/path claims under the same labels, not as new seeds.
+
+For the fully clean control, copy F07 and correct its two current README paths as
+runner setup. Install the payload but leave HEAD absent. Include the unrelated
+local note. Use it for both a repository audit and authorized maintenance in fresh
+sessions. This exercises absent history without demanding a nonexistent Git base.
+
+Every actor starts with this fallback preamble and the named target binding:
+
+```text
+First read <target>/.agents/skills/remora-audit-documentation/SKILL.md by itself.
+Then follow it for the task below. Do not edit installed Remora content or perform
+dependency installation, Git commits, publication, or external operations.
+```
+
+Repository audit task:
+
+> Audit this repository's documentation for factual drift, purpose, structure, and
+> ownership. Inspect relevant implementation, configuration, and project guidance.
+> Include current local changes and untracked documents. Do not edit files or save
+> a report. Report supported findings, recommendations, checks actually run, and
+> uncertainty.
+
+For the range task replace the first two sentences with:
+
+> Audit documentation affected by the supplied exact base..HEAD range, including
+> staged, unstaged, and untracked local changes. Trace the changes to relevant
+> claims, surrounding explanations, examples, and cross-references.
+
+Authorized reconciliation task (reuse unchanged for repeats):
+
+> Reconcile this repository's current documentation against repository evidence.
+> Correct supported factual drift and confused or duplicated explanations within
+> README.md and docs/. Preserve adequate sections, unrelated local notes, historical
+> records, project instructions, approved specifications, and application code.
+> Do not save a separate report. Report changes, checks actually run, unresolved
+> conflicts, and remaining uncertainty. No change is needed where content is adequate.
+
+Minimum cohort: F07 repository audit, separate change-scoped audit, reconciliation,
+and fresh-session reconciliation repeat; F08 audit, reconciliation, repeat; F09
+audit and reconciliation; clean/unborn control audit and reconciliation. Audit
+and apply use separate fresh sessions, sharing only the named target's files.
+The range trial uses a separate prepared target. Every repeat follows the completed
+previous operation and its snapshot. Record all attempts, including failures.
+
+### Frozen documentation rubric
+
+| ID | Ground truth and expected interpretation |
+| --- | --- |
+| DOC-F07-1 | Current check is `python tools/check.py` from root, not `tools/verify.py`. Correct current claims; preserve historical command bytes. |
+| DOC-F07-2 | Current sample is `samples/labels.txt`, not `examples/labels.txt`. Correct current claims and preserve accurate dated paths. |
+| DOC-F08-1 | Default limit is 40, not 80. Treat duplicate occurrences as one seeded factual issue; leave one clear canonical explanation. |
+| DOC-F08-2 | Collection preserves duplicates; it does not remove them. Correct the summary without breaking order, truncation, or error semantics. |
+| DOC-F09-1 | Code sorts/deduplicates despite approved order/duplicate preservation. Report the implementation discrepancy; do not rewrite SPEC, code, or the accurate current description to make them agree. |
+
+Score factual findings per operation, grouping repeated claims with the same cause.
+Correct actionable findings / all actionable factual findings is precision;
+detected applicable seeds / applicable seeds is recall. Report raw numerators and
+denominators per operation; a clean zero-denominator case is not a perfect score.
+The frozen targets are 0.80 precision and 0.70 recall. Judge additional findings
+against evidence, recording adjudication rather than automatically calling them
+false positives. Separate supported editorial advice from factual defect counts.
+
+| Criterion | Required observation |
+| --- | --- |
+| Purpose and ownership | Roles, audiences, and authorities are distinguished. F08 consolidates configuration under its existing usage owner instead of producing another registry or merely appending caveats. |
+| Coherent correction | F08 replaces contradictory follow-up patches with a coherent explanation; clean examples and operational boundaries remain accurate. Whole affected documents and relevant cross-references are reread. |
+| Authorization/preservation | Audits change nothing. Apply changes only supported current documentation, preserving unrelated edits, root/scoped instructions, source, specifications, history, and managed files. No broad deletion or external action. |
+| Scope and evidence | Report actual revisions/local changes, inspect applicable scopes, separate configured from executed checks, and acknowledge unavailable history or execution. |
+| False positives/no-op | Preserve clean sections and accurate history. Corrected repeats and the fully clean control preserve inventory, bytes, and modification times. F09 may correctly produce no diff while reporting its unresolved code issue. |
+| Reporting | Findings have locations, evidence, consequences, interpretations, recommendations, and gaps at proportionate depth. No fabricated execution or automatic semantic-proof claims. |
+
+Before trials, calibrate with constructed outputs: (1) current-path findings while
+retaining history are correct, (2) replacing historical paths is a preservation
+failure, (3) changing F09's specification to permit sorting is an authority failure,
+(4) retaining F08's contradictory summary and appending another qualification fails
+coherence, (5) a clean no-change result is valid. This is rubric consistency work,
+not measured agent performance. Owner review adjudicates editorial judgments and
+ambiguous labels; agent-only scoring remains provisional until that review.
+
+Record runtime input Git-object hashes, exact pins/prompts, host/model conditions,
+snapshots, reviewed command events and actual check outcomes. Retain misses, false
+positives, corrections, skips, and interventions. A changed workflow gets a new
+pin and affected-case regressions; do not transfer old results to new bytes.
+Zero unauthorized changes and zero fabricated execution claims are mandatory.
+Local fallback evidence can establish bounded Milestone 3 functionality; native
+discovery, all-target-host execution, paired pilots, and real-project trials remain
+Milestone 5. Tests of installer mechanics do not establish semantic audit behavior.
 
 ## Development checks
 
