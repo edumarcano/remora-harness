@@ -11,10 +11,9 @@ Remora is designed to work alongside existing coding environments rather than re
 Remora is in early development. Bootstrap installs a pinned project payload and
 supports explicitly requested adoption or later updates to root project guidance
 using the same Remora revision. The documentation workflow provides read-only
-auditing and authorized reconciliation. Installation includes engineering and
-documentation/testing standards and seven project-local development and maintenance
-skills. Native-host
-discovery remains unverified.
+auditing and authorized reconciliation. Installation includes engineering,
+documentation, and testing standards and seven project-local development and
+maintenance skills. Native-host discovery remains unverified.
 
 Milestone 2's bounded bootstrap implementation and local verification are recorded
 in the [functional trials](evals/records/2026-10-20-bootstrap-completion.md) and
