@@ -15,13 +15,16 @@ The [product and technical specification](docs/product-spec.md) defines intended
 ## First-use bootstrap
 
 Open your target project in the coding host and supply a trusted local Remora
-checkout pinned to the intended commit. Ask the agent to read and follow
-[the bootstrap entrypoint](skills/remora-bootstrap/SKILL.md), with the target path,
+checkout pinned to the intended commit. Ask the agent to read
+[the bootstrap entrypoint](skills/remora-bootstrap/SKILL.md) by itself before
+inspecting the target, then follow it with the target path,
 requested environments, and either preview or installation as the outcome. For
 example, replacing the bracketed inputs:
 
 ```text
-Follow <distribution>/skills/remora-bootstrap/SKILL.md to initialize <target>
+First read <distribution>/skills/remora-bootstrap/SKILL.md by itself, before
+any target inspection. Do not batch that read with target operations.
+Then follow it to initialize <target>
 with Remora for <environment>. Inspect the project and specification first.
 Preserve existing guidance and do not implement the application.
 ```
@@ -29,6 +32,12 @@ Preserve existing guidance and do not implement the application.
 This is explicit local-entrypoint fallback, not native skill discovery. Supply the
 whole pinned checkout; copying the skill file alone omits required resources.
 The bootstrap source files and installer inputs must be committed and unmodified.
+The bootstrap procedure requires comparing a supplied exact commit with the
+distribution and retaining that identity through installation. It requires root
+path checks before reading guidance and stopping affected writes after unsafe
+path findings, source-commit movement, or root changes since inspection. These
+agent instructions reduce accidental writes; they are not an enforced filesystem
+transaction.
 
 Preview stays read-only and drafts guidance in the conversation. Installation uses
 the helper below, validates it, and exclusively creates root `AGENTS.md` only when
@@ -41,7 +50,9 @@ without another approval step; material unresolved conflicts stop affected write
 To authorize minimal edits to existing root guidance, ask explicitly:
 
 ```text
-Follow <distribution>/skills/remora-bootstrap/SKILL.md to install and adopt Remora
+First read <distribution>/skills/remora-bootstrap/SKILL.md by itself, before
+any target inspection. Do not batch that read with target operations.
+Then follow it to install and adopt Remora
 in <target> for <environment>. Update root AGENTS.md only where repository
 evidence justifies it. Preserve existing project decisions and workflow owners.
 ```
