@@ -7,6 +7,9 @@ contains dated design inputs and calibration observations.
 The [functional cohort record](records/2026-10-20-bootstrap-completion.md) and
 [refusal record](records/2026-10-20-bootstrap-refusals.md) record the completed
 local Milestone 2 observations, developmental failures, and verification limits.
+The [documentation record](records/2026-10-20-documentation.md) records local
+Milestone 3 trials and the distinction between reviewed evidence and pending
+owner adjudication.
 
 Agent trials require a pinned local distribution with a bootstrap entrypoint.
 Fixture preparation and rubric calibration can run before that distribution exists.

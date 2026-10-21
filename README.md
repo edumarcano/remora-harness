@@ -15,13 +15,12 @@ auditing and authorized reconciliation. Installation includes engineering and
 documentation standards and the project-local documentation skill. Native-host
 discovery remains unverified.
 
-The [current functional trial record](evals/records/2026-10-20-bootstrap-completion.md)
-covers 17 V9 local Codex CLI fallback sessions across F01-F06 and targeted
-checks of the final payload-comparison clarification. With the
-completed safety scenarios in the
-[refusal record](evals/records/2026-10-20-bootstrap-refusals.md), this completes
-Milestone 2's bounded bootstrap implementation and local fixture verification.
-These observations use the documented read-first handoff; native discovery and
+Milestone 2's bounded bootstrap implementation and local verification are recorded
+in the [functional trials](evals/records/2026-10-20-bootstrap-completion.md) and
+[refusal probes](evals/records/2026-10-20-bootstrap-refusals.md).
+The [documentation workflow record](evals/records/2026-10-20-documentation.md)
+covers Milestone 3's local trials, development feedback, and remaining review
+limits. These use the documented read-first fallback; native discovery and
 Codex/Cursor/Antigravity portability verification remain Milestone 5 work.
 
 The [product and technical specification](docs/product-spec.md) defines intended behavior. The [evaluation guide](evals/README.md) explains fixture preparation, calibration, and development checks; the [dated baseline record](evals/records/2026-10-19-baseline.md) records the initial design inputs and testing candidates.
@@ -80,9 +79,10 @@ Changed files or unsafe paths stop affected edits. Guidance stays project-owned
 and outside the manifest; semantic decisions are made by the host agent.
 
 The bootstrap entrypoint and its seed stay in the source checkout; the
-documentation skill is installed project-locally. Global bootstrap packaging, managed-content
-updates, profiles, and automatic recovery are subsequent work. An installation
-from an older source revision cannot be upgraded through guidance specialization.
+documentation skill is installed project-locally. Global bootstrap packaging,
+managed-content updates, profiles, and automatic recovery are subsequent work.
+An installation from an older source revision cannot be upgraded through guidance
+specialization.
 
 The [first-use trial record](evals/records/2026-10-19-first-use-bootstrap.md)
 documents initial local Codex CLI fallback observations. The
@@ -126,6 +126,9 @@ not implemented. On interrupted writes, inspect the reported created files and
 Git state before deciding how to recover; the installer preserves partial files
 and refuses to adopt them silently. Filesystem writes are not a whole-tree
 transaction or protection against hostile concurrent filesystem changes.
+The host must permit writes to every declared destination, including existing
+`.agents/skills/` directories. A permission failure may leave a partial installation;
+use the host's normal permission controls rather than bypassing its protections.
 
 `--check` compares the installation to the same pinned source checkout, including
 the source hashes; keep that checkout available for this foundation's checks.
