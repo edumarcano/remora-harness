@@ -4,13 +4,16 @@ This guide owns preparation, task prompts, rubrics, and recording instructions f
 the first bootstrap cases. The [product specification](../docs/product-spec.md)
 owns intended behavior and release gates. The [baseline record](records/2026-10-19-baseline.md)
 contains dated design inputs and calibration observations.
+The [functional cohort record](records/2026-10-20-bootstrap-completion.md) and
+[refusal record](records/2026-10-20-bootstrap-refusals.md) record the completed
+local Milestone 2 observations, developmental failures, and verification limits.
 
 Agent trials require a pinned local distribution with a bootstrap entrypoint.
 Fixture preparation and rubric calibration can run before that distribution exists.
 Calibration below checks whether the rubric distinguishes constructed examples;
 it does not measure an agent or Remora. The specification defines the wider fixture
-catalog; this guide covers F01/F02, implemented-project adoption in F03/F04, and
-a limited F05 existing-guidance control.
+catalog; this guide covers F01/F02, implemented-project adoption in F03/F04,
+a limited F05 existing-guidance control, and mixed-project routing in F06.
 
 ## Prepare disposable inputs
 
@@ -242,6 +245,76 @@ as final output: an unsupported execution claim fails even if the final files lo
 correct. Record source hashes, prompt variants, before/after inventories, original
 file preservation, root diffs, command evidence, outcomes, and reviewer limitations.
 
+## Mixed-project routing (F06)
+
+Copy the complete [F06 fixture](fixtures/F06/AGENTS.md), including its existing
+`.remora/project.md`, into a fresh target as for F05. Make an initial synthetic
+fixture commit with hooks/signing disabled, then add the unrelated local root
+note used for F03/F04. Record HEAD and an inventory/hash baseline for all 14 input
+files before the first session. This is runner preparation, not authorization
+for the evaluated agent to commit.
+
+Ledger lives under `components/ledger/` and Beacon under `components/beacon/`.
+Their scoped instructions and development documents own their conventions and
+component working directories. The root has no shared build, test, runtime,
+dependency, or deployment configuration. Existing `.remora/project.md` is
+project-owned routing, not a managed asset or a second command registry.
+
+Use the unchanged adoption prompt above for F06, changing its opening to
+"Preview installing and adopting" for preview. Run preview, adoption, and an
+identical adoption repeat in separate fresh sessions. Wait for the complete
+process and snapshot from one operation before starting the next on that target.
+Keep dependencies uninstalled and application commands outside bootstrap.
+
+Apply B01/B04-B08 and D01/D03-D05 with F06's actual starting HEAD and authorized
+surface, plus these component-specific checks:
+
+| ID | Criterion and evidence |
+| --- | --- |
+| M01 | Inspect both component scopes and their canonical development documents. Preserve Ledger's custom runner/order-and-duplicate behavior and Beacon's named scripts/local accessible browser behavior. |
+| M02 | Keep command working directories within their actual components; infer no shared toolchain, workspace command, framework, runtime, or deployment from co-location. |
+| M03 | Preserve all 13 non-root input files byte-for-byte, including scoped instructions, development documents, implementation, configuration, and `.remora/project.md`. Only necessary authorized root edits and the declared managed installation are allowed. |
+| M04 | Distinguish configured component checks and deployment configuration from executed or verified behavior. Preview and repeat preserve inventory, bytes, and modification times. |
+
+F06 extends the existing cases with component routing. It does not establish
+support for every unfamiliar architecture, a new technology profile, native
+nested-instruction loading, or cross-host compatibility. The workflow must read
+applicable guidance explicitly rather than rely on implicit host loading.
+
+## Milestone 2 completion trials
+
+Freeze the final runtime inputs and use the same pinned distribution for this
+functional matrix. Each operation is a fresh agent session; sequences reuse only
+the named target after the previous operation has fully ended.
+
+| Fixture | Sequence |
+| --- | --- |
+| F01 | Initialization preview, install, identical repeat |
+| F02 | Install, identical repeat |
+| F03 | Adoption preview, adopt, runner-prepared tooling change, specialize, repeat |
+| F04 | Installation-only, adopt, repeat |
+| F05 | Installation-only, explicitly authorized adoption |
+| F06 | Adoption preview, adopt, repeat |
+
+Review actual command events and all changed/untracked content against the
+rubrics, not merely CLI exit status. Preserve failed and blocked attempts,
+interventions, and skips. If a runtime input changes after trial feedback, record
+a new pinned identity and rerun the affected scenarios; earlier observations do
+not establish the revised behavior. Each full cohort uses the same runtime bytes
+for its functional and refusal probes. For a narrowly scoped correction, explain
+the affected-case regression scope and record its results separately under the
+new pin. Keep earlier cohorts labeled with their original inputs; do not present
+them as direct final-revision validation. Preserve failed attempts and any fresh
+retries in the tally. Record candidate-to-distribution Git-object hashes when
+using a synthetic four-input distribution, with scorer material outside it.
+
+The Milestone 2 completion claim is bounded to agent-driven local-entrypoint
+bootstrap and the observed fixture behavior. Required failures or unresolved
+critical behavior prevent closure. Personal/global packaging, native discovery,
+cross-host certification, paired comparisons, and real-project adoption trials
+remain separate later work. Platform-specific skipped probes must remain explicit;
+they cannot establish behavior on that platform.
+
 ## Bootstrap refusal probes
 
 Run these probes through the actual bootstrap entrypoint in fresh disposable
@@ -319,8 +392,9 @@ Include fixture ID, date, source and Remora revisions, dirty-state description,
 exact prompt, host/surface/build, model where exposed, OS, permissions, visible
 guidance, installation location in portable terms, discovery method, changed-file
 inventory, commands and outcomes, criterion judgments, reviewer method, and gaps.
-For these inputs record initial HEAD as absent. Include SPEC.md's digest for F02
-and hashes for all four F05 input files, with post-run comparisons. For preview
+Record initial HEAD as absent for F01/F02/F05 and record the prepared fixture
+commit for F03/F04/F06. Include SPEC.md's digest for F02 and hashes for all four
+F05 input files, with post-run comparisons. For preview
 and repetition, include the before/after inventory and modification-time checks.
 Include untracked file contents in the change review; an
 ordinary Git diff alone misses them.
