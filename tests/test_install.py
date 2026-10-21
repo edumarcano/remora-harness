@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DESTINATION = ".remora/standards/engineering.md"
 DOCUMENTATION = ".remora/standards/documentation.md"
 SKILL = ".agents/skills/remora-audit-documentation/SKILL.md"
-MANAGED = {DESTINATION, DOCUMENTATION, SKILL}
+MANAGED = set(installer.PAYLOAD.values())
 
 
 class InstallationTests(unittest.TestCase):
@@ -375,9 +375,67 @@ class InstallationTests(unittest.TestCase):
         for name in resources:
             self.assertTrue((self.target / name).is_file())
 
+    def test_expanded_bundle_assets_match_pin_and_refuse_collisions_and_drift(self):
+        for source, destination in installer.PAYLOAD.items():
+            with self.subTest(asset=destination), tempfile.TemporaryDirectory() as temporary:
+                target = Path(temporary)
+                path = target / destination
+                path.parent.mkdir(parents=True, exist_ok=True)
+                expected = self.git(self.source, "show", f"HEAD:{source}")
+                path.write_bytes(expected)
+                before = path.read_bytes(), path.stat().st_mtime_ns
+                self.assertEqual(self.run_install("--apply", target=target)[0], 1)
+                self.assertEqual((path.read_bytes(), path.stat().st_mtime_ns), before)
+                self.assertFalse((target / installer.MANIFEST).exists())
+                path.unlink()
+                self.assertEqual(self.run_install("--apply", target=target)[0], 0)
+                self.assertEqual(path.read_bytes(), expected)
+                path.write_bytes(b"local edit")
+                self.assertEqual(self.run_install("--check", target=target)[0], 1)
+                self.assertEqual(path.read_bytes(), b"local edit")
+                path.unlink()
+                self.assertEqual(self.run_install("--check", target=target)[0], 1)
+                self.assertFalse(path.exists())
+
+    def test_bad_committed_skill_metadata_and_dependencies_refuse_before_writes(self):
+        name = "skills/remora-plan-change/SKILL.md"
+        path = self.source / name
+        original = path.read_bytes()
+        cases = [
+            original.replace(b"name: remora-plan-change", b"name: wrong"),
+            original.replace(b"name: remora-plan-change", b"name: remora-plan-change\nname: duplicate"),
+            original.replace(b"description: ", b"other: "),
+            b"# Missing frontmatter\n",
+            b"---\nname: remora-plan-change\ndescription:    \n---\n",
+            b"---\nname: remora-plan-change\ndescription: [not a scalar]\n---\n",
+            original.replace(b".remora/standards/engineering.md", b".remora/standards/absent.md"),
+            original + b"\nRead `.agents/skills/not-installed/SKILL.md`.\n",
+        ]
+        for data in cases:
+            with self.subTest(data=data[:80]):
+                path.write_bytes(data)
+                self.git(self.source, "add", name)
+                self.commit()
+                for arguments in ((), ("--apply",)):
+                    self.assertEqual(self.run_install(*arguments)[0], 1)
+                    self.assertEqual(self.snapshot(), {})
+
+    def test_previous_documentation_inventory_is_preserved_without_upgrade(self):
+        self.assertEqual(self.run_install("--apply")[0], 0)
+        previous = {DESTINATION, DOCUMENTATION, SKILL}
+        for name in MANAGED - previous:
+            (self.target / name).unlink()
+        manifest = self.manifest()
+        manifest["managed_files"] = {name: manifest["managed_files"][name] for name in previous}
+        self.change_manifest(manifest)
+        before = self.snapshot()
+        for arguments in ((), ("--apply",), ("--check",)):
+            self.assertEqual(self.run_install(*arguments)[0], 1)
+            self.assertEqual(self.snapshot(), before)
+
     def test_older_single_standard_inventory_is_not_silently_upgraded(self):
         self.assertEqual(self.run_install("--apply")[0], 0)
-        for name in (DOCUMENTATION, SKILL):
+        for name in MANAGED - {DESTINATION}:
             (self.target / name).unlink()
         manifest = self.manifest()
         manifest["managed_files"] = {DESTINATION: manifest["managed_files"][DESTINATION]}

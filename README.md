@@ -12,7 +12,8 @@ Remora is in early development. Bootstrap installs a pinned project payload and
 supports explicitly requested adoption or later updates to root project guidance
 using the same Remora revision. The documentation workflow provides read-only
 auditing and authorized reconciliation. Installation includes engineering and
-documentation standards and the project-local documentation skill. Native-host
+documentation/testing standards and seven project-local development and maintenance
+skills. Native-host
 discovery remains unverified.
 
 Milestone 2's bounded bootstrap implementation and local verification are recorded
@@ -78,8 +79,8 @@ rewrite; nested instructions and existing skills remain outside the edit scope.
 Changed files or unsafe paths stop affected edits. Guidance stays project-owned
 and outside the manifest; semantic decisions are made by the host agent.
 
-The bootstrap entrypoint and its seed stay in the source checkout; the
-documentation skill is installed project-locally. Global bootstrap packaging,
+The bootstrap entrypoint and its seed stay in the source checkout; the seven
+development and maintenance skills are installed project-locally. Global bootstrap packaging,
 managed-content updates, profiles, and automatic recovery are subsequent work.
 An installation from an older source revision cannot be upgraded through guidance
 specialization.
@@ -107,9 +108,8 @@ The first command previews without writing. Only `--apply` creates files. Repeat
 `antigravity`. These selections do not certify compatibility. Using an absolute
 path to the script also works from another working directory.
 
-Installation creates `.remora/standards/engineering.md`,
-`.remora/standards/documentation.md`,
-`.agents/skills/remora-audit-documentation/SKILL.md`, and
+Installation creates engineering, documentation, and testing standards under
+`.remora/standards/`, the seven skills listed below under `.agents/skills/`, and
 `.remora/installation.json` from the committed payload.
 The manifest records schema version 1, the `development` release label, exact
 source commit, requested environments, no selected profiles, and managed-file
@@ -135,6 +135,46 @@ the source hashes; keep that checkout available for this foundation's checks.
 Exit codes are 0 for success, 1 for conflicts or integrity failures, and 2 for
 invalid invocation or incomplete checks. Checks establish bounded installation
 integrity, not authorship, instruction loading, or workflow effectiveness.
+
+Bundle validation checks Remora's authored frontmatter subset: exactly `name`
+and `description` as nonempty single-line plain scalars, with a valid name matching
+the skill directory. In installed skills, backtick-delimited target-root files
+under `.remora/standards/` and `.agents/skills/` declare required resources and
+must belong to the payload. This is a bounded convention, not arbitrary YAML,
+Markdown, shell-command, or semantic validation. Source-relative Markdown links
+remain covered by the maintainer content checker within its documented limits.
+
+## Development and maintenance workflows
+
+| Installed skill | Outcome |
+| --- | --- |
+| `remora-plan-change` | Repository-grounded plan; read-only unless saving is requested |
+| `remora-implement-plan` | Complete an approved plan or clear scoped request, verify, and review |
+| `remora-fix-regression` | Diagnose read-only or perform an authorized repair with failure evidence |
+| `remora-review-change` | Read-only review of an exact change range or named implementation |
+| `remora-audit-documentation` | Audit documentation or reconcile when edits are requested |
+| `remora-audit-tests` | Explain sampled protection and missing failure signals; retain justified tests |
+| `remora-audit-harness` | Inspect installation integrity, guidance ownership, drift, and overlap |
+
+Select the named skill through the host interface where available. For fallback,
+ask the agent first to read `<target>/.agents/skills/<name>/SKILL.md` by itself,
+then follow it for your scoped task. Include the outcome, constraints, and
+acceptance criteria; a separate saved plan is unnecessary for a clear implementation
+request. Supply an exact range or named implementation for review, and state
+whether local changes are included.
+
+The skills explicitly load shared procedures from the installed standards using
+target-root paths. They work through the existing host agent; no independent API,
+mutation engine, or orchestration service is involved. Audit/review does not
+authorize repairs, dependency installation, publication, or controlled faults.
+Faults require explicit permission and isolation in a disposable copy. Results
+ordinarily remain in the conversation. Missing tools or a matching trusted source
+for installation checks are reported as verification gaps; manual inspection is
+not equivalent to automated provenance checking.
+
+Managed-content upgrades remain unsupported. Use the matching source for existing
+installation checks; a newer checkout refuses older inventories rather than
+silently replacing them. Evaluate the expanded payload in a fresh target.
 
 ## Documentation maintenance
 

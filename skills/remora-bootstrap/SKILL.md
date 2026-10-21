@@ -189,8 +189,8 @@ specifications, existing skills, and host configuration are outside the edit sco
    ```
 
    Continue only after the applicable installer checks succeed. The payload is
-   the engineering and documentation standards, the project-local
-   `remora-audit-documentation` skill, and an installation manifest. It installs
+   the engineering, documentation, and testing standards, the seven project-local
+   development and maintenance skills, and an installation manifest. It installs
    no host configuration. Preserve existing skills, including overlapping
    workflows; adding a Remora entrypoint does not authorize replacing them.
    Different revisions/selections, drift, and unmanaged collisions are not updates
