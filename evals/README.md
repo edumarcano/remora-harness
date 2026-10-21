@@ -300,9 +300,13 @@ Review actual command events and all changed/untracked content against the
 rubrics, not merely CLI exit status. Preserve failed and blocked attempts,
 interventions, and skips. If a runtime input changes after trial feedback, record
 a new pinned identity and rerun the affected scenarios; earlier observations do
-not establish the revised behavior. Run the refusal probes below against the
-same runtime bytes. Record candidate-to-distribution Git-object hashes when using
-a synthetic four-input distribution, with scorer material outside it.
+not establish the revised behavior. Each full cohort uses the same runtime bytes
+for its functional and refusal probes. For a narrowly scoped correction, explain
+the affected-case regression scope and record its results separately under the
+new pin. Keep earlier cohorts labeled with their original inputs; do not present
+them as direct final-revision validation. Preserve failed attempts and any fresh
+retries in the tally. Record candidate-to-distribution Git-object hashes when
+using a synthetic four-input distribution, with scorer material outside it.
 
 The Milestone 2 completion claim is bounded to agent-driven local-entrypoint
 bootstrap and the observed fixture behavior. Required failures or unresolved

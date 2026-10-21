@@ -2,7 +2,7 @@
 
 The 17-session V9 functional cohort passed applicable review, and the
 previously blocked safety scenarios completed as recorded in the refusal record.
-Together these changes complete the bounded Milestone 2 bootstrap implementation
+With the targeted final-revision checks below, these changes complete the bounded Milestone 2 bootstrap implementation
 and local fixture verification, using the documented explicit-entrypoint handoff.
 
 This record covers local-entrypoint bootstrap of empty, specification-only,
@@ -14,7 +14,7 @@ Earlier dated records remain observations of their earlier revisions.
 
 ## Tested inputs and conditions
 
-The final candidate's runtime inputs came from repository commit
+The V9 cohort's runtime inputs came from repository commit
 `c7a06a6fecb8e2700a6e475e6e56ba68c8456df8`. A clean, four-input synthetic
 distribution was committed as `cc60e9cd5ad5da6b4f839d8aa0bb06c29b8b6400`.
 The parent compared the candidate and distribution Git-object bytes for every
@@ -72,7 +72,7 @@ transcripts and personal paths are not published.
 The portable prompts, input hashes, scoped outcomes, and counterexamples are
 recorded here so the limits remain inspectable.
 
-## Final functional cohort
+## V9 functional cohort
 
 | Session | Seconds | Changed files |
 | --- | ---: | --- |
@@ -186,12 +186,53 @@ through both operations.
 | F06 `components/ledger/tests/test_ledger.py` | `1e9b75d78de19c1b14b8a1989285f3f1f3d5952bf829d3604873332eebc13a5b` |
 | F06 `components/ledger/tools/verify.py` | `c7668f2ca817730f8949f4ffa4e69595551cc757e03bf0eabdb1e83afe1b5655` |
 
+## Targeted V10 regression
+
+The later identical-file refusal preserved its target but made a false
+pinned-content comparison using a CRLF checkout. The refusal record retains that
+failure and the V10 clarification. V10 changes only the diagnostic guidance to
+use Git-object bytes for payload comparisons; helper, standard, template, path
+guards, and authorization modes are unchanged. Its candidate is
+`8bb99ae884512b9a901fa6acc15f0593eb403990`, synthetic source pin
+`ccbf0fecf34804471943848a68f9cfc4e4ccf914`, and skill SHA-256
+`c6fa461f14fe65adebff86781c690408bda224095be3b2cc6365541ddc7874e3`.
+Parent review compared all four candidate/distribution Git objects.
+
+The 17-session table above is V9 evidence. Targeted final-revision validation
+uses two fresh F02 sessions, install then identical repeat on the same target,
+plus the three refusal controls detailed in the refusal record. This preserves
+the earlier cohort's identity and does not claim a complete V10 rerun. The same
+F02 task body, read-first preamble, canonical 982-byte LF specification, unborn
+HEAD condition, and write boundaries apply; source bindings use the new pin and
+a clean CRLF checkout to exercise the demonstrated distinction.
+
+| Final-revision F02 operation | Seconds | Observation |
+| --- | ---: | --- |
+| Install | 94.19 | Added only root guidance and the two managed files. SPEC.md remained byte/mtime-identical; HEAD remained absent. |
+| Identical repeat | 62.43 | Complete install-after, repeat-before, and repeat-after inventories, bytes, sizes, hashes, and mtimes were identical. |
+
+Both processes completed with exit 0 and completed turns. The source checkout
+remained unchanged at the V10 pin. Root guidance retained approved requirements,
+SQLite as a proposal, and undecided tooling; no application files, commands,
+dependencies, or external operations were introduced. The installed standard
+matched its pinned Git-object hash. An initial install path-guard command had a
+quoting error; its corrected guard passed before target inspection. Repeat
+discovery had expected no-match results and an absent-HEAD result. Preparation
+corrected a failed local clone before actors ran, then independently verified the
+private CRLF checkout's clean status and all four committed/normalized inputs.
+
+The refusal record includes the byte-identical and different-content occupied-file
+controls, dirty-helper refusal, and one failed agent-generated precheck followed
+by a recorded fresh-target retry. Those are six final-revision attempts in total,
+not six clean passes. The earlier V9 table is not direct evidence for V10 bytes.
+
+
 ## Verification and limits
 
 Local deterministic validation ran the content checker, skill metadata validator,
 and all 37 unit tests: 35 passed and two symlink cases were explicitly skipped
 because local Windows symlink creation was unavailable. The unit suite took
-49.470 seconds. The Windows junction test ran. Working and committed whitespace
+46.623 seconds. The Windows junction test ran. Working and committed whitespace
 checks used the actual main base `14752c8886160b3101ac1e3fb9ae153781454239`;
 the stacked PR range uses its safety-branch base.
 The existing CI matrix runs content checks and unit tests on Windows and Linux

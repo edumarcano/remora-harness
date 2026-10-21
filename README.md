@@ -11,7 +11,8 @@ Remora is designed to work alongside existing coding environments rather than re
 Remora is in early development. Milestone 1 established skill contracts, evaluation foundations, and a bounded content checker. Milestone 2 now has a bootstrap entrypoint, a project-instruction seed, and safe installation and integrity checks for one shared engineering standard. Bootstrap supports explicitly requested adoption edits and later updates to root project guidance using the same installed Remora revision. Native-host discovery remains unverified.
 
 The [current functional trial record](evals/records/2026-10-20-bootstrap-completion.md)
-covers 17 fresh local Codex CLI fallback sessions across F01-F06. With the
+covers 17 V9 local Codex CLI fallback sessions across F01-F06 and targeted
+checks of the final payload-comparison clarification. With the
 completed safety scenarios in the
 [refusal record](evals/records/2026-10-20-bootstrap-refusals.md), this completes
 Milestone 2's bounded bootstrap implementation and local fixture verification.
