@@ -580,8 +580,12 @@ This is a documented integration basis, not evidence that Remora has already bee
 | Environment | Shared project files | Personal bootstrap location documented at review time | Initial validation target |
 | --- | --- | --- | --- |
 | Codex | Root `AGENTS.md`; `.agents/skills/` | `~/.agents/skills/` | A recorded local Codex surface; use CLI as the reference test surface unless the owner selects another |
-| Cursor | Root `AGENTS.md`; `.agents/skills/` | `~/.agents/skills/` or `~/.cursor/skills/` | Cursor editor Agent |
-| Antigravity | Root `AGENTS.md`; `.agents/skills/` | `~/.gemini/config/skills/` for app/IDE | Antigravity IDE |
+| Cursor | Root `AGENTS.md`; `.agents/skills/` | `~/.agents/skills/` or `~/.cursor/skills/` | Cursor Agents Window |
+| Antigravity | Root `AGENTS.md`; `.agents/skills/` | `~/.gemini/config/skills/` for app/IDE | Antigravity 2.0 standalone app |
+
+The owner selected these everyday-use surfaces for Milestone 5. Record each actual
+build and surface; these targets do not establish editor/IDE or remote support.
+The required comparison minimum and operational acceptance thresholds are unchanged.
 
 Codex and Cursor can share one personal bootstrap copy in `~/.agents/skills/`. Do not additionally install the same identity in another discovered directory without checking for duplicates. Antigravity CLI has a distinct documented personal directory; CLI support is not inferred from an IDE smoke test.[^s2][^s4][^s6]
 

@@ -7,8 +7,8 @@ checkmark substitutes for a tested surface/build.
 | Host target | Project skills | Personal bootstrap directory | Native action |
 | --- | --- | --- | --- |
 | Codex CLI | .agents/skills/ | ~/.agents/skills/remora-bootstrap/ | Select/mention the skill through the current host; restart if absent |
-| Cursor editor Agent | .agents/skills/ | ~/.agents/skills/remora-bootstrap/ or ~/.cursor/skills/remora-bootstrap/ | Use the skill selector in Agent chat; start a fresh session after installation |
-| Antigravity IDE | .agents/skills/ | ~/.gemini/config/skills/remora-bootstrap/ | Inspect Customizations and explicitly invoke the discovered skill |
+| Cursor Agents Window | .agents/skills/ | ~/.agents/skills/remora-bootstrap/ or ~/.cursor/skills/remora-bootstrap/ | Inspect native discovery in this surface; start a fresh session after installation |
+| Antigravity 2.0 standalone app | .agents/skills/ | ~/.gemini/config/skills/remora-bootstrap/ | Inspect Customizations and select the discovered skill through the slash selector |
 
 Codex and Cursor can share one personal bootstrap copy. Inspect all discovered
 personal/project locations for duplicates; never install the same identity twice
@@ -23,9 +23,12 @@ Official documentation checked October 21, 2026:
 [Antigravity rules](https://antigravity.google/docs/rules/).
 These document the shared project location; they do not establish a Remora pass.
 The [operational record](../evals/records/2026-10-21-operational.md) contains bounded
-Codex CLI Windows observations. Cursor editor and Antigravity IDE are documented
-targets with pending native execution, not tested support claims.
-Antigravity CLI uses a different personal location and is not certified by IDE tests.
+Codex CLI Windows observations. The owner selected Cursor Agents Window and the
+Antigravity 2.0 standalone app as Milestone 5 targets. Dated records distinguish
+executed observations from pending checks; editor/IDE support remains unverified.
+The [Antigravity record](../evals/records/2026-10-22-antigravity.md) records native
+selection, functional trials, comparison attempts, and outstanding acceptance work.
+Antigravity CLI uses a different personal location and is not certified by app tests.
 Local skills do not imply remote/cloud availability.
 
 Use one project installation recording all three requested families before the

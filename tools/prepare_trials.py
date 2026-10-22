@@ -90,6 +90,15 @@ def prepare(distribution, output):
                 target.mkdir(parents=True)
             else:
                 shutil.copytree(ROOT / "evals/fixtures" / fixture, target)
+            if case == "F03":
+                # The regression protocol requires a broken revision, not the
+                # passing adoption fixture (evals/README.md).
+                implementation = target / "ledger.py"
+                original = implementation.read_bytes()
+                expression = b'" ".join(label.split())'
+                if original.count(expression) != 1:
+                    raise install.Conflict("F03 regression seed no longer matches its fixture")
+                implementation.write_bytes(original.replace(expression, b'label.strip()'))
             subprocess.run(["git", "init", "--quiet", str(target)], check=True, capture_output=True)
             if fixture not in {"F01", "F02", "F05"}:
                 subprocess.run(["git", "-C", str(target), "-c", "core.autocrlf=false", "add", "."], check=True, capture_output=True)

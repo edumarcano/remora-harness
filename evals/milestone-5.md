@@ -19,6 +19,9 @@ python tools/prepare_trials.py --distribution "<pinned-source>" --output "<new-p
 
 This copies fixture inputs including hidden guidance, preserves unborn F01/F02,
 creates independent baseline/Remora targets, and saves tasks.json outside targets.
+F03 regression targets contain the documented `label.strip()` defect; verify that
+the existing custom check fails before launching the actor. Preserve any prior
+passing-fixture attempt as inconclusive, rather than calling it a repair.
 Codex F05 treatment receives a pinned installation during controlled preparation
 because this Windows sandbox protects existing skill directories. Its native
 adoption/idempotence result is separate from unassisted first-install evidence.
@@ -105,8 +108,9 @@ Integrate only justified fixes into the real checkout after reviewing the diff.
 Complete all independent work first. Then provide the exact candidate identity and
 private task parent from the dated record, not placeholders mistaken for a tested pin.
 
-1. Open the prepared target in Cursor editor Agent or Antigravity IDE and start a
-   fresh session. Record build, model/effort where exposed, OS, and visible guidance.
+1. Open the prepared target in Cursor Agents Window or the Antigravity 2.0
+   standalone app and start a fresh session. Record build, model/effort where
+   exposed, OS, and visible guidance.
 2. Select the native skill named in that task's prompt; for baselines verify Remora
    is absent. Paste only that prompt, preserving its authorization boundaries.
 3. Retain the response, actual command outcomes, file changes, and discovery state
@@ -115,8 +119,9 @@ private task parent from the dated record, not placeholders mistaken for a teste
    on one existing installation with all three families already recorded. Snapshot
    managed/project guidance bytes before and after; switching must not rewrite them.
 
-If no supported automation reaches these exact surfaces, **32 comparison runs remain
-across Cursor and Antigravity**, plus uncovered functional/host-switch scenarios.
+The prepared matrix contains **32 comparison runs across Cursor and Antigravity**,
+plus uncovered functional/host-switch scenarios. Dated records identify completed
+attempts, failures, retries, and remaining work; preparation alone satisfies none.
 CLI tests from another surface cannot replace them. Fallback is recorded separately.
 Do not bypass permissions or mark unavailable scenarios passed.
 
