@@ -384,7 +384,7 @@ Repetition must be idempotent: with the same release, selections, and project st
 
 Adoption begins with a comparison, not a migration. Preserve the repository's working conventions and identify where Remora would duplicate, complement, or conflict with them.
 
-APEX and mimus are intended adoption cases. Extract reusable lessons from their workflows during implementation, but do not distribute their private content, project-specific facts, personal configuration, or branding as generic Remora policy.
+Remora self-dogfooding and a private, disposable Vulpes Health snapshot are the operational adoption cases. Vulpes currently establishes specification-only adoption evidence, not application-maintenance coverage. A finalized GitHub commit is not required; identify uncommitted inputs by private inventory and hashes. APEX and mimus remain historical design inputs, not required adoption targets; do not modify them during these trials. Extract reusable lessons from approved operational trials without distributing private content, project-specific facts, personal configuration, or branding as generic Remora policy.
 
 No bootstrap action creates a commit, pushes a branch, changes repository visibility, or publishes a release without separate authorization.
 
@@ -718,7 +718,7 @@ Evaluate maintenance burden as well as detection: unnecessary file changes, inst
 | Deterministic correctness | Unit and fixture tests for packaging, safe copying, metadata, and references |
 | Native integration | Explicit discovery and execution tasks in each recorded host surface |
 | Workflow behavior | Seeded tasks with a ground-truth rubric and clean controls |
-| Personal usefulness | Scoped adoption trials in APEX and mimus, with interventions and limitations recorded |
+| Personal usefulness | Disposable Remora self-dogfooding and Vulpes Health adoption, with input identity, interventions, and limitations recorded |
 
 The target repositories are useful case studies, not substitutes for controlled fixtures. Public fixtures must be synthetic or cleared for publication.
 
@@ -817,9 +817,18 @@ Implement purpose-aware audit and authorized reconciliation. Evaluate stale clai
 
 Add or refine planning, implementation, regression, review, test audit, and harness audit entrypoints around shared procedures. Demonstrate meaningful failure signals and preserve justified coverage. Avoid creating independent engines behind each skill.
 
-### Milestone 5: Verify portability and publish evidence
+### Milestone 5: Operational readiness and validation
 
-Test the same installation across Codex, Cursor, and Antigravity; run the paired pilot and adoption trials. Resolve release-critical failures, document remaining limits, and prepare a versioned public release.
+1. Complete technical prerequisites: pinned personal bootstrap packaging, selected profiles, installed integrity checks, and explicit update/removal with inspected recovery procedures.
+2. Complete automated checks, available native Codex trials, and controlled comparisons. Retain the full Section 16 matrix: F02/F05/F07/F10 twice per condition per environment (48 runs total), plus every applicable functional fixture once per target environment.
+3. Dogfood existing skills in a disposable Remora checkout through adoption, audits, planning, implementation, review, and historical regression repair.
+4. Conduct remaining real-environment trials and private Vulpes Health adoption using an approved disposable snapshot. Involve the owner only for necessary local access/interaction or material unresolved adjudication.
+
+Finish independently verifiable implementation and trials before requesting manual testing. Record implementation/independent-verification completion separately from milestone completion: pending required host or repository trials remain outstanding, never passing by assumption. Preserve all safety gates and evaluation thresholds.
+
+### Subsequent phase: Public v0.1 release preparation
+
+Review license and attribution, public artifact names, release notes, publication-safe evidence, and all Section 17 acceptance criteria. Resolve release blockers and review the exact target before any separately authorized publication. Operational validation does not itself authorize a release or waive a release requirement.
 
 These are dependency-ordered deliverables, not time estimates. Evaluation starts with the first fixture and continues through every milestone.
 

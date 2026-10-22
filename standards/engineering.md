@@ -18,6 +18,11 @@ Verify behavior in proportion to the change and review the actual diff. Report
 checks actually run, their results, and remaining limits. A configured command is
 not an executed check, and passing checks do not establish untested behavior.
 
+Selected references under .remora/profiles/ are optional context, not application
+presets. Consult only applicable installed references using manifest selections;
+missing selected files are installation gaps. Language, runtime, and deployment
+choices require separate repository evidence.
+
 ## Shared work procedure
 
 Establish the requested outcome, authorization, affected contracts, and acceptance

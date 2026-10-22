@@ -1,222 +1,150 @@
 # Remora
 
-Remora is a portable, agent-native engineering harness for AI-assisted software development.
-
-It is intended to provide reusable instructions, skills, and workflows that help coding agents establish consistent development practices, adapt to different projects, and maintain software quality as projects evolve.
-
-Remora is designed to work alongside existing coding environments rather than replace their execution capabilities. Its initial targets are Codex, Cursor, and Antigravity.
+Remora is a portable, agent-native engineering harness for AI-assisted software
+development. It supplies reusable skills, project adaptation, maintenance
+procedures, and small local helpers to the user's existing coding agent.
 
 ## Status
 
-Remora is in early development. Bootstrap installs a pinned project payload and
-supports explicitly requested adoption or later updates to root project guidance
-using the same Remora revision. The documentation workflow provides read-only
-auditing and authorized reconciliation. Installation includes engineering,
-documentation, and testing standards and seven project-local development and
-maintenance skills. Native-host discovery remains unverified.
+Milestone 5 separates operational readiness and real-world validation from later
+public v0.1 release preparation. The [specification](docs/product-spec.md) owns
+intended behavior; [evaluation records](evals/README.md) own observations.
+An implemented path is not automatically a tested host capability.
+The [operational record](evals/records/2026-10-21-operational.md) separates local
+Windows/Codex evidence, retained setup failures, and remaining host/CI gates.
 
-Milestone 2's bounded bootstrap implementation and local verification are recorded
-in the [functional trials](evals/records/2026-10-20-bootstrap-completion.md) and
-[refusal probes](evals/records/2026-10-20-bootstrap-refusals.md).
-The [documentation workflow record](evals/records/2026-10-20-documentation.md)
-covers Milestone 3's local trials, development feedback, and remaining review
-limits. The [development and assurance record](evals/records/2026-10-21-development.md)
-records Milestone 4's installed-entrypoint trials, controlled failure signals,
-preservation checks, and verification limits. These use the documented read-first fallback; native discovery and
-Codex/Cursor/Antigravity portability verification remain Milestone 5 work.
+Remora includes bootstrap, seven project-local workflows, three shared standards,
+optional language/runtime references, a self-contained bootstrap builder, installed
+integrity checks, and explicit reviewed update/removal. These use Python 3.11+
+and the standard library; no independent inference runtime or Remora API key exists.
 
-The [product and technical specification](docs/product-spec.md) defines intended behavior. The [evaluation guide](evals/README.md) explains fixture preparation, calibration, and development checks; the [dated baseline record](evals/records/2026-10-19-baseline.md) records the initial design inputs and testing candidates.
+Earlier observations remain in the [bootstrap record](evals/records/2026-10-20-bootstrap-completion.md),
+[refusal record](evals/records/2026-10-20-bootstrap-refusals.md),
+[documentation record](evals/records/2026-10-20-documentation.md), and
+[development record](evals/records/2026-10-21-development.md). Those are dated
+fallback trials, not native discovery certification for the current candidate.
 
-## First-use bootstrap
+## First use
 
-Open your target project in the coding host and supply a trusted local Remora
-checkout pinned to the intended commit. Ask the agent to read
-[the bootstrap entrypoint](skills/remora-bootstrap/SKILL.md) by itself before
-inspecting the target, then follow it with the target path,
-requested environments, and either preview or installation as the outcome. For
-example, replacing the bracketed inputs:
+Use a trusted local checkout pinned to an exact commit. Installer inputs must be
+committed and unmodified. Ask the host to read skills/remora-bootstrap/SKILL.md
+alone before any target operation, then follow it for the named target and hosts.
+The whole checkout accompanies the entrypoint; copying that skill alone is invalid.
 
-```text
-First read <distribution>/skills/remora-bootstrap/SKILL.md by itself, before
-any target inspection. Do not batch that read with target operations.
-Then follow it to initialize <target>
-with Remora for <environment>. Inspect the project and specification first.
-Preserve existing guidance and do not implement the application.
-```
-
-This is explicit local-entrypoint fallback, not native skill discovery. Supply the
-whole pinned checkout; copying the skill file alone omits required resources.
-The bootstrap source files and installer inputs must be committed and unmodified.
-The bootstrap procedure requires comparing a supplied exact commit with the
-distribution and retaining that identity through installation. It requires root
-path checks before reading guidance and stopping affected writes after unsafe
-path findings, source-commit movement, or root changes since inspection. These
-agent instructions reduce accidental writes; they are not an enforced filesystem
-transaction.
-
-Preview stays read-only and drafts guidance in the conversation. Installation uses
-the helper below, validates it, and exclusively creates root `AGENTS.md` only when
-absent. That file remains project-owned and outside the installation manifest.
-Installation alone preserves existing instructions; necessary adoption edits are proposals.
-The [seed](templates/AGENTS.md) is adapted from target evidence, with no invented
-stack or commands. Installation requests authorize these described local changes
-without another approval step; material unresolved conflicts stop affected writes.
-
-To authorize minimal edits to existing root guidance, ask explicitly:
+For native personal discovery, build a self-contained directory:
 
 ```text
-First read <distribution>/skills/remora-bootstrap/SKILL.md by itself, before
-any target inspection. Do not batch that read with target operations.
-Then follow it to install and adopt Remora
-in <target> for <environment>. Update root AGENTS.md only where repository
-evidence justifies it. Preserve existing project decisions and workflow owners.
+python tools/package.py --output "<new-directory>/remora-bootstrap"
 ```
 
-For an installed project, request an update to root `AGENTS.md` after tooling or
-requirements change, using the same pinned distribution and environment selections.
-Bootstrap drafts the scoped changes, checks installation integrity, and applies
-only authorized root edits. Preview remains read-only. Adequate guidance needs no
-rewrite; nested instructions and existing skills remain outside the edit scope.
-Changed files or unsafe paths stop affected edits. Guidance stays project-owned
-and outside the manifest; semantic decisions are made by the host agent.
+The output contains one discoverable SKILL.md, its helper/references/seed, and an
+inert payload.zip plus bundle.json. It needs no source checkout or Git for payload
+copying. Review and preserve the full directory. Hashes detect inconsistency;
+they are not signatures. Never fetch or execute a moving remote script.
+Install the directory into the host's documented personal skill location, avoiding
+other copies of the same identity. See [host notes](compatibility/README.md).
 
-The bootstrap entrypoint and its seed stay in the source checkout; the seven
-development and maintenance skills are installed project-locally. Global bootstrap packaging,
-managed-content updates, profiles, and automatic recovery are subsequent work.
-An installation from an older source revision cannot be upgraded through guidance
-specialization.
+Ask to initialize/install to create managed files and absent root guidance.
+Existing AGENTS.md stays byte-identical unless you explicitly request adoption
+or specialization edits. Preview/audit never writes. A specification can establish
+intentions without establishing application implementation or test commands.
 
-The [first-use trial record](evals/records/2026-10-19-first-use-bootstrap.md)
-documents initial local Codex CLI fallback observations. The
-[adoption trial record](evals/records/2026-10-19-adoption-bootstrap.md) covers
-implemented-project guidance edits and specialization, with their limits.
+## Installation and selection
 
-## Installation helper
-
-Use Python 3.11+ and Git with a trusted local checkout pinned to the commit you
-intend to install. The installer, standards, skills, and seed must be
-committed and have no local modifications. No download or dependency installation
-occurs. From that checkout:
+From the pinned checkout or personal bootstrap directory:
 
 ```text
-python helpers/install.py --target "<existing-project>" --environment codex
-python helpers/install.py --target "<existing-project>" --environment codex --apply
-python helpers/install.py --check --target "<existing-project>"
+python helpers/install.py --target "<project>" --environment codex
+python helpers/install.py --target "<project>" --environment codex --apply
+python helpers/install.py --check --target "<project>"
 ```
 
-The first command previews without writing. Only `--apply` creates files. Repeat
-`--environment` to record additional requested families: `codex`, `cursor`, and
-`antigravity`. These selections do not certify compatibility. Using an absolute
-path to the script also works from another working directory.
+Default invocation previews. Repeat --environment for codex, cursor, antigravity.
+Requested hosts are metadata, not certification. Add --profile python,
+--profile typescript, --profile local, or --profile web only when target evidence
+justifies those independent dimensions. No profile is the default. References do
+not choose frameworks, tooling, architecture, or executable commands.
 
-Installation creates engineering, documentation, and testing standards under
-`.remora/standards/`, the seven skills listed below under `.agents/skills/`, and
-`.remora/installation.json` from the committed payload.
-The manifest records schema version 1, the `development` release label, exact
-source commit, requested environments, no selected profiles, and managed-file
-SHA-256 hashes. Installed bytes come from Git objects, independent of checkout
-line endings. Root `AGENTS.md`, project context, specifications, existing skills,
-and unrelated files remain project-owned and unchanged. Existing skill names and
-owners are preserved; no host configuration or automatic instruction routing is
-installed by the helper.
+The installation owns .remora/standards/, .remora/helpers/install.py, selected
+.remora/profiles/, seven .agents/skills/remora-* entrypoints, and
+.remora/installation.json. The schema-1 manifest records development, exact source
+revision, requested hosts, selected profiles, and managed SHA-256 hashes.
+Root/nested instructions, specifications, existing skills, project context, and
+unrelated files remain project-owned. Remora's own root AGENTS.md is never a seed.
 
-An identical rerun makes no changes. Occupied unmanaged destinations, modified or
-missing managed files, malformed metadata, unsafe links, or different source and
-environment selections stop the operation. Updates and automatic recovery are
-not implemented. On interrupted writes, inspect the reported created files and
-Git state before deciding how to recover; the installer preserves partial files
-and refuses to adopt them silently. Filesystem writes are not a whole-tree
-transaction or protection against hostile concurrent filesystem changes.
-The host must permit writes to every declared destination, including existing
-`.agents/skills/` directories. A permission failure may leave a partial installation;
-use the host's normal permission controls rather than bypassing its protections.
+An identical rerun preserves bytes and modification times. Ordinary installation
+refuses different revisions/selections, occupied unmanaged destinations even when
+identical, drift, missing managed assets, malformed metadata, and unsafe paths.
+No dependencies, network access, host configuration, or application execution occur.
+Installed bytes are pinned Git objects or validated package bytes, independent of
+checkout line endings. Writes are bounded checks, not a whole-tree transaction or
+protection against hostile concurrent filesystem changes.
 
-`--check` compares the installation to the same pinned source checkout, including
-the source hashes; keep that checkout available for this foundation's checks.
-Exit codes are 0 for success, 1 for conflicts or integrity failures, and 2 for
-invalid invocation or incomplete checks. Checks establish bounded installation
-integrity, not authorship, instruction loading, or workflow effectiveness.
+## Installed checks and lifecycle
 
-Bundle validation checks Remora's authored frontmatter subset: exactly `name`
-and `description` as nonempty single-line plain strings, with a valid name matching
-the skill directory. Descriptions start with an ASCII letter; YAML boolean/null
-values, mapping delimiters, comments, quoted values, and complex YAML are outside
-this subset. In installed skills, backtick-delimited target-root files
-under `.remora/standards/` and `.agents/skills/` declare required resources and
-must belong to the payload. This is a bounded convention, not arbitrary YAML,
-Markdown, shell-command, or semantic validation. Source-relative Markdown links
-remain covered by the maintainer content checker within its documented limits.
+Normal workflows need no separate checkout. Inspect the installed helper before
+executing it. From the target:
 
-## Development and maintenance workflows
+```text
+python .remora/helpers/install.py --check --target .
+python .remora/helpers/install.py --check --target . --source "<trusted-distribution>"
+```
+
+The first checks local manifest/hash consistency only. The second compares with
+a separately trusted matching distribution. An installed helper and manifest cannot
+certify their own provenance. Missing tools/source are explicit verification gaps;
+manual inspection is not an equivalent source check. Exit codes: 0 completed,
+1 conflict/integrity failure, 2 invalid invocation or incomplete execution.
+
+Explicit update uses both trusted old and desired distributions:
+
+```text
+python "<new>/helpers/install.py" --target "<project>" --update --previous-source "<old>"
+```
+
+Repeat desired --environment/--profile options, or omit them to retain selections.
+Use --clear-profiles to deliberately select none. Preview reports changes and a
+Plan SHA-256; apply the same arguments with --apply --expect-plan <digest>
+--backup "<new-private-directory-outside-project>". A changed source, target, or
+selection invalidates the preview. No semantic merging or silent upgrade occurs.
+Known earlier inventories require a genuine matching trusted source.
+
+Removal uses the matching distribution with --remove --previous-source <matching>
+and the same preview/digest/backup process. It removes only verified managed files,
+leaving project guidance and unrelated files. Review obsolete routing separately;
+project-owned edits need explicit authorization. No recursive directory deletion.
+For installations predating lifecycle support, run the current reviewed helper
+and supply the old matching distribution through --previous-source; the historical
+helper itself does not gain new commands.
+
+The helper stores before-images and operation.json outside the target, invalidates
+the completion manifest before mutation, and publishes a new manifest last.
+Failures retain diagnostics and partial work. [Recovery instructions](compatibility/recovery.md)
+explain narrow inspection/restoration; there is no automatic rollback engine.
+Do not reset/clean a target or bypass host permission controls.
+
+## Workflows
 
 | Installed skill | Outcome |
 | --- | --- |
-| `remora-plan-change` | Repository-grounded plan; read-only unless saving is requested |
-| `remora-implement-plan` | Complete an approved plan or clear scoped request, verify, and review |
-| `remora-fix-regression` | Diagnose read-only or perform an authorized repair with failure evidence |
-| `remora-review-change` | Read-only review of an exact change range or named implementation |
-| `remora-audit-documentation` | Audit documentation or reconcile when edits are requested |
-| `remora-audit-tests` | Explain sampled protection and missing failure signals; retain justified tests |
-| `remora-audit-harness` | Inspect installation integrity, guidance ownership, drift, and overlap |
+| remora-plan-change | Read-only, repository-grounded decision-complete plan |
+| remora-implement-plan | Authorized implementation, verification, and diff review |
+| remora-fix-regression | Read-only diagnosis or explicitly requested repair |
+| remora-review-change | Read-only review of a named implementation or exact surface |
+| remora-audit-documentation | Read-only audit or authorized coherent reconciliation |
+| remora-audit-tests | Sampled protection chains; retain uncertain coverage |
+| remora-audit-harness | Installation, ownership, drift, and overlap assessment |
 
-Select the named skill through the host interface where available. For fallback,
-ask the agent first to read `<target>/.agents/skills/<name>/SKILL.md` by itself,
-then follow it for your scoped task. Include the outcome, constraints, and
-acceptance criteria; a separate saved plan is unnecessary for a clear implementation
-request. Supply an exact range or named implementation for review, and state
-whether local changes are included.
+Select a skill through the host's native interface. Fallback: first read
+<target>/.agents/skills/<name>/SKILL.md alone, then follow it. That establishes
+fallback execution only. Every skill explicitly reads relevant shared standards
+and project guidance; links are not assumed automatic imports.
 
-The skills explicitly load shared procedures from the installed standards using
-target-root paths. They work through the existing host agent; no independent API,
-mutation engine, or orchestration service is involved. Audit/review does not
-authorize repairs, dependency installation, publication, or controlled faults.
-Faults require explicit permission and isolation in a disposable copy. Results
-ordinarily remain in the conversation. Missing tools or a matching trusted source
-for installation checks are reported as verification gaps; manual inspection is
-not equivalent to automated provenance checking.
+Name outcome, constraints, scope, and acceptance criteria. Review/audit does not
+authorize repairs, dependency installs, publication, or faults. Deliberate faults
+need explicit permission and a disposable copy. Ordinary reports remain in the
+conversation; saved evaluation evidence excludes private data and full transcripts.
 
-Managed-content upgrades remain unsupported. Use the matching source for existing
-installation checks; a newer checkout refuses older inventories rather than
-silently replacing them. Evaluate the expanded payload in a fresh target.
-
-## Documentation maintenance
-
-After installation, select `remora-audit-documentation` through the host's skill
-interface where available. For explicit local-entrypoint fallback, replace the
-target path below:
-
-```text
-First read <target>/.agents/skills/remora-audit-documentation/SKILL.md by itself.
-Then follow it to audit this repository's documentation. Do not edit files or
-save a report. Report supported findings and verification gaps.
-```
-
-Name particular documents or an exact change range for a narrower task. Explicitly
-state whether local staged, unstaged, and untracked changes belong in that range.
-For authorized correction, request `Reconcile the current documentation within
-<scope> against repository evidence, preserving adequate material, unrelated
-changes, accurate history, and approved requirements.` Audit/preview stays
-read-only; a reconciliation request authorizes necessary scoped documentation
-edits. Source defects or unresolved requirement conflicts are reported rather than
-silently resolved by changing documentation. Adequate content needs no diff.
-
-The [skill](skills/remora-audit-documentation/SKILL.md) explicitly reads the
-installed [documentation standard](standards/documentation.md) and engineering
-standard from the target root. Missing resources are an incomplete installation,
-not permission to fetch replacements. No Python runtime is needed to read and
-follow the installed workflow; Python and Git are needed for installation checks.
-Results ordinarily stay in the conversation. Following an installed file proves
-fallback execution only; the [evaluation guide](evals/README.md) separates that
-evidence from later native discovery and cross-host evaluation.
-
-## Design principles
-
-- **Agent-native:** Use the reasoning and execution capabilities of existing coding environments.
-- **Portable:** Share engineering practices across environments, languages, and project architectures.
-- **Project-aware:** Adapt guidance to actual requirements and repository evidence.
-- **Maintainable:** Treat documentation integrity, test quality, and configuration health as ongoing responsibilities.
-- **Lightweight:** Avoid unnecessary infrastructure, dependencies, and complexity.
-
-## Documentation
-
-See [Product and Technical Specification](docs/product-spec.md) for the intended architecture, requirements, development milestones, and acceptance criteria.
+See the [evaluation guide](evals/README.md) and [Milestone 5 test packet](evals/milestone-5.md)
+for preparation, required comparisons, remaining manual actions, and closure gates.
+Public publication, marketplace packaging, and release notes are a subsequent phase.
