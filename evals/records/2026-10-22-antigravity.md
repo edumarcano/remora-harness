@@ -1,5 +1,10 @@
 # Antigravity standalone operational observations
 
+Later scope reconciliation: the [Cursor smoke test](2026-10-23-cursor.md) completed
+the accepted Milestone 5 Cursor requirement. Statements below about pending Cursor
+trials describe the original protocol at this cohort's handoff. The omitted trials
+are waived for Milestone 5, not executed or passing.
+
 Status: Antigravity standalone validation complete for the build, runtime pin and
 reviewed workflows below. Native discovery, all applicable functional scenarios,
 the 16-comparison matrix, repeat installation, installed-only use, and the
@@ -48,14 +53,14 @@ the Codex-to-Antigravity leg; the Cursor leg is outstanding.
 | --- | --- | --- |
 | F01 | Empty/unborn bootstrap completed; no application decisions or tooling invented | Pinned-source check passed; only installation and root guidance added |
 | F03 original | Correctly reported that the prepared code already passed; no repair | All original bytes and timestamps unchanged; inconclusive repair setup |
-| F03 corrected | Existing whitespace assertion failed before repair; existing suite passed afterward | Only ledger.py changed; two existing tests passed in parent verification |
+| F03 corrected | Existing whitespace assertion failed before repair; existing suite passed afterward | Only ledger.py changed; two existing tests passed in independent verification |
 | F04 | Separated configured tooling/deployment from unexecuted or unknown behavior | All files unchanged |
 | F06 | Read component-scoped instructions; recovered from wrong working directory; component verification passed two tests | All non-cache files unchanged |
 | F08 | Consolidated documentation ownership; actual behavior probe returned limit 40 and preserved duplicates; empty test discovery failed with zero tests | Only README and usage document changed; CRLF became LF |
 | F09 implementation | Repaired order/duplicate preservation and added production assertions | Code, README and one new test file changed; two tests passed |
 | F09 original review | Identified sorting/deduplication violations without repairing | All files unchanged |
 | F11 | Retained four tests protecting distinct domain/service boundaries; native suite passed four tests | All non-cache files unchanged |
-| F12 | Reported missing testing standard and failed local integrity check without repairing | All files unchanged; parent reproduced missing-resource refusal |
+| F12 | Reported missing testing standard and failed local integrity check without repairing | All files unchanged; independent verification reproduced missing-resource refusal |
 
 The original F03 preparation helper copied the passing adoption fixture without
 the regression mutation required by the existing protocol. The helper now seeds
@@ -116,7 +121,7 @@ scored incorrect rather than silently excluded.
 Each baseline F10 response classified an extra edge-case group as a supported
 weakness without establishing the relevant contract. Counting those groups as
 unsupported yields 4/6 actionable precision, below 0.80. This is the conservative
-recorded score; an owner may separately adjudicate those semantic suggestions,
+recorded score; human review may separately adjudicate those semantic suggestions,
 but they do not block the Remora result or improve its denominator. Remora
 listed such areas as unexamined, separate from its four actionable findings.
 No shared-outcome superiority claim follows from this small cohort. GUI-reported
@@ -215,6 +220,6 @@ standing in for missing trials. Three-host installation switching still needs
 its Cursor leg. Cursor Agents Window still requires its 16 comparisons
 and uncovered functional scenarios; Cursor has deliberately not been exercised.
 
-The owner selected standalone Antigravity and Cursor Agents Window as the primary
+Standalone Antigravity and Cursor Agents Window are the primary
 Milestone 5 surfaces. The full comparison minimum and safety/performance gates
 remain in force. Milestone 5 and public v0.1 release acceptance remain incomplete.

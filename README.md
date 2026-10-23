@@ -4,25 +4,13 @@ Remora is a portable, agent-native engineering harness for AI-assisted software
 development. It supplies reusable skills, project adaptation, maintenance
 procedures, and small local helpers to the user's existing coding agent.
 
-## Status
+Remora includes bootstrap, seven project workflows, shared standards, optional
+language/runtime references, installed integrity checks, and reviewed updates and
+removal. Helpers require Python 3.11+ and use the standard library.
 
-Milestone 5 separates operational readiness and real-world validation from later
-public v0.1 release preparation. The [specification](docs/product-spec.md) owns
-intended behavior; [evaluation records](evals/README.md) own observations.
-An implemented path is not automatically a tested host capability.
-The [operational record](evals/records/2026-10-21-operational.md) separates local
-Windows/Codex evidence, retained setup failures, and remaining host/CI gates.
-
-Remora includes bootstrap, seven project-local workflows, three shared standards,
-optional language/runtime references, a self-contained bootstrap builder, installed
-integrity checks, and explicit reviewed update/removal. These use Python 3.11+
-and the standard library; no independent inference runtime or Remora API key exists.
-
-Earlier observations remain in the [bootstrap record](evals/records/2026-10-20-bootstrap-completion.md),
-[refusal record](evals/records/2026-10-20-bootstrap-refusals.md),
-[documentation record](evals/records/2026-10-20-documentation.md), and
-[development record](evals/records/2026-10-21-development.md). Those are dated
-fallback trials, not native discovery certification for the current candidate.
+See [host compatibility](compatibility/README.md) for tested surfaces and evidence.
+The [specification](docs/product-spec.md) defines intended behavior. Public v0.1
+release preparation follows operational validation.
 
 ## First use
 
@@ -106,7 +94,8 @@ Repeat desired --environment/--profile options, or omit them to retain selection
 Use --clear-profiles to deliberately select none. Preview reports changes and a
 Plan SHA-256; apply the same arguments with --apply --expect-plan <digest>
 --backup "<new-private-directory-outside-project>". A changed source, target, or
-selection invalidates the preview. No semantic merging or silent upgrade occurs.
+selection invalidates the preview. An unchanged update preserves timestamps and
+creates no backup directory. No semantic merging or silent upgrade occurs.
 Known earlier inventories require a genuine matching trusted source.
 
 Removal uses the matching distribution with --remove --previous-source <matching>

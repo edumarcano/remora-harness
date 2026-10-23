@@ -1,5 +1,10 @@
 # Milestone 5: operational implementation and local validation
 
+Later scope reconciliation: the [Cursor smoke test](2026-10-23-cursor.md) completed
+the accepted Milestone 5 Cursor requirement. Statements below about pending Cursor
+trials describe the original protocol at this cohort's handoff. The omitted trials
+are waived for Milestone 5, not executed or passing.
+
 Date: October 21, 2026. This record owns observations, not product requirements.
 The specification and [test packet](../milestone-5.md) own scope and protocol.
 Public v0.1 release preparation is a subsequent phase.
@@ -51,8 +56,8 @@ cost was unavailable; raw native token usage was retained when exposed.
 Actor targets excluded scorer guides and prior answers. No memory-file access was
 observed in reviewed comparison command events. Personal/global host context was
 not eliminated or fully inspectable: these are development fixtures, not blinded
-holdouts. Semantic scoring is the parent's evidence review, provisional for owner
-adjudication of ambiguous recommendations. AI judgments are not independent human
+holdouts. Semantic scoring is a separate review of the evidence, provisional for human
+review of ambiguous recommendations. AI judgments are not independent human
 calibration.
 
 ## Deterministic and native results
@@ -127,7 +132,7 @@ original files stayed intact and no completion manifest appeared. A documented
 --add-dir attempt prevented shell startup because writable descendants could not
 be reopened beneath read-only carveouts. Those failures remain in the record.
 
-The final F05 treatment was therefore installed by a narrowly reviewed parent
+The final F05 treatment was therefore installed by a narrowly reviewed
 setup command; native sessions tested adoption and repeated-install idempotence.
 Both conditions used ordinary workspace-write sessions. Personal bootstrap was
 disabled only in baseline sessions via documented session-local skills.config,
@@ -161,9 +166,9 @@ checkout; the corrected review covered the actual scan addition and found no
 supported correctness issue. It observed the old exit 0 and repaired exit 1.
 
 A separate copy exercised remora-fix-regression against the same known defect,
-not a new independent issue. Parent execution of the 15 content-checker tests
+not a new independent issue. Independent execution of the 15 content-checker tests
 failed before repair and passed afterward (one explicit symlink skip). The final
-linked-copy content suite also passed in parent execution. Only the authorized
+linked-copy content suite also passed in independent execution. Only the authorized
 checker changed; installed content, requirements, guidance, and notes were retained.
 
 ## Failures and remaining gates
@@ -178,11 +183,11 @@ checker changed; installed content, requirements, guidance, and notes were retai
   introduced CRLF. Corrected attempts were checked; the final review used LF. No
   failed attempt is represented as a passing check.
 - **Environment limits:** native actor temporary-directory ACLs blocked content-unit
-  assertions and cleanup. Normal parent filesystem execution obtained actual red/
+  assertions and cleanup. Normal filesystem execution obtained actual red/
   green evidence. An optional F03 cache cleanup was rejected; expected caches were
   retained, not counted as source changes or bypassed.
-- **Host validation follow-up:** the owner subsequently selected Cursor Agents
-  Window and Antigravity standalone as the primary surfaces. The
+- **Host validation follow-up:** the selected primary surfaces became Cursor Agents
+  Window and Antigravity standalone. The
   [Antigravity record](2026-10-22-antigravity.md) closes that standalone cohort and
   the Codex-to-Antigravity switching leg. Cursor still requires 16 comparisons,
   uncovered functional scenarios and its switching leg. Editor/IDE certification

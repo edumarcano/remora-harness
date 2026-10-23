@@ -9,7 +9,7 @@
 | Date | October 15, 2026 |
 | Status | Draft for implementation; not a claim of implemented or verified capabilities |
 | Intended repository location | `docs/product-spec.md` |
-| Primary user | The project owner, working across multiple repositories and coding environments |
+| Primary user | A developer working across multiple repositories and coding environments |
 
 ## Document purpose
 
@@ -54,7 +54,7 @@ Establishing an AI-assisted development workflow currently requires repeatedly d
 
 Maintenance is equally important. Documentation can accumulate local wording patches while losing coherence, duplicating ownership, or mixing intended behavior with historical observations. Tests can pass without demonstrating that they protect the behavior that matters. The user needs evidence they can understand, rather than more confident assurances from an agent.
 
-The owner's experiences in APEX and mimus motivate these requirements. They are not a controlled comparison of those repositories or evidence that one environment, stack, or instruction set is superior. In particular, problems introduced by an external planning conversation must not be attributed automatically to the coding agent or repository harness.
+Experience developing APEX and mimus motivated these requirements. Those experiences are not a controlled comparison of the repositories or evidence that one environment, stack, or instruction set is superior. In particular, problems introduced by an external planning conversation must not be attributed automatically to the coding agent or repository harness.
 
 ### 1.2 Desired outcomes
 
@@ -285,7 +285,7 @@ remora-harness/
 |-- templates/                   # Minimal seed and report examples
 |-- compatibility/               # Host-specific notes and verified results
 |-- helpers/                     # Bounded runtime-independent utilities
-|-- tools/                       # Maintainer packaging and validation
+|-- tools/                       # Packaging and validation
 |-- tests/                       # Deterministic helper and fixture tests
 |-- evals/                       # Tasks, rubrics, run records, results
 `-- docs/
@@ -579,13 +579,14 @@ This is a documented integration basis, not evidence that Remora has already bee
 
 | Environment | Shared project files | Personal bootstrap location documented at review time | Initial validation target |
 | --- | --- | --- | --- |
-| Codex | Root `AGENTS.md`; `.agents/skills/` | `~/.agents/skills/` | A recorded local Codex surface; use CLI as the reference test surface unless the owner selects another |
+| Codex | Root `AGENTS.md`; `.agents/skills/` | `~/.agents/skills/` | A recorded local Codex surface; use CLI as the reference test surface unless another surface is explicitly selected |
 | Cursor | Root `AGENTS.md`; `.agents/skills/` | `~/.agents/skills/` or `~/.cursor/skills/` | Cursor Agents Window |
 | Antigravity | Root `AGENTS.md`; `.agents/skills/` | `~/.gemini/config/skills/` for app/IDE | Antigravity 2.0 standalone app |
 
-The owner selected these everyday-use surfaces for Milestone 5. Record each actual
+These are the selected everyday-use surfaces for Milestone 5. Record each actual
 build and surface; these targets do not establish editor/IDE or remote support.
-The required comparison minimum and operational acceptance thresholds are unchanged.
+The Milestone 5 Cursor exception in Section 18 changes trial coverage only;
+operational acceptance thresholds remain unchanged.
 
 Codex and Cursor can share one personal bootstrap copy in `~/.agents/skills/`. Do not additionally install the same identity in another discovered directory without checking for duplicates. Antigravity CLI has a distinct documented personal directory; CLI support is not inferred from an IDE smoke test.[^s2][^s4][^s6]
 
@@ -633,7 +634,7 @@ The skills remain readable and usable without Python. When a helper cannot run, 
 | Installation planning/copying | Preview paths, detect collisions, copy exact release files, write installation metadata | Select project architecture or rewrite project-owned prose |
 | Installation/reference checking | Compare managed file hashes; check supported literal local references and expected assets | Claim arbitrary Markdown, shell command, or semantic conflict validation |
 
-Maintainer tooling can package the bootstrap and project distributions. The exact executable names are not a public command suite in v0.1. Agents and users should be able to inspect help and run helpers directly without installing a daemon or application framework.
+Development tools can build the bootstrap and project distributions. The exact executable names are not a public command suite in v0.1. Agents and users should be able to inspect help and run helpers directly without installing a daemon or application framework.
 
 ### 13.2 Behavioral requirements
 
@@ -824,11 +825,20 @@ Add or refine planning, implementation, regression, review, test audit, and harn
 ### Milestone 5: Operational readiness and validation
 
 1. Complete technical prerequisites: pinned personal bootstrap packaging, selected profiles, installed integrity checks, and explicit update/removal with inspected recovery procedures.
-2. Complete automated checks, available native Codex trials, and controlled comparisons. Retain the full Section 16 matrix: F02/F05/F07/F10 twice per condition per environment (48 runs total), plus every applicable functional fixture once per target environment.
+2. Complete automated checks, available native Codex trials, and controlled comparisons. Use the Section 16 matrix for Codex and Antigravity: F02/F05/F07/F10 twice per condition (32 runs total), plus applicable functional fixtures. Apply the bounded Cursor exception below.
 3. Dogfood existing skills in a disposable Remora checkout through adoption, audits, planning, implementation, review, and historical regression repair.
-4. Conduct remaining real-environment trials and private Vulpes Health adoption using an approved disposable snapshot. Involve the owner only for necessary local access/interaction or material unresolved adjudication.
+4. Conduct remaining real-environment trials and private Vulpes Health adoption using an approved disposable snapshot. Request input only for necessary local access/interaction or material unresolved adjudication.
 
 Finish independently verifiable implementation and trials before requesting manual testing. Record implementation/independent-verification completion separately from milestone completion: pending required host or repository trials remain outstanding, never passing by assumption. Preserve all safety gates and evaluation thresholds.
+
+For Milestone 5, Cursor Agents Window requires a native discovery and representative
+read-only workflow smoke test. Its 16 comparison runs and remaining functional and
+switching scenarios are waived because of quota cost and the limited distinguishing
+value of the completed comparisons. They are not counted as passes. Cursor's broader
+workflow behavior and comparative effectiveness remain unmeasured. This exception
+does not change Section 16's general comparison protocol or silently satisfy the
+Section 17 release criteria; review remaining release coverage during the subsequent
+phase. The original 48-run protocol remains documented as the initial design.
 
 ### Subsequent phase: Public v0.1 release preparation
 
@@ -847,7 +857,7 @@ These are dependency-ordered deliverables, not time estimates. Evaluation starts
 | Read-only audits by default | Limits accidental churn | Findings still need an authorized correction step |
 | Small helpers | Reliable objective checks without a competing application | Cannot settle semantic documentation or test-quality questions |
 | Basic test assurance first | Useful behavior-level explanations with manageable scope | No broad proof of suite effectiveness or equivalence |
-| No autonomous upgrade service | Predictable behavior and reviewable changes | Owner must initiate and inspect updates |
+| No autonomous upgrade service | Predictable behavior and reviewable changes | Updates require explicit initiation and review |
 
 Portability means the same procedures and evidence expectations can be used across hosts. It does not mean identical responses, identical instruction-loading semantics, or identical native features.
 
@@ -865,7 +875,7 @@ Automatic semantic upgrades, a universal policy language, mandatory multi-agent 
 
 Select the repository license and review attribution for any reused material. Record tested host versions and surfaces, finalize release artifact names, and decide which real-project evidence is safe to publish.
 
-The owner's actual working machines and host versions determine the release compatibility matrix. This specification does not claim those environments were exercised while the document was written.
+The actual working machines and host versions determine the release compatibility matrix. This specification does not claim those environments were exercised while the document was written.
 
 These publication details do not block implementing the core workflows. A change to agent-native execution, project ownership, or the no-independent-API requirement would be a product-direction change and must be reviewed explicitly.
 

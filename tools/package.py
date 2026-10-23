@@ -16,11 +16,7 @@ def build(source: Path, output: Path):
     if output.exists():
         raise install.Conflict("Package output must not exist")
     output.mkdir(parents=True)
-    exposed = {"SKILL.md": "skills/remora-bootstrap/SKILL.md",
-               "helpers/install.py": "helpers/install.py",
-               "templates/AGENTS.md": "templates/AGENTS.md",
-               **{name: name for name in install.PAYLOAD if name.startswith("standards/")}}
-    for outer, inner in exposed.items():
+    for outer, inner in install.EXPOSED.items():
         install.create_file(output, outer, files[inner], [])
     with (output / install.BUNDLE).open("xb") as stream, zipfile.ZipFile(stream, "w") as archive:
         for name in sorted(files):

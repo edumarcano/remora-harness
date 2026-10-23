@@ -39,6 +39,21 @@ Before any target inventory, Git query, or guidance read, use the verified helpe
 source_inputs(distribution) to validate its complete source, then inspect_path()
 on the target and root AGENTS.md. Require a directory target and absent or regular
 root guidance using lstat(). Perform this preflight separately from target reads.
+
+Read the helper's signatures before calling its Python API. For example, after
+loading the verified helper as `helper`:
+
+```python
+from pathlib import Path
+revision, committed_files = helper.source_inputs(Path(distribution))
+helper.inspect_path(Path(target).absolute())
+helper.inspect_path(Path(target).absolute() / "AGENTS.md")
+```
+
+`source_inputs` returns a tuple, not an object with named attributes. The path
+checks above supplement the directory and root-file type checks; they do not
+replace them. Compare `revision` with the requested pin before proceeding.
+
 Do not inspect an unsafe target or follow links/reparse points. Do not import
 application code. If preflight cannot run, report that gap and stop target access.
 

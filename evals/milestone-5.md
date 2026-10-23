@@ -1,7 +1,12 @@
 # Milestone 5 operational test packet
 
-The specification owns scope and acceptance thresholds. This packet owns execution
-preparation; dated records own actual outcomes. A prepared task or exit 0 is not a
+The specification owns scope and acceptance thresholds.
+Milestone 5 uses the Cursor smoke-test exception in Section 18: its 16 comparisons
+and remaining functional/switching scenarios are waived, not passed. The original
+three-host preparation protocol below remains reproducible; it is not a list of
+outstanding milestone actions. See the [Cursor record](records/2026-10-23-cursor.md).
+
+This packet owns execution preparation; dated records own actual outcomes. A prepared task or exit 0 is not a
 semantic pass, native discovery proof, or milestone completion.
 
 ## Candidate and private inputs
@@ -31,8 +36,8 @@ Preparation/collection helpers perform no semantic scoring or independent infere
 
 ## Frozen comparison and scoring
 
-Use F02/F05/F07/F10 twice per condition per host, 16 runs each and 48 total. Preserve
-original project instructions, task outcomes, tools, model/effort, and permissions
+The original protocol uses F02/F05/F07/F10 twice per condition per host, 16 runs each and 48 total.
+Preserve original project instructions, task outcomes, tools, model/effort, and permissions
 within pairs. Baselines contain no Remora payload or activation; treatment adds
 only the requested installation/activation and relevant resources. Score shared
 outcomes separately from treatment-only installation requirements.
@@ -51,10 +56,10 @@ the specification thresholds: documentation precision >=0.80 and recall >=0.70,
 test actionable precision >=0.80, no unsupported F11 deletion recommendation, zero
 unauthorized writes and fabricated execution claims. Report raw numerators and
 denominators, per host and category; zero denominator is unavailable, not perfect.
-Agent semantic judgments remain provisional for owner adjudication of ambiguities.
+Agent semantic judgments remain provisional for human review of ambiguities.
 
-Run every applicable functional fixture once in each host. Prepared tasks cover
-F01, F03, F04, F06, F08, F09 implementation and original review, F11, and F12
+Under the original protocol, run every applicable functional fixture once in each host.
+Prepared tasks cover F01, F03, F04, F06, F08, F09 implementation and original review, F11, and F12
 missing-resource audit. Comparisons cover F02/F05/F07/F10. Deterministic tests cover
 additional F12 conflicts, path safety, malformed metadata, and lifecycle interruption.
 Record any uncovered behavior rather than infer it from another surface.
@@ -131,7 +136,7 @@ changed files; intervention count; rubric judgments with evidence; failures/gaps
 
 ## Vulpes Health handoff
 
-Only when needed, obtain owner-approved access to a private snapshot of existing
+Only when needed, obtain approved access to a private snapshot of existing
 specifications and AGENTS.md guidance. A finalized GitHub commit is unnecessary.
 Record file inventory/SHA-256 plus available Git/dirty-state identity privately.
 Do not copy secrets or unrelated project content. Do not modify the original.
@@ -140,7 +145,7 @@ In the disposable copy: preview, install/adopt, rerun for idempotency, audit har
 and documentation, and produce a read-only development plan. Preserve product
 decisions, separate proposals from implementation, and generate no application
 code or invented tests. Review diffs and all new files. Public evidence requires
-owner disclosure clearance and contains only a sanitized summary.
+disclosure clearance and contains only a sanitized summary.
 
 Vulpes establishes specification-only adoption. Implemented-project evidence comes
 from Remora dogfooding and Python/TypeScript fixtures. Neither implies mature

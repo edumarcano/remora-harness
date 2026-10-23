@@ -686,12 +686,15 @@ runtime bytes without checking identity. These are development fixtures once use
 
 ## Milestone 5 operational validation
 
-The [operational test packet](milestone-5.md) owns the full comparison matrix,
-native-host preparation, disposable dogfooding, Vulpes snapshot handoff, and
+The [operational test packet](milestone-5.md) records the original comparison matrix
+and the accepted Milestone 5 Cursor exception, native-host preparation, disposable dogfooding, Vulpes snapshot handoff, and
 separate implementation/milestone closure states. Earlier records retain their
 original dated limits; they are not current native discovery evidence.
 The [operational record](records/2026-10-21-operational.md) reports the implemented
 local lifecycle, Codex comparison, dogfooding, and remaining verification gates.
+
+The [Cursor record](records/2026-10-23-cursor.md) records the completed smoke test
+and its limits. The omitted Cursor matrix is waived for this milestone.
 
 ## Development checks
 

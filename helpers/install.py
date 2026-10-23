@@ -34,6 +34,10 @@ FIELDS = {"schema_version", "remora_version", "source_revision", "selected_profi
           "target_environments", "managed_files"}
 BUNDLE = "payload.zip"
 BUNDLE_INDEX = "bundle.json"
+EXPOSED = {"SKILL.md": "skills/remora-bootstrap/SKILL.md",
+           "helpers/install.py": "helpers/install.py",
+           "templates/AGENTS.md": "templates/AGENTS.md",
+           **{name: name for name in PAYLOAD if name.startswith("standards/")}}
 
 
 class Conflict(Exception):
@@ -171,11 +175,7 @@ def package_inputs(root: Path):
                 raise Conflict(f"Bundle digest mismatch: {item.filename}")
             committed[item.filename] = data
     # Visible bootstrap resources and the executing helper must match the archive.
-    exposed = {"SKILL.md": "skills/remora-bootstrap/SKILL.md",
-               "helpers/install.py": "helpers/install.py",
-               "templates/AGENTS.md": "templates/AGENTS.md",
-               **{name: name for name in PAYLOAD if name.startswith("standards/")}}
-    for outer, inner in exposed.items():
+    for outer, inner in EXPOSED.items():
         inspect_path(root / outer)
         if (root / outer).read_bytes() != committed[inner]:
             raise Conflict(f"Packaged resource differs: {outer}")
@@ -351,6 +351,9 @@ def lifecycle_plan(target: Path, old: dict, payload: dict, expected: dict | None
 
 def apply_lifecycle(target: Path, backup: Path, plan: dict, before: dict, after: dict, created: list[str]):
     """Keep before-images outside the target; no automatic rollback or bulk cleanup."""
+    if before == after:
+        print("Lifecycle operation verified; no changes")
+        return
     inspect_path(backup.absolute())
     backup = Path(os.path.abspath(backup))
     if backup == target or backup.is_relative_to(target) or target.is_relative_to(backup):

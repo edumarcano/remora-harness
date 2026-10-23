@@ -22,16 +22,17 @@ Official documentation checked October 21, 2026:
 [Antigravity skills](https://antigravity.google/docs/skills/), and
 [Antigravity rules](https://antigravity.google/docs/rules/).
 These document the shared project location; they do not establish a Remora pass.
-The [operational record](../evals/records/2026-10-21-operational.md) contains bounded
-Codex CLI Windows observations. The owner selected Cursor Agents Window and the
-Antigravity 2.0 standalone app as Milestone 5 targets. Dated records distinguish
-executed observations from pending checks; editor/IDE support remains unverified.
-The [Antigravity record](../evals/records/2026-10-22-antigravity.md) records native
-selection, completed functional/comparison validation, retained failures and the
-limits of reviewed use on the recorded standalone build. Cursor validation remains
-outstanding.
-Antigravity CLI uses a different personal location and is not certified by app tests.
-Local skills do not imply remote/cloud availability.
+Recorded Milestone 5 coverage:
+
+| Surface | Evidence |
+| --- | --- |
+| Codex CLI | Native discovery, functional trials and 16 comparisons: [operational record](../evals/records/2026-10-21-operational.md) |
+| Antigravity standalone | Native selection, functional trials, 16 completed comparisons and switching from Codex: [Antigravity record](../evals/records/2026-10-22-antigravity.md) |
+| Cursor Agents Window | Composer 2.5 discovery and read-only audit smoke test: [Cursor record](../evals/records/2026-10-23-cursor.md) |
+
+Results apply to the recorded builds and runtime pins. Other surfaces, remote use
+and implicit triggering are outside this coverage. Cursor's remaining trials were
+waived for Milestone 5; broader workflow behavior was not measured.
 
 Use one project installation recording all three requested families before the
 host-switch trial. Snapshot managed bytes and project guidance, then use fresh
@@ -49,16 +50,12 @@ unknown context. No host adapter is currently justified by a reproduced gap.
 Installing into real personal directories and accessing other projects must use
 normal host permissions. Finish isolated technical verification first. Do not
 change global settings, copy credentials, or bypass controls to make a trial pass.
-Codex CLI workspace-write may protect an existing .agents/skills directory. On the
-tested Windows alpha build, --add-dir for its writable descendant prevented shell
-startup with a read-only-carveout error; do not prescribe that workaround as tested.
-Use a narrowly reviewed installer command through normal host permissions, then
-test native adoption/idempotence separately. Prepared F05 adoption is not evidence
-of unassisted installation under this sandbox. Do not enable broad automatic
-approval or disable sandbox controls to force a pass. Apply the same native session
-permission profile to both comparison conditions. For baseline sessions after
-personal bootstrap installation, disable that skill through session-local
-skills.config; do not rewrite the user's global configuration.
+If sandbox permissions prevent installation, use a narrowly scoped installer
+approval through normal host controls. Record prepared adoption separately from
+unassisted installation. The operational record retains the Windows alpha-build
+failure and attempted workaround; do not assume they apply to other builds.
+Keep permission profiles identical within comparison pairs and exclude personal
+Remora skills from baseline sessions using supported session controls.
 Record host, surface/build, model/effort where exposed, OS, date, source pin,
 installation location privately, scenario outcomes, and retained failures.
 

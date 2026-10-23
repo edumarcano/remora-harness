@@ -166,11 +166,7 @@ class LifecycleTests(TestCase):
         self.assertTrue((backup / install.MANIFEST).is_file())
         record = json.loads((backup / "operation.json").read_text())
         self.assertEqual(record["before"][install.MANIFEST], install.digest((backup / install.MANIFEST).read_bytes()))
-        # Recovery inspection must flag a newer edit rather than overwrite it.
-        self.write(".remora/standards/engineering.md", b"newer work")
-        self.assertNotIn(install.digest(b"newer work"),
-                         {record["before"][".remora/standards/engineering.md"],
-                          record["after"][".remora/standards/engineering.md"]})
+        # The ordinary installer refuses partial work; recovery is inspected separately.
         self.assertEqual(self.run_install("--apply")[0], 1)
 
     def test_backup_cannot_overlap_target_or_existing_directory(self):
@@ -213,3 +209,67 @@ class LifecycleTests(TestCase):
         argv, token = self.preview("--update", old_source)
         self.assertEqual(self.apply(argv, token)[0], 0)
         self.assertEqual(self.run_install("--check")[0], 0)
+
+    def test_profile_replacement_and_clearing_preserve_unrelated_files(self):
+        self.write("AGENTS.md", b"project guidance")
+        self.write("notes/local.txt", b"unrelated")
+        self.assertEqual(self.run_install("--apply", "--profile", "python", "--profile", "local")[0], 0)
+        original = (self.target / ".remora/profiles/python.md").read_bytes()
+        for profiles, backup, expected in ((["--profile", "local", "--profile", "typescript"], "replace", ["local", "typescript"]),
+                                           (["--clear-profiles"], "clear", [])):
+            argv, token = self.preview("--update", None, *profiles)
+            code, output = self.apply(argv, token, backup)
+            self.assertEqual(code, 0, output)
+            self.assertEqual(self.manifest()["selected_profiles"], expected)
+            self.assertEqual(sorted(p.stem for p in (self.target / ".remora/profiles").glob("*.md")), expected)
+            self.assertEqual(self.run_install("--check")[0], 0)
+        self.assertEqual((self.root / "replace/.remora/profiles/python.md").read_bytes(), original)
+        self.assertTrue((self.root / "clear/.remora/profiles/typescript.md").is_file())
+        self.assertEqual((self.target / "AGENTS.md").read_bytes(), b"project guidance")
+        self.assertEqual((self.target / "notes/local.txt").read_bytes(), b"unrelated")
+
+    def test_identical_update_preserves_timestamps_without_backup(self):
+        self.assertEqual(self.run_install("--apply")[0], 0)
+        argv, token = self.preview()
+        before = self.snapshot()
+        code, output = self.apply(argv, token)
+        self.assertEqual(code, 0, output)
+        self.assertIn("no changes", output)
+        self.assertEqual(self.snapshot(), before)
+        self.assertFalse((self.root / "backup").exists())
+
+    def test_inspected_recovery_restores_owned_changes_and_preserves_newer_edits(self):
+        # Exercise recovery.md directly; this is not a production rollback engine.
+        self.assertEqual(self.run_install("--apply", "--profile", "python")[0], 0)
+        original = self.snapshot()
+        argv, token = self.preview("--update", None, "--clear-profiles")
+        create = install.create_file
+        def interrupt(target, name, data, created):
+            if target == self.target and name == install.MANIFEST:
+                raise OSError("interrupted before completion")
+            return create(target, name, data, created)
+        with patch.object(install, "create_file", side_effect=interrupt):
+            self.assertEqual(self.apply(argv, token)[0], 2)
+        backup = self.root / "backup"
+        record = json.loads((backup / "operation.json").read_text())
+        name = ".remora/standards/engineering.md"
+        self.write(name, b"newer work")
+        preserved = []
+        for name in record["before"]:
+            if name == install.MANIFEST:
+                continue
+            path = self.target / name
+            install.inspect_path(path)
+            current = install.digest(path.read_bytes()) if path.exists() else None
+            if current == record["before"][name]:
+                continue
+            if current != record["after"][name]:
+                preserved.append(name)
+                continue
+            data = (backup / name).read_bytes()
+            self.assertEqual(install.digest(data), record["before"][name])
+            install.create_file(self.target, name, data, [])
+        self.assertEqual(preserved, [".remora/standards/engineering.md"])
+        self.assertEqual((self.target / preserved[0]).read_bytes(), b"newer work")
+        self.assertEqual((self.target / ".remora/profiles/python.md").read_bytes(), original[".remora/profiles/python.md"][0])
+        self.assertFalse((self.target / install.MANIFEST).exists())
