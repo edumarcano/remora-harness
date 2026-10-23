@@ -1,3 +1,7 @@
 __pycache__/
 *.pyc
 .remora-work/
+
+# Remora local self-hosting installation
+/.remora/
+/.agents/

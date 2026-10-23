@@ -4,7 +4,7 @@ Remora is a portable, agent-native engineering harness for AI-assisted software
 development. It supplies reusable skills, project adaptation, maintenance
 procedures, and small local helpers to the user's existing coding agent.
 
-Remora includes bootstrap, nine project workflows, shared standards, optional
+Remora includes bootstrap, ten project workflows, shared standards, optional
 language/runtime references, installed integrity checks, and reviewed updates and
 removal. Helpers require Python 3.11+ and use the standard library.
 
