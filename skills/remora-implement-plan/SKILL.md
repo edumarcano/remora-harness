@@ -50,7 +50,8 @@ Explicitly review the actual diff, including relevant staged, unstaged, and untr
 files, against requirements and acceptance criteria. Use the installed
 `.agents/skills/remora-review-change/SKILL.md` for its procedure: evaluate
 **Axis 1 (Spec Fulfillment)** and **Axis 2 (Standards & Anti-Slop)** independently.
-Treat Axis 1 failures as blocking gates that must be corrected before handoff.
+Treat demonstrated blocking defects (correctness, security, data-loss, or contract
+failures on either axis) as gates that must be corrected before handoff.
 Correct supported in-scope findings and recheck affected behavior.
 
 Finish with delivered behavior, actual checkpoint outcomes, artifact evidence,
