@@ -272,6 +272,7 @@ remora-harness/
 |   |-- remora-review-change/
 |   |-- remora-prepare-pr/
 |   |-- remora-prepare-release/
+|   |-- remora-remediate-project/
 |   |-- remora-audit-documentation/
 |   |-- remora-audit-tests/
 |   `-- remora-audit-harness/
@@ -312,6 +313,7 @@ my-project/
 |       |-- remora-review-change/
 |       |-- remora-prepare-pr/
 |       |-- remora-prepare-release/
+|       |-- remora-remediate-project/
 |       |-- remora-audit-documentation/
 |       |-- remora-audit-tests/
 |       `-- remora-audit-harness/
@@ -411,6 +413,7 @@ The contracts below define intended workflows, not implemented entrypoints. All 
 | `remora-review-change` | Review a diff, revision range, or named implementation; explicit review surface and applicable requirements | Read-only | Findings tied to actual code and requirements, precise locations, consequences, and verification gaps; no findings is valid | Finish the declared surface with sampling limits; request clarification if its identity or base cannot be established |
 | `remora-prepare-pr` | Prepare pull request; branch diff, base branch, and acceptance criteria | Read-only; format and report PR summary | Structured PR brief, empirical verification evidence, non-goals, unverified risks, and manual verification commands | Finish with formatted PR brief; request confirmation before any subsequent Git actions |
 | `remora-prepare-release` | Prepare release; target branch, tags, commits, and acceptance checks | Read-only; format changelog and release notes | Clean pre-flight scan, Keep a Changelog entry, proposed SemVer tag, and concise GitHub release notes | Finish with release package; request explicit confirmation before writing changelog, tagging, or publishing |
+| `remora-remediate-project` | Onboard or remediate existing repository; target root, available guidance, tests, and documentation | Phased orchestrator; edits proposed and applied sequentially per review gate | Prioritized 4-axis assessment punch list, grounded AGENTS.md, sanitized documentation, and test protection audit | Finish all 4 review gates or stop at any unapproved gate; never perform unreviewed whole-repo batch writes |
 | `remora-audit-documentation` | Audit or reconcile documentation; change range, documents, or repository scope and their intended roles | Audit stays read-only; reconcile only when edits are requested | Purpose/ownership analysis, source-backed claim findings, historical/current distinctions, and post-edit checks when applicable | Finish the scoped assessment or authorized correction; surface unresolved intent-versus-implementation conflicts |
 | `remora-audit-tests` | Assess test protection; behavior, subsystem, test changes, or suite and available execution evidence | Read-only by default; no automatic generation/deletion; controlled faults require separate authorization and isolation | Sampled behavior-to-defect-to-assertion chains, distinct failure signals, recommendations, and unexamined areas | Finish the stated sample with evidence limits; retain coverage whose redundancy is uncertain |
 | `remora-audit-harness` | Inspect guidance or installation health, or conduct milestone retrospective; configuration, session friction, and installation metadata | Read-only; repairs only when requested | Missing resources, hash drift, ownership conflicts, overlapping guidance, and compatibility evidence separated from semantic interpretation | Finish scoped findings and gaps; stop affected repairs on unresolved ownership or local modifications |

@@ -371,6 +371,33 @@ class InstallationTests(unittest.TestCase):
         for name in resources:
             self.assertTrue((self.target / name).is_file())
 
+    def test_remediation_orchestration_metadata_dependencies_and_unrelated_preservation(self):
+        """Verify deterministic installation, dependency resolution, and preservation of custom project assets.
+
+        This checks installer packaging and preservation guarantees on disposable targets,
+        not semantic agent behavior or workflow compliance during an F13 remediation trial.
+        """
+        self.assertEqual(self.run_install("--apply")[0], 0)
+        remediation_path = self.target / ".agents/skills/remora-remediate-project/SKILL.md"
+        self.assertTrue(remediation_path.is_file())
+        text = remediation_path.read_text(encoding="utf-8")
+        fields = dict(line.split(": ", 1) for line in text.split("---", 2)[1].strip().splitlines())
+        self.assertEqual(fields["name"], "remora-remediate-project")
+        self.assertTrue(fields["description"].strip())
+
+        dependencies = set(re.findall(r"`(\.(?:remora/standards|agents/skills)/[^`]+)`", text))
+        self.assertEqual(len(dependencies), 10)
+        for dep in dependencies:
+            self.assertTrue((self.target / dep).is_file(), f"Missing dependency: {dep}")
+
+        unrelated_file = self.write("src/service.py", b"print('unrelated service')\n")
+        custom_skill = self.write(".agents/skills/custom-deploy/SKILL.md",
+                                  b"---\nname: custom-deploy\ndescription: Custom deploy\n---\n")
+
+        self.assertEqual(self.run_install("--check")[0], 0)
+        self.assertEqual(unrelated_file.read_bytes(), b"print('unrelated service')\n")
+        self.assertEqual(custom_skill.read_bytes(), b"---\nname: custom-deploy\ndescription: Custom deploy\n---\n")
+
     def test_expanded_bundle_assets_match_pin_and_refuse_collisions_and_drift(self):
         target = self.target
         for source, destination in installer.PAYLOAD.items():

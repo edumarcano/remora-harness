@@ -23,6 +23,7 @@ PAYLOAD = {
        for name in ("remora-plan-change", "remora-implement-plan",
                     "remora-fix-regression", "remora-review-change",
                     "remora-prepare-pr", "remora-prepare-release",
+                    "remora-remediate-project",
                     "remora-audit-tests", "remora-audit-harness")},
     "helpers/install.py": ".remora/helpers/install.py",
 }
@@ -254,9 +255,12 @@ def read_manifest(path: Path) -> dict:
     files = manifest["managed_files"]
     # Recognize only authored inventories, never arbitrary manifest paths.
     current = set(PAYLOAD.values()) | {PROFILE_FILES[f"profiles/{name}.md"] for name in profiles}
-    previous_pr = set(PAYLOAD.values()) - {".agents/skills/remora-prepare-release/SKILL.md"}
+    previous_release = set(PAYLOAD.values()) - {".agents/skills/remora-remediate-project/SKILL.md"}
+    previous_pr = previous_release - {".agents/skills/remora-prepare-release/SKILL.md"}
     previous_v01 = previous_pr - {".agents/skills/remora-prepare-pr/SKILL.md"}
     legacy = [set(PAYLOAD.values()) - {".remora/helpers/install.py"},
+              previous_release,
+              previous_release - {".remora/helpers/install.py"},
               previous_pr,
               previous_pr - {".remora/helpers/install.py"},
               previous_v01,

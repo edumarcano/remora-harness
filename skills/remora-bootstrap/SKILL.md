@@ -108,7 +108,7 @@ Preview ends here. Do not create temporary target reports.
 ## Apply a new installation or guidance edit
 
 Recheck retained trust and target baselines. Run the same preview command with
---apply, then --check. Installation creates shared standards, seven project skills,
+--apply, then --check. Installation creates shared standards, ten project skills,
 the installed checking helper, selected profiles, and installation.json. It changes
 no host configuration or project prose.
 

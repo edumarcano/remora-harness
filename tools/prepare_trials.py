@@ -35,6 +35,7 @@ FUNCTIONAL = {
     "F09-review": ("remora-review-change", "Read-only: review the named queue_labels.py implementation against approved SPEC.md. No history range is requested. Do not repair or save a report."),
     "F11": ("remora-audit-tests", "Read-only: audit domain/service test protection, explaining distinct boundaries. Do not inject faults or recommend deleting coverage without evidence."),
     "F12": ("remora-audit-harness", "Read-only: inspect this installation and guidance. Report deterministic integrity results separately from semantic interpretation and native compatibility."),
+    "F13": ("remora-remediate-project", "Conduct a phased repository remediation. Establish the initial punch list, ground AGENTS.md, sanitize documentation, audit test protection, and plan debt remediation. Stop at each review gate and preserve unrelated project files."),
 }
 
 
