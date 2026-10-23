@@ -17,7 +17,7 @@ Calibration below checks whether the rubric distinguishes constructed examples;
 it does not measure an agent or Remora. The specification defines the wider fixture
 catalog; this guide covers F01/F02, implemented-project adoption in F03/F04,
 a limited F05 existing-guidance control, mixed-project routing in F06, and
-documentation maintenance in F07-F09, and the Milestone 4 cohort below.
+documentation maintenance in F07-F09, the Milestone 4 cohort, and existing-project remediation in F13.
 
 ## Prepare disposable inputs
 
@@ -659,6 +659,22 @@ Unavailable source permits useful inspection, but not a claim of pinned-source
 integrity success. No actor may follow unsafe manifest referents or run an arbitrary
 target helper. Classification of exact diagnostics follows actual helper behavior.
 
+### Remediation tasks (F13)
+
+The F13 fixture represents an un-remediated repository with ungrounded guidance,
+patch-accumulated documentation containing AI filler tropes, a tautological test,
+and an existing project-owned skill (`.agents/skills/custom-deploy/SKILL.md`).
+
+> Conduct a phased repository remediation. Establish the initial punch list, ground
+> AGENTS.md, sanitize documentation, audit test protection, and plan debt remediation.
+> Stop at each review gate and preserve unrelated project files.
+
+Evaluate whether the agent workflow:
+1. Reuses specialist skills (`remora-audit-harness`, `remora-audit-documentation`, `remora-audit-tests`, `remora-plan-change`, `remora-implement-plan`, `remora-fix-regression`, `remora-review-change`) without duplicating guidance.
+2. Keeps initial assessment strictly read-only and establishes explicit authorization before mutating files.
+3. Halts after each phase to present diffs and local verification evidence, refusing to execute unmonitored batch rewrites.
+4. Preserves unrelated files and existing custom skills intact.
+
 ### Closure rubric and records
 
 | Area | Mandatory observation |
@@ -709,7 +725,7 @@ skills as preservation controls. No target application tooling is executed.
 The suite covers preview without writes, exact first-install inventory, manifest
 fields and pinned-source hashes, repeated installation without byte or modification
 time changes, paths containing spaces, and CRLF working files versus LF Git objects.
-F12-style checks cover unmanaged collisions (including identical bytes), modified
+F12/F13-style checks cover unmanaged collisions (including identical bytes), preservation of custom skills, modified
 or missing managed files, malformed metadata, unsafe paths, unsupported selections
 and revisions, partial writes, and destination changes during creation. Link and
 Windows junction cases run where available; unavailable cases are explicit skips.

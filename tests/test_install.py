@@ -372,6 +372,11 @@ class InstallationTests(unittest.TestCase):
             self.assertTrue((self.target / name).is_file())
 
     def test_remediation_orchestration_metadata_dependencies_and_unrelated_preservation(self):
+        """Verify deterministic installation, dependency resolution, and preservation of custom project assets.
+
+        This checks installer packaging and preservation guarantees on disposable targets,
+        not semantic agent behavior or workflow compliance during an F13 remediation trial.
+        """
         self.assertEqual(self.run_install("--apply")[0], 0)
         remediation_path = self.target / ".agents/skills/remora-remediate-project/SKILL.md"
         self.assertTrue(remediation_path.is_file())
