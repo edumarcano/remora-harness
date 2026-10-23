@@ -4,7 +4,7 @@ Remora is a portable, agent-native engineering harness for AI-assisted software
 development. It supplies reusable skills, project adaptation, maintenance
 procedures, and small local helpers to the user's existing coding agent.
 
-Remora includes bootstrap, seven project workflows, shared standards, optional
+Remora includes bootstrap, eight project workflows, shared standards, optional
 language/runtime references, installed integrity checks, and reviewed updates and
 removal. Helpers require Python 3.11+ and use the standard library.
 
@@ -54,7 +54,7 @@ justifies those independent dimensions. No profile is the default. References do
 not choose frameworks, tooling, architecture, or executable commands.
 
 The installation owns .remora/standards/, .remora/helpers/install.py, selected
-.remora/profiles/, seven .agents/skills/remora-* entrypoints, and
+.remora/profiles/, eight .agents/skills/remora-* entrypoints, and
 .remora/installation.json. The schema-1 manifest records development, exact source
 revision, requested hosts, selected profiles, and managed SHA-256 hashes.
 Root/nested instructions, specifications, existing skills, project context, and
@@ -120,6 +120,7 @@ Do not reset/clean a target or bypass host permission controls.
 | remora-implement-plan | Authorized implementation, verification, and diff review |
 | remora-fix-regression | Read-only diagnosis or explicitly requested repair |
 | remora-review-change | Read-only review of a named implementation or exact surface |
+| remora-prepare-pr | Read-only pull request description and empirical evidence brief |
 | remora-audit-documentation | Read-only audit or authorized coherent reconciliation |
 | remora-audit-tests | Sampled protection chains; retain uncertain coverage |
 | remora-audit-harness | Installation, ownership, drift, and overlap assessment |
