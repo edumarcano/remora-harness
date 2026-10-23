@@ -41,9 +41,12 @@ def get_source_template():
             path.write_bytes((ROOT / name).read_bytes().replace(b"\r\n", b"\n"))
         subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "init", "--quiet"], check=True)
         subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "config", "core.autocrlf", "false"], check=True)
+        subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "config", "gc.auto", "0"], check=True)
+        subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "config", "maintenance.auto", "false"], check=True)
         subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "add", "--", *installer.INPUTS], check=True)
         subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "-c", "user.name=Fixture",
                         "-c", "user.email=fixture@example.invalid", "-c", "commit.gpgsign=false",
+                        "-c", "gc.auto=0",
                         "commit", "--quiet", "-m", "fixture input"], check=True)
     return _SOURCE_TEMPLATE
 
@@ -55,7 +58,7 @@ class InstallationTests(unittest.TestCase):
         self.root = Path(self.temporary.name)
         self.source = self.root / "source checkout"
         self.target = self.root / "target project"
-        shutil.copytree(get_source_template(), self.source)
+        shutil.copytree(get_source_template(), self.source, ignore=shutil.ignore_patterns("*.lock"))
         self.target.mkdir()
         self.git(self.target, "init", "--quiet")
         self.source_patch = patch.object(installer, "SOURCE_ROOT", self.source)
