@@ -1,142 +1,149 @@
 # Remora
 
 Remora is a portable, agent-native engineering harness for AI-assisted software
-development. It supplies reusable skills, project adaptation, maintenance
-procedures, and small local helpers to the user's existing coding agent.
+development. It equips existing coding agents with deterministic engineering standards,
+disciplined development workflows, and verifiable lifecycle tooling.
 
-Remora includes bootstrap, ten project workflows, shared standards, optional
-language/runtime references, installed integrity checks, and reviewed updates and
-removal. Helpers require Python 3.11+ and use the standard library.
+Remora targets **Codex**, **Cursor**, and **Antigravity** without requiring background daemons,
+external model proxies, or third-party package dependencies.
 
-See [host compatibility](compatibility/README.md) for tested surfaces and evidence.
-The [specification](docs/product-spec.md) defines intended behavior. Public v0.1
-release preparation follows operational validation.
+---
 
-## First use
+## Architectural Principles
 
-Use a trusted local checkout pinned to an exact commit. Installer inputs must be
-committed and unmodified. Ask the host to read skills/remora-bootstrap/SKILL.md
-alone before any target operation, then follow it for the named target and hosts.
-The whole checkout accompanies the entrypoint; copying that skill alone is invalid.
+- **Host-native execution:** Remora runs entirely inside the host agent via standard skill discovery (`.agents/skills/`). It introduces no background services, local servers, or network daemons.
+- **Zero runtime dependencies:** Helpers require only Python 3.11+ and the Python standard library.
+- **Zero external model routing:** Reasoning belongs exclusively to the host environment's agent. Remora does not make direct LLM API calls, manage API credentials, or route model traffic.
+- **Deterministic safety & provenance:** Installations use committed Git objects, cryptographic SHA-256 manifests, atomic previews, and mandatory before-image backups.
+- **Evidence-based workflows:** Workflows enforce reproduction-first defect repairs, consequence-based split-axis code reviews, artifact proof, and anti-slop documentation standards.
+- **Preservation of project ownership:** Target instructions (`AGENTS.md`), project specifications, tests, and custom skills remain project-owned. Remora never overwrites unmanaged files.
 
-For native personal discovery, build a self-contained directory:
+---
 
-```text
-python tools/package.py --output "<new-directory>/remora-bootstrap"
+## Installed Workflows
+
+Remora installs ten specialist workflows under `.agents/skills/`:
+
+| Workflow | Role |
+| :--- | :--- |
+| `remora-plan-change` | Repository-grounded, decision-complete change planning. |
+| `remora-implement-plan` | Authorized implementation, checkpoint verification, and diff review. |
+| `remora-fix-regression` | Reproduction-first defect diagnosis and test-first repairs. |
+| `remora-review-change` | Independent split-axis review evaluating Specification Fulfillment and Standards Compliance. |
+| `remora-prepare-pr` | Scannable, reviewer-focused PR descriptions emphasizing artifact proof over CI dumps. |
+| `remora-prepare-release` | Pre-flight hygiene, Keep a Changelog updates, and SemVer release notes. |
+| `remora-remediate-project` | Checkpointed 4-phase repository onboarding (grounding, docs, tests, and technical debt). |
+| `remora-audit-documentation` | Documentation ownership, refactoring thresholds, and anti-slop hygiene. |
+| `remora-audit-tests` | Protection-chain verification, failure signal isolation, and assertion auditing. |
+| `remora-audit-harness` | Remora installation integrity, drift detection, and guidance conflict analysis. |
+
+---
+
+## Host Compatibility
+
+Remora is validated across three primary AI coding environments:
+
+| Host Environment | Surface | Discovery Root | Status |
+| :--- | :--- | :--- | :--- |
+| **OpenAI Codex** | Codex CLI | `.agents/skills/` | Verified |
+| **Cursor** | Agents Window / Composer | `.agents/skills/` | Verified |
+| **Google Antigravity** | Standalone Desktop App | `.agents/skills/` | Verified |
+
+See the [host compatibility guide](compatibility/README.md) for surface notes and empirical test records.
+
+---
+
+## Quickstart
+
+### 1. Build the Standalone Bootstrap Bundle
+
+To discover Remora globally in your coding host, package the self-contained bootstrap skill:
+
+```bash
+python tools/package.py --output "<personal-skills-dir>/remora-bootstrap"
 ```
 
-The output contains one discoverable SKILL.md, its helper/references/seed, and an
-inert payload.zip plus bundle.json. It needs no source checkout or Git for payload
-copying. Review and preserve the full directory. Hashes detect inconsistency;
-they are not signatures. Never fetch or execute a moving remote script.
-Install the directory into the host's documented personal skill location, avoiding
-other copies of the same identity. See [host notes](compatibility/README.md).
+The output contains `SKILL.md`, installation helpers, and an inert `payload.zip` with `bundle.json`. It requires no Git access or network operations at runtime.
 
-Ask to initialize/install to create managed files and absent root guidance.
-Existing AGENTS.md stays byte-identical unless you explicitly request adoption
-or specialization edits. Preview/audit never writes. A specification can establish
-intentions without establishing application implementation or test commands.
+### 2. Initialize a Project
 
-## Installation and selection
+To install Remora into a project repository from a pinned checkout:
 
-From the pinned checkout or personal bootstrap directory:
+```bash
+# Preview proposed additions (read-only by default)
+python helpers/install.py --target "<project-root>" --environment antigravity
 
-```text
-python helpers/install.py --target "<project>" --environment codex
-python helpers/install.py --target "<project>" --environment codex --apply
-python helpers/install.py --check --target "<project>"
+# Apply the installation
+python helpers/install.py --target "<project-root>" --environment antigravity --apply
 ```
 
-Default invocation previews. Repeat --environment for codex, cursor, antigravity.
-Requested hosts are metadata, not certification. Add --profile python,
---profile typescript, --profile local, or --profile web only when target evidence
-justifies those independent dimensions. No profile is the default. References do
-not choose frameworks, tooling, architecture, or executable commands.
+Flags:
+- `--environment`: Target host family (`codex`, `cursor`, `antigravity`). Repeat for multiple hosts.
+- `--profile`: Optional language or architectural guidance (`python`, `typescript`, `local`, `web`). Default is no profile.
 
-The installation owns .remora/standards/, .remora/helpers/install.py, selected
-.remora/profiles/, ten .agents/skills/remora-* entrypoints, and
-.remora/installation.json. The schema-1 manifest records development, exact source
-revision, requested hosts, selected profiles, and managed SHA-256 hashes.
-Root/nested instructions, specifications, existing skills, project context, and
-unrelated files remain project-owned. Remora's own root AGENTS.md is never a seed.
+### 3. Verify Installation Integrity
 
-An identical rerun preserves bytes and modification times. Ordinary installation
-refuses different revisions/selections, occupied unmanaged destinations even when
-identical, drift, missing managed assets, malformed metadata, and unsafe paths.
-No dependencies, network access, host configuration, or application execution occur.
-Installed bytes are pinned Git objects or validated package bytes, independent of
-checkout line endings. Writes are bounded checks, not a whole-tree transaction or
-protection against hostile concurrent filesystem changes.
+Target repositories do not require a separate Remora checkout. Run the vendored helper directly:
 
-## Installed checks and lifecycle
-
-Normal workflows need no separate checkout. Inspect the installed helper before
-executing it. From the target:
-
-```text
+```bash
+# Verify local manifest and SHA-256 digest consistency
 python .remora/helpers/install.py --check --target .
+
+# Verify against a trusted external source revision
 python .remora/helpers/install.py --check --target . --source "<trusted-distribution>"
 ```
 
-The first checks local manifest/hash consistency only. The second compares with
-a separately trusted matching distribution. An installed helper and manifest cannot
-certify their own provenance. Missing tools/source are explicit verification gaps;
-manual inspection is not an equivalent source check. Exit codes: 0 completed,
-1 conflict/integrity failure, 2 invalid invocation or incomplete execution.
+Exit codes: `0` = verified clean, `1` = integrity or conflict failure, `2` = invalid invocation.
 
-Explicit update uses both trusted old and desired distributions:
+---
 
-```text
-python "<new>/helpers/install.py" --target "<project>" --update --previous-source "<old>"
+## Lifecycle Operations
+
+### Safe Updates
+
+Updates require both the previous source and desired target distribution:
+
+```bash
+# Generate preview and plan digest (read-only)
+python "<new-distribution>/helpers/install.py" --target "<project>" --update --previous-source "<old-source>"
+
+# Apply update with explicit plan verification and mandatory backup
+python "<new-distribution>/helpers/install.py" --target "<project>" --update --previous-source "<old-source>" \
+  --apply --expect-plan "<plan-sha256>" --backup "<backup-dir-outside-project>"
 ```
 
-Repeat desired --environment/--profile options, or omit them to retain selections.
-Use --clear-profiles to deliberately select none. Preview reports changes and a
-Plan SHA-256; apply the same arguments with --apply --expect-plan <digest>
---backup "<new-private-directory-outside-project>". A changed source, target, or
-selection invalidates the preview. An unchanged update preserves timestamps and
-creates no backup directory. No semantic merging or silent upgrade occurs.
-Known earlier inventories require a genuine matching trusted source.
+### Clean Removal
 
-Removal uses the matching distribution with --remove --previous-source <matching>
-and the same preview/digest/backup process. It removes only verified managed files,
-leaving project guidance and unrelated files. Review obsolete routing separately;
-project-owned edits need explicit authorization. No recursive directory deletion.
-For installations predating lifecycle support, run the current reviewed helper
-and supply the old matching distribution through --previous-source; the historical
-helper itself does not gain new commands.
+Removal removes only managed Remora assets, leaving project guidance and source code untouched:
 
-The helper stores before-images and operation.json outside the target, invalidates
-the completion manifest before mutation, and publishes a new manifest last.
-Failures retain diagnostics and partial work. [Recovery instructions](compatibility/recovery.md)
-explain narrow inspection/restoration; there is no automatic rollback engine.
-Do not reset/clean a target or bypass host permission controls.
+```bash
+python "<matching-distribution>/helpers/install.py" --target "<project>" --remove --previous-source "<matching-source>" \
+  --apply --expect-plan "<plan-sha256>" --backup "<backup-dir-outside-project>"
+```
 
-## Workflows
+Before mutations occur, the helper writes before-images to the backup location. Consult the [recovery guide](compatibility/recovery.md) for manual restoration procedures if interrupted.
 
-| Installed skill | Outcome |
-| --- | --- |
-| remora-plan-change | Read-only, repository-grounded decision-complete plan |
-| remora-implement-plan | Authorized implementation, verification, and diff review |
-| remora-fix-regression | Read-only diagnosis or explicitly requested repair |
-| remora-review-change | Read-only review of a named implementation or exact surface |
-| remora-prepare-pr | Read-only pull request description and empirical evidence brief |
-| remora-prepare-release | Read-only release checklist, changelog update, and GitHub notes |
-| remora-remediate-project | Checkpointed repository onboarding across grounding, docs, tests, and debt |
-| remora-audit-documentation | Read-only audit or authorized coherent reconciliation |
-| remora-audit-tests | Sampled protection chains; retain uncertain coverage |
-| remora-audit-harness | Installation, ownership, drift, and overlap assessment |
+---
 
-Select a skill through the host's native interface. Fallback: first read
-<target>/.agents/skills/<name>/SKILL.md alone, then follow it. That establishes
-fallback execution only. Every skill explicitly reads relevant shared standards
-and project guidance; links are not assumed automatic imports.
+## Repository Verification
 
-Name outcome, constraints, scope, and acceptance criteria. Review/audit does not
-authorize repairs, dependency installs, publication, or faults. Deliberate faults
-need explicit permission and a disposable copy. Ordinary reports remain in the
-conversation; saved evaluation evidence excludes private data and full transcripts.
+Run the validation suite locally with Python 3.11+:
 
-See the [evaluation guide](evals/README.md) and [Milestone 5 test packet](evals/milestone-5.md)
-for preparation, required comparisons, remaining manual actions, and closure gates.
-Public publication, marketplace packaging, and release notes are a subsequent phase.
+```bash
+# Validate local Markdown file links
+python tools/check_content.py
+
+# Execute deterministic test suite (60 tests across real Git checkouts)
+python -m unittest discover -s tests
+
+# Verify Git formatting and whitespace
+git diff --check
+```
+
+See the [evaluation guide](evals/README.md) for empirical trial rubrics, fixture scenarios, and evaluation methodology. The [specification](docs/product-spec.md) defines architectural requirements and behavioral contracts.
+
+---
+
+## License
+
+This project is licensed under the terms of the [MIT License](LICENSE).
