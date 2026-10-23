@@ -27,7 +27,9 @@ Codex CLI Windows observations. The owner selected Cursor Agents Window and the
 Antigravity 2.0 standalone app as Milestone 5 targets. Dated records distinguish
 executed observations from pending checks; editor/IDE support remains unverified.
 The [Antigravity record](../evals/records/2026-10-22-antigravity.md) records native
-selection, functional trials, comparison attempts, and outstanding acceptance work.
+selection, completed functional/comparison validation, retained failures and the
+limits of reviewed use on the recorded standalone build. Cursor validation remains
+outstanding.
 Antigravity CLI uses a different personal location and is not certified by app tests.
 Local skills do not imply remote/cloud availability.
 

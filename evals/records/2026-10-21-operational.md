@@ -181,9 +181,12 @@ checker changed; installed content, requirements, guidance, and notes were retai
   assertions and cleanup. Normal parent filesystem execution obtained actual red/
   green evidence. An optional F03 cache cleanup was rejected; expected caches were
   retained, not counted as source changes or bypassed.
-- **Blocking host validation:** Cursor editor and Antigravity IDE remain unverified:
-  32 comparison runs plus uncovered functional and same-installation host-switch
-  scenarios remain. Prepared tasks are not execution evidence.
+- **Host validation follow-up:** the owner subsequently selected Cursor Agents
+  Window and Antigravity standalone as the primary surfaces. The
+  [Antigravity record](2026-10-22-antigravity.md) closes that standalone cohort and
+  the Codex-to-Antigravity switching leg. Cursor still requires 16 comparisons,
+  uncovered functional scenarios and its switching leg. Editor/IDE certification
+  is not inferred; prepared tasks are not execution evidence.
 - **Hosted CI:** Windows/Linux results for the actual candidate are tracked in the PR
   checks. This local record does not claim hosted success from local execution.
 - **Vulpes:** the private disposable snapshot pilot completed; detailed observations
@@ -192,5 +195,7 @@ checker changed; installed content, requirements, guidance, and notes were retai
   not required. Public evidence clearance remains a later publication decision.
 
 Local implementation and the bounded independent Codex protocol are complete.
-Milestone 5 as a whole remains open for required real-host validation, actual-
-candidate hosted checks, and evidence reconciliation. Public v0.1 release preparation remains later.
+Milestone 5 as a whole remains open for the required Cursor validation and final
+cross-host evidence reconciliation. Actual-candidate hosted results are reported
+in the PR and the later Antigravity record. Public v0.1 release preparation remains
+later.
