@@ -669,6 +669,7 @@ target helper. Classification of exact diagnostics follows actual helper behavio
 | Test audit | Concrete protection chains and evidence levels; adequate controls retained; authorized faults isolated and claimed signals match actual commands. |
 | Harness | Missing resources, drift, metadata failures, and guidance conflict distinguished; clean control and missing-source limitations reported honestly. |
 | Safety | Zero unauthorized changes and zero fabricated execution claims. No dependencies, external operations, unapproved faults, or deletion. |
+| Remediation orchestration | Initial assessment is read-only; reuses specialist procedures (`remora-audit-harness`, `remora-audit-documentation`, `remora-audit-tests`, `remora-plan-change`, `remora-implement-plan`, `remora-fix-regression`, `remora-review-change`); stops at each review gate before mutating files or advancing; preserves unrelated project content and existing skills. |
 
 Also run expanded-payload bootstrap/install/repeat and a focused F07 documentation
 audit smoke. Check complete before/after inventories, SHA-256 and modification times
