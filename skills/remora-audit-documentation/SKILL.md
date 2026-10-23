@@ -52,9 +52,13 @@ dependencies, contact live services, or claim execution merely from configuratio
 
 Also assess duplicated ownership, contradictory patch accumulation, missing
 orientation, misplaced history, unsupported capability claims, and whether the
-section still answers its intended question. A true detail need not be repeated
-in every document. Preserve adequate wording and clean sections; finding no
-actionable issue is valid.
+section still answers its intended question. Evaluate against the anti-slop
+editorial standard in `.remora/standards/documentation.md` (identifying throat-clearing
+preambles, decorative em-dash crutches, buzzword padding, and lists that should
+be Markdown tables). When accumulated caveats obscure understanding, recommend a
+clean-room rewrite adhering to the documentation refactoring threshold. A true
+detail need not be repeated in every document. Preserve adequate wording and clean
+sections; finding no actionable issue is valid.
 
 For each finding, establish the supported interpretation and smallest useful
 action. If code violates an approved specification, surface the discrepancy rather
@@ -63,10 +67,10 @@ ownership requires a material decision; continue unrelated safe work.
 
 ## Reconcile when authorized
 
-Choose retention, a claim edit, a coherent section rewrite, consolidation, moving
-material, or removal of demonstrated obsolete content. Explain material structural
-changes. Preserve historical records unless the request explicitly includes their
-correction or restructuring; avoid broad deletion or stylistic churn.
+Choose retention, a claim edit, a coherent clean-room section rewrite in the
+present tense, consolidation, moving material, or removal of demonstrated obsolete
+content. Explain material structural changes. Relocate historical observations to
+dated records; avoid accumulating patch qualifications or stylistic churn.
 
 Retain the inspected baseline of affected files, including unrelated local edits.
 Before each write, check that the destination and its ancestors are ordinary
