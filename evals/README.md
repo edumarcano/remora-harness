@@ -684,6 +684,18 @@ accepted limitations must not conceal missing required functionality. A workflow
 change receives a new pin and affected-case reruns; never transfer results to new
 runtime bytes without checking identity. These are development fixtures once used.
 
+## Milestone 5 operational validation
+
+The [operational test packet](milestone-5.md) records the original comparison matrix
+and the accepted Milestone 5 Cursor exception, native-host preparation, disposable dogfooding, Vulpes snapshot handoff, and
+separate implementation/milestone closure states. Earlier records retain their
+original dated limits; they are not current native discovery evidence.
+The [operational record](records/2026-10-21-operational.md) reports the implemented
+local lifecycle, Codex comparison, dogfooding, and remaining verification gates.
+
+The [Cursor record](records/2026-10-23-cursor.md) records the completed smoke test
+and its limits. The omitted Cursor matrix is waived for this milestone.
+
 ## Development checks
 
 ### Deterministic installation scenarios
@@ -705,8 +717,8 @@ These are deterministic helper tests, not native bootstrap trials, semantic
 F01/F02 rubric passes, or cross-host compatibility evidence. F01/F02 prompts and
 scoring above assess the agent bootstrap workflow separately. Run the existing
 Windows/Linux CI matrix before claiming results on both platforms. The initial
-distribution for these checks is a trusted source checkout; release packaging and
-update/recovery workflows remain subsequent work.
+distribution for these checks is a trusted source checkout; the new lifecycle and package tests cover explicit operational updates/removal
+and retained before-images; public release preparation remains separate.
 
 ### Commands and content-check scope
 
@@ -724,7 +736,8 @@ changes in review, plus new untracked files. Git whitespace checks do not inspec
 untracked files until they enter a diff.
 
 The content checker reads root-level `*.md`, `docs/**/*.md`, `standards/**/*.md`,
-`skills/**/*.md`, `templates/**/*.md`, and `evals/**/*.md`,
+`skills/**/*.md`, `templates/**/*.md`, `profiles/**/*.md`,
+`compatibility/**/*.md`, and `evals/**/*.md`,
 excluding `evals/fixtures/**`; nested directory symlinks are not traversed. It checks literal inline Markdown links/images with
 simple bracket labels and destinations without nested parentheses, outside
 backtick or tilde fences. Use forward-slash relative file paths; angle brackets

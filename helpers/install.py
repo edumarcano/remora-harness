@@ -9,6 +9,7 @@ import re
 import stat
 import subprocess
 import sys
+import zipfile
 
 
 SOURCE_ROOT = Path(__file__).resolve().parents[1]
@@ -22,13 +23,21 @@ PAYLOAD = {
        for name in ("remora-plan-change", "remora-implement-plan",
                     "remora-fix-regression", "remora-review-change",
                     "remora-audit-tests", "remora-audit-harness")},
+    "helpers/install.py": ".remora/helpers/install.py",
 }
-INPUTS = ("helpers/install.py", *PAYLOAD,
-          "skills/remora-bootstrap/SKILL.md", "templates/AGENTS.md")
+PROFILES = ("python", "typescript", "local", "web")
+PROFILE_FILES = {f"profiles/{name}.md": f".remora/profiles/{name}.md" for name in PROFILES}
+INPUTS = (*PAYLOAD, *PROFILE_FILES, "skills/remora-bootstrap/SKILL.md", "templates/AGENTS.md")
 MANIFEST = ".remora/installation.json"
 ENVIRONMENTS = ("codex", "cursor", "antigravity")
 FIELDS = {"schema_version", "remora_version", "source_revision", "selected_profiles",
           "target_environments", "managed_files"}
+BUNDLE = "payload.zip"
+BUNDLE_INDEX = "bundle.json"
+EXPOSED = {"SKILL.md": "skills/remora-bootstrap/SKILL.md",
+           "helpers/install.py": "helpers/install.py",
+           "templates/AGENTS.md": "templates/AGENTS.md",
+           **{name: name for name in PAYLOAD if name.startswith("standards/")}}
 
 
 class Conflict(Exception):
@@ -95,8 +104,13 @@ def inspect_path(path: Path):
             raise Conflict(f"Ancestor is not a directory: {part}")
 
 
-def source_payload(root: Path) -> tuple[str, dict[str, bytes]]:
+def source_inputs(root: Path) -> tuple[str, dict[str, bytes]]:
     """Read only fixed, committed regular files; never run target tooling."""
+    inspect_path(root.absolute())
+    if (root / BUNDLE_INDEX).exists():
+        if (root / ".git").exists():
+            raise Conflict("Ambiguous distribution: checkout contains package metadata")
+        return package_inputs(root)
     def git(*arguments):
         result = subprocess.run(["git", "--no-optional-locks", "-C", str(root),
                                  *arguments], capture_output=True, check=False)
@@ -125,13 +139,53 @@ def source_payload(root: Path) -> tuple[str, dict[str, bytes]]:
                                 "--name-only", revision, "--", *INPUTS):
         raise Conflict("Installation inputs have local modifications; use a pinned clean source")
     validate_bundle(committed)
-    return revision, {destination: committed[source]
-                      for source, destination in PAYLOAD.items()}
+    return revision, committed
 
 
-def expected_manifest(revision: str, payload: dict[str, bytes], environments: list[str]):
+def source_payload(root: Path, profiles=()) -> tuple[str, dict[str, bytes]]:
+    revision, committed = source_inputs(root)
+    mapping = {**PAYLOAD, **{name: target for name, target in PROFILE_FILES.items()
+                           if Path(name).stem in profiles}}
+    return revision, {target: committed[name] for name, target in mapping.items()}
+
+
+def package_inputs(root: Path):
+    """Read a reviewed local package; hashes are consistency checks, not signatures."""
+    for name in (BUNDLE_INDEX, BUNDLE):
+        inspect_path(root / name)
+    index = json.loads((root / BUNDLE_INDEX).read_text(encoding="utf-8"), object_pairs_hook=unique_object)
+    if (not isinstance(index, dict) or set(index) != {"source_revision", "files"}
+            or not isinstance(index["source_revision"], str)
+            or not re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", index["source_revision"])
+            or not isinstance(index["files"], dict) or set(index["files"]) != set(INPUTS)):
+        raise Conflict("Unsupported bundle inventory")
+    with zipfile.ZipFile(root / BUNDLE) as archive:
+        names = archive.namelist()
+        if len(names) != len(set(names)) or set(names) != set(INPUTS):
+            raise Conflict("Unsafe or incomplete archive inventory")
+        committed = {}
+        for item in archive.infolist():
+            if item.file_size > 2_000_000 or item.compress_size > 2_000_000:
+                raise Conflict("Oversized bundle asset")
+            mode = item.external_attr >> 16
+            if stat.S_IFMT(mode) not in (0, stat.S_IFREG) or item.is_dir():
+                raise Conflict("Archive asset is not a regular file")
+            data = archive.read(item)
+            if digest(data) != index["files"][item.filename]:
+                raise Conflict(f"Bundle digest mismatch: {item.filename}")
+            committed[item.filename] = data
+    # Visible bootstrap resources and the executing helper must match the archive.
+    for outer, inner in EXPOSED.items():
+        inspect_path(root / outer)
+        if (root / outer).read_bytes() != committed[inner]:
+            raise Conflict(f"Packaged resource differs: {outer}")
+    validate_bundle(committed)
+    return index["source_revision"], committed
+
+
+def expected_manifest(revision: str, payload: dict[str, bytes], environments: list[str], profiles=()):
     return {"schema_version": 1, "remora_version": "development",
-            "source_revision": revision, "selected_profiles": [],
+            "source_revision": revision, "selected_profiles": sorted(set(profiles)),
             "target_environments": sorted(set(environments)),
             "managed_files": {name: digest(data) for name, data in payload.items()}}
 
@@ -154,7 +208,10 @@ def read_manifest(path: Path) -> dict:
         raise Conflict("Unsupported manifest fields")
     if type(manifest["schema_version"]) is not int or manifest["schema_version"] != 1:
         raise Conflict("Unsupported manifest schema_version")
-    if manifest["remora_version"] != "development" or manifest["selected_profiles"] != []:
+    profiles = manifest["selected_profiles"]
+    if (manifest["remora_version"] != "development" or not isinstance(profiles, list)
+            or any(not isinstance(item, str) or item not in PROFILES for item in profiles)
+            or profiles != sorted(set(profiles))):
         raise Conflict("Unsupported release label or selected_profiles")
     revision = manifest["source_revision"]
     if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}", revision):
@@ -165,8 +222,14 @@ def read_manifest(path: Path) -> dict:
             or environments != sorted(set(environments))):
         raise Conflict("Invalid target_environments")
     files = manifest["managed_files"]
-    # The fixed inventory also prevents arbitrary manifest paths from being read.
-    if not isinstance(files, dict) or set(files) != set(PAYLOAD.values()):
+    # Recognize only authored inventories, never arbitrary manifest paths.
+    current = set(PAYLOAD.values()) | {PROFILE_FILES[f"profiles/{name}.md"] for name in profiles}
+    legacy = [set(PAYLOAD.values()) - {".remora/helpers/install.py"},
+              {".remora/standards/engineering.md", ".remora/standards/documentation.md",
+               ".agents/skills/remora-audit-documentation/SKILL.md"},
+              {".remora/standards/engineering.md"}]
+    if (not isinstance(files, dict) or (set(files) != current
+            and (profiles or set(files) not in legacy))):
         raise Conflict("Unsupported managed_files inventory or unsafe path")
     if any(not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value)
            for value in files.values()):
@@ -187,7 +250,7 @@ def inspect_target(target: Path, payload: dict[str, bytes]):
 def validate(target: Path, expected: dict):
     manifest = read_manifest(target / MANIFEST)
     if manifest != expected:
-        raise Conflict("Manifest differs from pinned source or requested selections; updates are unsupported")
+        raise Conflict("Manifest differs from pinned source or requested selections; use explicit update")
     for name, wanted in expected["managed_files"].items():
         path = target / name
         if not path.is_file():
@@ -230,33 +293,190 @@ def install(target: Path, payload: dict[str, bytes], expected: dict, created: li
     create_file(target, MANIFEST, data, created)
 
 
+def previous_expected(root: Path, manifest: dict):
+    """Verify a known old inventory without executing its installer."""
+    if (root / BUNDLE_INDEX).exists():
+        revision, payload = source_payload(root, manifest["selected_profiles"])
+    else:
+        inspect_path(root.absolute())
+        def git(*args):
+            result = subprocess.run(["git", "--no-optional-locks", "-C", str(root), *args],
+                                    capture_output=True, check=False)
+            if result.returncode:
+                raise OSError("Cannot inspect previous trusted source")
+            return result.stdout
+        if Path(os.fsdecode(git("rev-parse", "--show-toplevel").strip())).resolve() != root.resolve():
+            raise Conflict("Previous source must be a checkout root")
+        revision = git("rev-parse", "HEAD^{commit}").decode("ascii").strip()
+        reverse = {target: source for source, target in {**PAYLOAD, **PROFILE_FILES}.items()}
+        sources = {reverse[name] for name in manifest["managed_files"]} | {"helpers/install.py"}
+        committed = {}
+        for name in sources:
+            inspect_path(root / name)
+            if not git("ls-tree", revision, "--", name).startswith((b"100644 blob ", b"100755 blob ")):
+                raise Conflict(f"Previous source asset is not regular: {name}")
+            data = git("show", f"{revision}:{name}")
+            if (root / name).read_bytes().replace(b"\r\n", b"\n") != data.replace(b"\r\n", b"\n"):
+                raise Conflict(f"Previous source asset modified: {name}")
+            committed[name] = data
+        if git("diff", "--no-ext-diff", "--no-textconv", "--name-only", revision, "--", *sorted(sources)):
+            raise Conflict("Previous source has staged or working changes")
+        payload = {name: committed[reverse[name]] for name in manifest["managed_files"]}
+    expected = expected_manifest(revision, payload, manifest["target_environments"], manifest["selected_profiles"])
+    if manifest != expected:
+        raise Conflict("Previous installation does not match trusted source")
+    return expected
+
+
+def lifecycle_plan(target: Path, old: dict, payload: dict, expected: dict | None):
+    names = sorted(set(old["managed_files"]) | set(payload))
+    inspect_target(target, {name: b"" for name in names})
+    validate(target, old)
+    before = {}
+    for name in [*names, MANIFEST]:
+        path = target / name
+        before[name] = path.read_bytes() if path.exists() else None
+        if name not in old["managed_files"] and name != MANIFEST and before[name] is not None:
+            raise Conflict(f"Unmanaged destination is occupied: {name}")
+    after = {name: payload.get(name) for name in names}
+    after[MANIFEST] = ((json.dumps(expected, indent=2, sort_keys=True) + "\n").encode("utf-8")
+                       if expected is not None else None)
+    identity = target.stat()
+    plan = {"target": str(target), "identity": [identity.st_dev, identity.st_ino],
+            "before": {name: digest(data) if data is not None else None for name, data in before.items()},
+            "after": {name: digest(data) if data is not None else None for name, data in after.items()}}
+    token = digest(json.dumps(plan, sort_keys=True).encode("utf-8"))
+    return token, plan, before, after
+
+
+def apply_lifecycle(target: Path, backup: Path, plan: dict, before: dict, after: dict, created: list[str]):
+    """Keep before-images outside the target; no automatic rollback or bulk cleanup."""
+    if before == after:
+        print("Lifecycle operation verified; no changes")
+        return
+    inspect_path(backup.absolute())
+    backup = Path(os.path.abspath(backup))
+    if backup == target or backup.is_relative_to(target) or target.is_relative_to(backup):
+        raise Conflict("Backup must be outside and separate from the target")
+    if backup.exists():
+        raise Conflict("Backup destination must not exist")
+    backup.mkdir(parents=True)
+    for name, data in before.items():
+        if data is not None:
+            create_file(backup, name, data, [])
+    create_file(backup, "operation.json", (json.dumps(plan, indent=2, sort_keys=True) + "\n").encode(), [])
+    print(f"Recovery before-images: {backup}")
+
+    def unchanged(name):
+        inspect_path(target / name)
+        current = (target / name).read_bytes() if (target / name).exists() else None
+        if current != before[name]:
+            raise Conflict(f"Destination changed since preview: {name}")
+    identity = target.stat()
+    if [identity.st_dev, identity.st_ino] != plan["identity"]:
+        raise Conflict("Target root changed")
+    for name in before:
+        unchanged(name)
+    # Invalidate completion before mutation. A failure never leaves a valid old manifest.
+    unchanged(MANIFEST)
+    (target / MANIFEST).unlink()
+    for name in sorted(set(before) - {MANIFEST}):
+        if before[name] == after[name]:
+            continue
+        unchanged(name)
+        path = target / name
+        if before[name] is not None:
+            path.unlink()
+        if after[name] is not None:
+            create_file(target, name, after[name], created)
+    inspect_target(target, {name: b"" for name in after})
+    for name, data in after.items():
+        if name == MANIFEST:
+            continue
+        actual = (target / name).read_bytes() if (target / name).exists() else None
+        if actual != data:
+            raise Conflict(f"Payload changed before completion: {name}")
+    if after[MANIFEST] is not None:
+        create_file(target, MANIFEST, after[MANIFEST], created)
+    print("Lifecycle operation complete; project-owned guidance preserved. Inspect obsolete routing separately.")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target", type=Path, required=True)
     parser.add_argument("--environment", choices=ENVIRONMENTS, action="append")
+    parser.add_argument("--profile", choices=PROFILES, action="append")
+    parser.add_argument("--clear-profiles", action="store_true", help="explicitly select no profiles for update")
+    parser.add_argument("--source", type=Path, help="separately trusted checkout or bootstrap package")
+    parser.add_argument("--previous-source", type=Path, help="trusted source matching the old installation")
+    parser.add_argument("--expect-plan", help="digest printed by an update/removal preview")
+    parser.add_argument("--backup", type=Path, help="new private directory outside target for before-images")
     modes = parser.add_mutually_exclusive_group()
-    modes.add_argument("--apply", action="store_true", help="create the declared installation")
+    parser.add_argument("--apply", action="store_true", help="apply the selected operation")
     modes.add_argument("--check", action="store_true", help="check against this pinned source")
+    modes.add_argument("--update", action="store_true", help="preview explicit replacement")
+    modes.add_argument("--remove", action="store_true", help="preview managed removal")
     arguments = parser.parse_args(argv)
-    if arguments.check and arguments.environment:
-        parser.error("--check reads environments from the manifest; omit --environment")
-    if not arguments.check and not arguments.environment:
+    if arguments.clear_profiles and (not arguments.update or arguments.profile):
+        parser.error("--clear-profiles requires --update and cannot combine with --profile")
+    if arguments.check and (arguments.environment or arguments.profile or arguments.apply):
+        parser.error("--check reads selections from the manifest and cannot apply")
+    if arguments.remove and (arguments.environment or arguments.profile):
+        parser.error("--remove reads selections from the old manifest")
+    if not (arguments.check or arguments.remove or arguments.update) and not arguments.environment:
         parser.error("preview/apply requires at least one --environment")
     created = []
     try:
         # Inspect lexical ancestors before collapsing '..', which could hide a link.
         inspect_path(arguments.target.absolute())
         target = Path(os.path.abspath(arguments.target))
-        revision, payload = source_payload(SOURCE_ROOT)
+        source = arguments.source or SOURCE_ROOT
+        local = arguments.check and arguments.source is None and (SOURCE_ROOT / "installation.json").is_file()
+        if not arguments.check and arguments.source is None and (SOURCE_ROOT / "installation.json").is_file():
+            raise Conflict("Installed helper writes require a separately trusted --source")
+        if arguments.check or arguments.update or arguments.remove:
+            inspect_target(target, {})
+            old = read_manifest(target / MANIFEST) if (target / MANIFEST).exists() else None
+            if old is None:
+                raise Conflict("Missing installation manifest")
+        else:
+            old = None
+        profiles = arguments.profile if arguments.profile is not None else (old["selected_profiles"] if old else [])
+        if arguments.clear_profiles:
+            profiles = []
+        if local:
+            inspect_target(target, {name: b"" for name in old["managed_files"]})
+            validate(target, old)
+            print("Local manifest/hash consistency verified; trusted-source provenance NOT checked")
+            return 0
+        if arguments.update or arguments.remove:
+            if arguments.previous_source is None:
+                raise Conflict("Lifecycle operations require --previous-source")
+            old = previous_expected(arguments.previous_source, old)
+        revision, payload = source_payload(source, profiles)
         inspect_target(target, payload)
         manifest_path = target / MANIFEST
         if arguments.check:
             if not manifest_path.is_file():
                 raise Conflict("Missing installation manifest")
-            environments = read_manifest(manifest_path)["target_environments"]
+            environments = old["target_environments"]
         else:
-            environments = arguments.environment
-        expected = expected_manifest(revision, payload, environments)
+            environments = arguments.environment or old["target_environments"]
+        expected = expected_manifest(revision, payload, environments, profiles)
+        if arguments.update or arguments.remove:
+            if arguments.remove:
+                payload, expected = {}, None
+            token, plan, before, after = lifecycle_plan(target, old, payload, expected)
+            print(f"Plan SHA-256: {token}")
+            for name in sorted(before):
+                if before[name] != after[name]:
+                    action = "remove" if after[name] is None else ("add" if before[name] is None else "replace")
+                    print(f"Would {action}: {name}")
+            if arguments.apply:
+                if arguments.expect_plan != token or arguments.backup is None:
+                    raise Conflict("Apply requires matching --expect-plan and new --backup directory")
+                apply_lifecycle(target, arguments.backup, plan, before, after, created)
+            return 0
         if manifest_path.exists():
             validate(target, expected)
             print("Installation verified against pinned source; no changes")
@@ -275,7 +495,7 @@ def main(argv: list[str] | None = None) -> int:
     except Conflict as error:
         print(f"Installation conflict: {error}", file=sys.stderr)
         return 1
-    except (OSError, ValueError, UnicodeError) as error:
+    except (OSError, ValueError, UnicodeError, zipfile.BadZipFile, KeyError, TypeError) as error:
         print(f"Installation incomplete: {error}", file=sys.stderr)
         return 2
     finally:
