@@ -54,7 +54,7 @@ justifies those independent dimensions. No profile is the default. References do
 not choose frameworks, tooling, architecture, or executable commands.
 
 The installation owns .remora/standards/, .remora/helpers/install.py, selected
-.remora/profiles/, nine .agents/skills/remora-* entrypoints, and
+.remora/profiles/, ten .agents/skills/remora-* entrypoints, and
 .remora/installation.json. The schema-1 manifest records development, exact source
 revision, requested hosts, selected profiles, and managed SHA-256 hashes.
 Root/nested instructions, specifications, existing skills, project context, and
@@ -122,6 +122,7 @@ Do not reset/clean a target or bypass host permission controls.
 | remora-review-change | Read-only review of a named implementation or exact surface |
 | remora-prepare-pr | Read-only pull request description and empirical evidence brief |
 | remora-prepare-release | Read-only release checklist, changelog update, and GitHub notes |
+| remora-remediate-project | Checkpointed repository onboarding across grounding, docs, tests, and debt |
 | remora-audit-documentation | Read-only audit or authorized coherent reconciliation |
 | remora-audit-tests | Sampled protection chains; retain uncertain coverage |
 | remora-audit-harness | Installation, ownership, drift, and overlap assessment |
