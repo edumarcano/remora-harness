@@ -1,15 +1,15 @@
 ---
 name: remora-prepare-pr
-description: Prepare a comprehensive, evidence-backed pull request description and verification summary from the completed Git branch diff.
+description: Prepare a concise, reviewer-friendly pull request brief adhering to the anti-slop standard, emphasizing artifact proof and reviewer verification over redundant CI logs.
 ---
 
 # Prepare a pull request
 
-Establish the target root and explicitly read `.remora/standards/engineering.md`,
-plus applicable root and scoped project instructions. Follow its shared procedure and
-reporting rules. Paths are target-root relative. Missing resources mean an incomplete
-installation; report the gap without fetching replacements. The host agent performs
-the work using native tools; no separate API or service is required.
+Establish the target root and explicitly read `.remora/standards/engineering.md`
+and `.remora/standards/documentation.md`, plus applicable root and scoped project
+instructions. Follow shared reporting rules. Paths are target-root relative.
+Missing resources mean an incomplete installation; report the gap without fetching
+replacements. Use native host tools without a separate service or API.
 
 ## Resolve the branch change surface
 
@@ -23,24 +23,36 @@ plan. Verify that all in-scope work packets are complete and that split-axis rev
 has been satisfied. If uncommitted changes exist, ask whether they belong in the PR
 or should be stashed.
 
-## Assemble the pull request brief
+## Assemble the fast-to-review brief
 
-Generate a professional, structured PR description containing:
+Apply the anti-slop editorial standard from `.remora/standards/documentation.md`:
+- Eliminate throat-clearing preambles, marketing buzzwords, and decorative em-dashes.
+- Never recite commits or file edits line by line. Focus on architectural intent.
+- Keep the entire PR description under 20 lines total, scannable in 60 seconds.
 
-1. **Summary of changes:** Clear explanation of what problem was solved, the
-resulting behavior, and the underlying architectural approach. Explain the "why"
-behind key design decisions using the Senior Technical Mentor persona.
-2. **Empirical verification evidence:** Include real artifact proof (exact commands
-executed, CLI stdout snippets, test suite results, exit codes). A passing test
-suite alone is not sufficient; show the output of the real executable interface.
-3. **Non-goals & boundaries:** Explicitly list what was intentionally left out of
-scope to guide reviewer expectations.
-4. **Unverified areas & external boundaries:** Disclose any unverified areas,
-especially paid external services (such as LLM APIs) or environment-specific checks,
-and supply copy-pasteable manual verification steps with expected outcomes for the
-reviewer.
-5. **Breaking changes & migrations:** Note any modified public contracts, schema
-migrations, or configuration adjustments.
+Structure the PR description using four concise sections:
+
+### 1. Why
+State the underlying problem or motivation in 1 to 2 direct sentences.
+
+### 2. What changed
+Summarize key architectural and functional changes in 3 to 5 tight bullet points
+(maximum 2 lines per bullet).
+
+### 3. Verification
+Do **not** dump raw logs of standard test runners (`pytest`, `npm test`) or linters
+that CI already runs automatically. Focus proof on what CI cannot show:
+- **Artifact proof:** Show the actual interface output (CLI stdout snippet, response
+payload, or visual change).
+- **Local test command:** Provide the exact 1-line command for the reviewer to run
+and inspect locally.
+- **Unverified boundaries:** Disclose any boundary CI cannot test (e.g., live paid
+APIs like LLM calls, private hardware), including manual test instructions.
+
+### 4. Risks and non-goals
+State in 1 to 2 bullet points:
+- What was intentionally excluded from scope to prevent scope creep.
+- Any breaking contract changes, schema migrations, or operational risks.
 
 ## Safety and boundaries
 
