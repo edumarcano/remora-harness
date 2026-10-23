@@ -44,6 +44,14 @@ class LifecycleTests(TestCase):
         return self.run_install(*argv, "--apply", "--expect-plan", token,
                                 "--backup", self.root / backup)
 
+    def run_package(self, *arguments):
+        output = io.StringIO()
+        err = io.StringIO()
+        argv = [*map(str, arguments)]
+        with redirect_stdout(output), redirect_stderr(err):
+            code = package.main(argv)
+        return code, output.getvalue(), err.getvalue()
+
     def test_profiles_and_relocated_offline_package(self):
         bundle = self.root / "personal" / "remora-bootstrap"
         revision = package.build(self.source, bundle)
@@ -62,6 +70,26 @@ class LifecycleTests(TestCase):
                                  "--check", "--target", str(self.target)], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("provenance NOT checked", result.stdout)
+
+    def test_package_cli_execution_and_conflict_handling(self):
+        bundle = self.root / "cli-bundle"
+        code, out, err = self.run_package("--source", self.source, "--output", bundle)
+        self.assertEqual(code, 0, err)
+        self.assertIn("Built and checked bootstrap", out)
+        self.assertTrue((bundle / install.BUNDLE_INDEX).is_file())
+        self.assertTrue((bundle / install.BUNDLE).is_file())
+
+        code_conflict, out_conflict, err_conflict = self.run_package("--source", self.source, "--output", bundle)
+        self.assertEqual(code_conflict, 1)
+        self.assertIn("Package conflict: Package output must not exist", err_conflict)
+
+        subprocess_bundle = self.root / "subprocess-bundle"
+        result = subprocess.run([sys.executable, str(Path(package.__file__).resolve()),
+                                 "--source", str(self.source), "--output", str(subprocess_bundle)],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Built and checked bootstrap", result.stdout)
+        self.assertTrue((subprocess_bundle / install.BUNDLE_INDEX).is_file())
 
     def test_archive_inventory_and_outer_tampering_are_rejected(self):
         bundle = self.root / "bootstrap"
