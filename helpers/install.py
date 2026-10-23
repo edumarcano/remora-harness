@@ -124,20 +124,49 @@ def source_inputs(root: Path) -> tuple[str, dict[str, bytes]]:
     if top != root.resolve():
         raise Conflict("Installer must belong to the source checkout root")
     revision = git("rev-parse", "--verify", "HEAD^{commit}").decode("ascii").strip()
-    committed = {}
+    ls_out = git("ls-tree", "-z", revision, "--", *INPUTS)
+    entries = {}
+    for part in ls_out.split(b"\0"):
+        if not part:
+            continue
+        meta, path_b = part.split(b"\t", 1)
+        entries[path_b.decode("utf-8")] = meta
     for name in INPUTS:
         inspect_path(root / name)
-        entry = git("ls-tree", revision, "--", name)
-        if not entry.startswith((b"100644 blob ", b"100755 blob ")):
+        meta = entries.get(name)
+        if not meta or not meta.startswith((b"100644 blob ", b"100755 blob ")):
             raise Conflict(f"Source input is not a committed regular file: {name}")
-        committed[name] = git("show", f"{revision}:{name}")
-        # Index flags can hide edits from git diff. Permit only checkout LF/CRLF
-        # differences when comparing the actual inputs with committed bytes.
+    proc = subprocess.Popen(["git", "--no-optional-locks", "-C", str(root),
+                             "cat-file", "--batch"],
+                            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    in_bytes = b"".join(f"{revision}:{name}\n".encode("utf-8") for name in INPUTS)
+    out, err = proc.communicate(in_bytes)
+    if proc.returncode:
+        raise OSError(f"Cannot read pinned source: git cat-file --batch: {err.decode('utf-8', errors='replace').strip()}")
+    committed = {}
+    idx = 0
+    for name in INPUTS:
+        hdr_end = out.find(b"\n", idx)
+        if hdr_end == -1:
+            raise Conflict(f"Source input cannot be read from git: {name}")
+        hdr = out[idx:hdr_end].split()
+        if len(hdr) < 3 or hdr[1] != b"blob":
+            raise Conflict(f"Source input is not a committed regular file: {name}")
+        try:
+            size = int(hdr[2])
+        except ValueError:
+            raise Conflict(f"Source input cannot be read from git: {name}")
+        start = hdr_end + 1
+        data = out[start:start + size]
+        if len(data) != size:
+            raise Conflict(f"Source input truncated: {name}")
+        committed[name] = data
+        idx = start + size + 1
         if (root / name).read_bytes().replace(b"\r\n", b"\n") != committed[name].replace(b"\r\n", b"\n"):
             raise Conflict(f"Source input has local modifications: {name}")
     if git("diff", "--no-ext-diff", "--no-textconv", "--name-only", revision,
            "--", *INPUTS) or git("diff", "--cached", "--no-ext-diff", "--no-textconv",
-                                "--name-only", revision, "--", *INPUTS):
+                                 "--name-only", revision, "--", *INPUTS):
         raise Conflict("Installation inputs have local modifications; use a pinned clean source")
     validate_bundle(committed)
     return revision, committed

@@ -1,11 +1,13 @@
 """Preservation and integrity checks using disposable source and target repositories."""
 
+import atexit
 from contextlib import redirect_stderr, redirect_stdout
 import io
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -22,29 +24,46 @@ SKILL = ".agents/skills/remora-audit-documentation/SKILL.md"
 MANAGED = set(installer.PAYLOAD.values())
 
 
+_TEMPLATE_DIR = None
+_SOURCE_TEMPLATE = None
+
+
+def get_source_template():
+    global _TEMPLATE_DIR, _SOURCE_TEMPLATE
+    if _SOURCE_TEMPLATE is None:
+        _TEMPLATE_DIR = tempfile.TemporaryDirectory(prefix="remora-source-template-", ignore_cleanup_errors=True)
+        atexit.register(_TEMPLATE_DIR.cleanup)
+        _SOURCE_TEMPLATE = Path(_TEMPLATE_DIR.name) / "source"
+        _SOURCE_TEMPLATE.mkdir()
+        for name in installer.INPUTS:
+            path = _SOURCE_TEMPLATE / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((ROOT / name).read_bytes().replace(b"\r\n", b"\n"))
+        subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "init", "--quiet"], check=True)
+        subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "config", "core.autocrlf", "false"], check=True)
+        subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "config", "gc.auto", "0"], check=True)
+        subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "config", "maintenance.auto", "false"], check=True)
+        subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "add", "--", *installer.INPUTS], check=True)
+        subprocess.run(["git", "-C", str(_SOURCE_TEMPLATE), "-c", "user.name=Fixture",
+                        "-c", "user.email=fixture@example.invalid", "-c", "commit.gpgsign=false",
+                        "-c", "gc.auto=0",
+                        "commit", "--quiet", "-m", "fixture input"], check=True)
+    return _SOURCE_TEMPLATE
+
+
 class InstallationTests(unittest.TestCase):
     def setUp(self):
-        self.temporary = tempfile.TemporaryDirectory(prefix="remora-install-")
+        self.temporary = tempfile.TemporaryDirectory(prefix="remora-install-", ignore_cleanup_errors=True)
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         self.source = self.root / "source checkout"
         self.target = self.root / "target project"
-        self.source.mkdir()
+        shutil.copytree(get_source_template(), self.source, ignore=shutil.ignore_patterns("*.lock"))
         self.target.mkdir()
-        for name in installer.INPUTS:
-            path = self.source / name
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes((ROOT / name).read_bytes().replace(b"\r\n", b"\n"))
-        # Disable checkout conversion for fixture construction only, not globally.
-        self.git(self.source, "init", "--quiet")
-        self.git(self.source, "config", "core.autocrlf", "false")
-        self.git(self.source, "add", "--", *installer.INPUTS)
-        self.commit()
         self.git(self.target, "init", "--quiet")
         self.source_patch = patch.object(installer, "SOURCE_ROOT", self.source)
         self.source_patch.start()
         self.addCleanup(self.source_patch.stop)
-
     def git(self, directory, *arguments):
         return subprocess.run(["git", "-C", str(directory), *arguments],
                               capture_output=True, check=True).stdout
@@ -353,12 +372,12 @@ class InstallationTests(unittest.TestCase):
             self.assertTrue((self.target / name).is_file())
 
     def test_expanded_bundle_assets_match_pin_and_refuse_collisions_and_drift(self):
+        target = self.target
         for source, destination in installer.PAYLOAD.items():
-            with self.subTest(asset=destination), tempfile.TemporaryDirectory() as temporary:
-                target = Path(temporary)
+            with self.subTest(collision=destination):
                 path = target / destination
                 path.parent.mkdir(parents=True, exist_ok=True)
-                expected = self.git(self.source, "show", f"HEAD:{source}")
+                expected = (self.source / source).read_bytes().replace(b"\r\n", b"\n")
                 path.write_bytes(expected)
                 before = self.snapshot(target)
                 for arguments in ((), ("--apply",)):
@@ -366,8 +385,16 @@ class InstallationTests(unittest.TestCase):
                     self.assertEqual(self.snapshot(target), before)
                     self.assertFalse((target / installer.MANIFEST).exists())
                 path.unlink()
-                self.assertEqual(self.run_install("--apply", target=target)[0], 0)
+        self.assertEqual(self.run_install("--apply", target=target)[0], 0)
+        for source, destination in installer.PAYLOAD.items():
+            with self.subTest(match=destination):
+                path = target / destination
+                expected = (self.source / source).read_bytes().replace(b"\r\n", b"\n")
                 self.assertEqual(path.read_bytes(), expected)
+        for source, destination in installer.PAYLOAD.items():
+            with self.subTest(drift=destination):
+                path = target / destination
+                original = path.read_bytes()
                 path.write_bytes(b"local edit")
                 drifted = self.snapshot(target)
                 self.assertEqual(self.run_install("--check", target=target)[0], 1)
@@ -376,6 +403,7 @@ class InstallationTests(unittest.TestCase):
                 path.unlink()
                 self.assertEqual(self.run_install("--check", target=target)[0], 1)
                 self.assertFalse(path.exists())
+                path.write_bytes(original)
 
     def test_bad_committed_skill_metadata_and_dependencies_refuse_before_writes(self):
         name = "skills/remora-plan-change/SKILL.md"
