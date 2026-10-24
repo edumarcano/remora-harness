@@ -12,7 +12,7 @@ checkmark substitutes for a tested surface/build.
 
 Codex and Cursor can share one personal bootstrap copy. Inspect all discovered
 personal/project locations for duplicates; never install the same identity twice
-merely to make it appear. Do not put the seven project skills under a personal
+merely to make it appear. Do not put the ten project skills under a personal
 directory. The builder carries them as inert archive entries.
 
 Official documentation checked October 21, 2026:

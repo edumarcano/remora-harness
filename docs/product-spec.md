@@ -7,7 +7,7 @@
 | Specification revision | 0.1 |
 | Target release | v0.1 |
 | Date | October 15, 2026 |
-| Status | Draft for implementation; not a claim of implemented or verified capabilities |
+| Status | Implemented and verified across Milestones 1–5; v0.1 release baseline |
 | Intended repository location | `docs/product-spec.md` |
 | Primary user | A developer working across multiple repositories and coding environments |
 
