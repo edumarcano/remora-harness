@@ -7,6 +7,8 @@ disciplined development workflows, and verifiable lifecycle tooling.
 Remora targets **Codex**, **Cursor**, and **Antigravity** without requiring background daemons,
 external model proxies, or third-party package dependencies.
 
+> **The Remora Metaphor:** In nature, a remora is a small fish that attaches to a larger marine host in a mutualistic relationship, traveling alongside it and keeping it clean without impeding its movement. Remora takes this exact approach: it attaches directly to your existing AI coding agent (Codex, Cursor, or Antigravity) without introducing an independent daemon or heavy runtime, riding along to keep the codebase disciplined, verified, and grounded.
+
 ---
 
 ## Architectural Principles
